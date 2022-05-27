@@ -1,0 +1,102 @@
+{
+  "main": {
+    "id": "24364944faad0f04",
+    "type": "split",
+    "children": [
+      {
+        "id": "53e3c10974fff154",
+        "type": "leaf",
+        "state": {
+          "type": "markdown",
+          "state": {
+            "file": "doc/sprint0/Team Contract.md",
+            "mode": "source",
+            "source": false
+          }
+        }
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "26e09099f11ea52e",
+    "type": "split",
+    "children": [
+      {
+        "id": "37a1e767ac97c171",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "9e3d9daab587f8c5",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {}
+            }
+          },
+          {
+            "id": "f9980c8a032755ad",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              }
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300
+  },
+  "right": {
+    "id": "0824d96345bb4316",
+    "type": "split",
+    "children": [
+      {
+        "id": "141e9089e729321c",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "af8f64da12f8c454",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "file": "doc/sprint0/Team Contract.md",
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              }
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300,
+    "collapsed": true
+  },
+  "active": "53e3c10974fff154",
+  "lastOpenFiles": [
+    "doc/sprint0/Team Contract.md",
+    "doc/sprint0/Product Backlog.md",
+    "doc/sprint0/Summary.md",
+    "doc/sprint0/Process.md",
+    "doc/sprint0/Personas.md",
+    "doc/sprint0/Done.md",
+    "doc/sprint0/Competition.md",
+    "doc/sprint0/Readme.md",
+    "doc/sprint0/team.md"
+  ]
+}
