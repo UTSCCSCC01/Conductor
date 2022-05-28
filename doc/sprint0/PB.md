@@ -1,5 +1,4 @@
 # Product Backlog
-
 1. As a new user, I want to create a unique account that I can log back into so that I can save and securely access my services. (Orchestra)
     - CoS: Entering different valid authentication details should load the corresponding  profiles and used data
 2. As a standard user, i want to see all my connected devices so that I can automate my bots on a device.  
@@ -41,7 +40,7 @@
 20. As a standard user i should be able to import custom bots locally and have the web app display all locally created profiles/bots so that I can schedule or automate tasks using that bot.
     - CoS: Importing the bot locally should appear in the list of bots on the web app
 21. As a standard user, I want to be able to use a calendar to generate events, so that I can use them as triggers
-CoS: Users have access to personal calendars they can use to generate events
-22. As a standard user, I want to be able to import .ics files into the calendar and manipulate events
-CoS: . ics files supported
+	- CoS: Users have access to personal calendars they can use to generate events
+1. As a standard user, I want to be able to import .ics files into the calendar and manipulate events
+	- CoS: .ics files could be imported to the calendar 
 

@@ -9,7 +9,7 @@
         "state": {
           "type": "markdown",
           "state": {
-            "file": "doc/sprint0/summary.md",
+            "file": "doc/sprint0/PB.md",
             "mode": "source",
             "source": false
           }
@@ -69,7 +69,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "doc/sprint0/summary.md",
+                "file": "doc/sprint0/PB.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -89,6 +89,7 @@
   },
   "active": "53e3c10974fff154",
   "lastOpenFiles": [
+    "doc/sprint0/PB.md",
     "doc/sprint0/summary.md",
     "doc/sprint0/PDF/Summary.pdf",
     "doc/sprint0/PDF/Personas.pdf",
@@ -97,7 +98,6 @@
     "doc/sprint0/team-contract.pdf",
     "doc/sprint0/team.md",
     "doc/sprint0/process.md",
-    "doc/sprint0/personas.pdf",
-    "doc/sprint0/PB.md"
+    "doc/sprint0/personas.pdf"
   ]
 }
