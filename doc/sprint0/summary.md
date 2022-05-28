@@ -4,7 +4,7 @@ To build an item scheduling application centred around a key functionality; To a
 Bots can be created by users (and integrated into our service via an API we provide), or obtained from a community marketplace. Bots will run on the end user’s device, handled by a remote event scheduler. 
   
 Key Personas:
--   Nebuchadnezzar, a freelance creative that needs to automate parts of his workflow.  
+-   Nebuchadnezzar, a freelance creative that needs to automate parts of their workflow.  
 -   Ayodele Abioye, a YouTuber that wants to automate her upload process
 -   Parth Singh, a university student who wants to build an email scheduler bot
 
