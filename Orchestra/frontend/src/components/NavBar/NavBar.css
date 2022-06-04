@@ -1,0 +1,50 @@
+.navbar {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 230px;
+    height: 100%;
+    background-color: #000341;
+}
+
+.navbar>.navbar-logo {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 230px;
+    height: 120px;
+}
+
+.navbar>.navbar-logo>img {
+    width: 150px;
+}
+
+.navbar>a {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    width: 100%;
+    height: 60px;
+    color: #A4A6B3;
+    font-size: 16px;
+    text-align: center;
+}
+
+.navbar>a>.anticon {
+    width: 70px;
+}
+
+.navbar>a>p {
+    text-align: left;
+    margin-bottom: 0px;
+}
+
+.navbar>a:hover {
+    background-color: #9FA2B4;
+    color: #DDE2FF;
+}
+
+.navbar>.selected {
+    background-color: #9FA2B4;
+    color: #DDE2FF;
+}
