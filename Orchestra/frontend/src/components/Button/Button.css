@@ -1,0 +1,28 @@
+/* Blue Button */
+.blue-button>.ant-btn {
+    border-color: #000057;
+    border-radius: 10px;
+    background-color: #000057;
+    font-weight: bold;
+    color: #fff;
+}
+
+.blue-button>.ant-btn:hover {
+    border-color: #7F6CA1;
+    background-color: #fff;
+    color: #7F6CA1;
+}
+
+/* Prev Button */
+.purple-button {
+    display: flex;
+    justify-content: flex-start;
+    color: #530BF4;
+}
+
+.purple-button>.anticon {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-right: 5px;
+}
