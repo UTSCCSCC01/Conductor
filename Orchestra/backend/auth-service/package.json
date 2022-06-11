@@ -1,0 +1,22 @@
+{
+  "name": "auth-service",
+  "version": "1.0.0",
+  "description": "Orchestra authentication  microservice",
+  "main": "index.js",
+  "scripts": {
+    "start": "node src/index.js",
+    "live": "nodemon src/index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^0.27.2",
+    "cors": "^2.8.5",
+    "express": "^4.18.1",
+    "firebase-admin": "^10.3.0"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.16"
+  }
+}

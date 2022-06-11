@@ -1,0 +1,18 @@
+version: '3'
+services:
+  auth:
+    build: './auth-service'
+    ports:
+      - "3002:3000"
+    environment:
+      - FIREBASE_API_KEY=AIzaSyB48jisOlggl4LFKoYSIcm2DhlfjWuRStY
+      - FIREBASE_AUTH_ENDPOINT=https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=
+
+  nginx:
+    image: nginx:latest
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./default.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - auth

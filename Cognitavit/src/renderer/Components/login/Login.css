@@ -1,0 +1,14 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body{
+    background: #DFDBE5;
+}
+
+
+
+.auth-button-container{
+    margin-top:50px;
+
+}
