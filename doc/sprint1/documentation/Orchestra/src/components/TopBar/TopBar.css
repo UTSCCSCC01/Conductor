@@ -1,0 +1,38 @@
+.topbar {
+    position: absolute;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    width: calc(100vw - 230px);
+    min-width: 800px;
+}
+
+.top>.topbar {
+    padding: 50px;
+    margin-left: 230px;
+    height: 100px;
+}
+
+.topbar>.path {
+    font-weight: bold;
+}
+
+.topbar>.user {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    align-items: center;
+}
+
+.topbar>.user>p {
+    margin-bottom: 0px;
+}
+
+.topbar>.user>.circle {
+    margin-left: 10px;
+    width: 40px;
+    height: 40px;
+    background-color: #111;
+    border-radius: 100px;
+}

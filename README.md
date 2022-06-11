@@ -24,18 +24,30 @@ If there are **robots** that can perform the desired _function_ and **Orchestra*
 Install [MongoDB Community Edition](https://www.mongodb.com/docs/manual/administration/install-community/).
 
 ### Front-End
-Use a Node version manager [nvm](https://github.com/nvm-sh/nvm) to install Node.js and npm.
+Use a Node version manager [nvm](https://github.com/nvm-sh/nvm) to install Node.js and npm. `npm` will be used to install and run Orchestra.
+
+Move into `/Orchestra/frontend` and type in the following commands:
 
 ```
-$ npm install -g npm
+# Install dependencies
+$ npm install
+
+# Execute react-app
+$ npm start
 ```
 
-Use `npm` to install and run Orchestra.
+## Documentation
 
-```
-$ npm install orchestra
-$ npm run dev
-```
+### Frontend
+
+The frontend documentation uses a tool called **Storybook**.
+
+Steps to execute documentation:
+
+1. Move into `/doc/sprint1/documentation/Orchestra`.
+1. On shell, type `yarn` to install dependencies.
+1. On shell, type `yarn storybook` to execute the storybook.
+1. The documentation page will be available on http://localhost:6006/.
 
 ## Contribution
 GitHub will be used for the version control of this project.
@@ -47,11 +59,15 @@ For agile software development, Git flow is used for this project. The Git branc
 ```
 main
 └─ develop
-   └─ feature
-      └─ feature1
-      └─ feature2
+   └─ CON-28
+   └─ CON-35
+   └─ CON-61
    └─ release
 ```
+
+* `CON-28`: Features for User Story 3 in `/doc/sprint0/PB.md`
+* `CON-35`: Features for User Story 10 in `/doc/sprint0/PB.md`
+* `CON-61`: Sub-task for user Story 10 in `/doc/sprint0/PB.md`
 
 ### GitHub Issues
 
