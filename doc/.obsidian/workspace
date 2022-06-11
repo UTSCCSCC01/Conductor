@@ -1,0 +1,92 @@
+{
+  "main": {
+    "id": "6c5a7c604a79dd3b",
+    "type": "split",
+    "children": [
+      {
+        "id": "fda859c1cad4bf09",
+        "type": "leaf",
+        "state": {
+          "type": "empty",
+          "state": {}
+        }
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "6acedf512178051b",
+    "type": "split",
+    "children": [
+      {
+        "id": "f9dc51bf16fe640c",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "d487000c9253551c",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {}
+            }
+          },
+          {
+            "id": "c8932d88b0707db1",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              }
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300
+  },
+  "right": {
+    "id": "e5f3133dc42f19b6",
+    "type": "split",
+    "children": [
+      {
+        "id": "fbe7fc4319aad498",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "def29fb6602cc83e",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              }
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300,
+    "collapsed": true
+  },
+  "active": "fda859c1cad4bf09",
+  "lastOpenFiles": [
+    "sprint1/PB.md",
+    "sprint1/Documentation.md",
+    "sprint1/sprint1.md",
+    "sprint1/RPM.md"
+  ]
+}

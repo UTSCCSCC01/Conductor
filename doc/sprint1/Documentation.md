@@ -4,8 +4,11 @@
 
 The frontend documentation uses a tool called **Storybook (for React)**.
 
+<<<<<<< Updated upstream
 Since project-token can't be taken from the project, code will be uploaded in `/doc/sprint1/documentation/Orchestra` instead of published page.
 
+=======
+>>>>>>> Stashed changes
 Steps to execute documentation:
 
 1. Move into `/doc/sprint1/documentation/Orchestra`.
@@ -15,3 +18,7 @@ Steps to execute documentation:
 
 ## Backend
 
+<<<<<<< Updated upstream
+=======
+
+>>>>>>> Stashed changes
