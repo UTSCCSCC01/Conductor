@@ -1,5 +1,15 @@
 # Release Planning Meeting (RPM)
 
+## Participants
+
+* Yashank Bhola
+* Yena Lee
+* Maxim Khaissarov
+* Rubaiz Momin
+* Seron Athavan
+* Uns Abbasi
+* Jason Xia
+
 ## Release Goals and Plan
 
 ### Release 1
