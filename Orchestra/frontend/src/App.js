@@ -15,8 +15,8 @@ const login = true;
 function App() {
   return (
     <div>
-      {!login 
-        ? <div><NavBarOne /></div> 
+      {!login
+        ? <div><NavBarOne /></div>
         : <div className="sidebar"><NavBarTwo /></div>
       }
       {login && <TopBar />}
@@ -26,7 +26,7 @@ function App() {
           <Route path='/home' element={<HomePage />} />
           <Route path='/marketplace' element={<Marketplace />} />
           {/* <Route path='/marketplace/:botId' element={<BotDetailPage />} /> */}
-          <Route path='/marketplace/bots' element={<BotDetailPage />} />
+          <Route path='/marketplace/:bot' element={<BotDetailPage />} />
         </Routes>
       </div>
     </div>

@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 // Components
 import BlueButton from '../Button/BlueButton';
 import CommentInput from '../Comment/CommentInput';
@@ -13,6 +14,7 @@ import { DiAndroid, DiApple, DiLinux, DiWindows } from 'react-icons/di';
 import { LeftOutlined, StarFilled } from '@ant-design/icons';
 
 const descripton = "Opens a user specified executable located on the host machine";
+const axios = require('axios');
 const developer = "Duck";
 const device = [1, 0, 0, 1];
 const reviewList = ["Comment 1", "Comment 2"];
@@ -20,12 +22,27 @@ const reviewList = ["Comment 1", "Comment 2"];
 // Page that shows detail of the bot
 function BotDetailPage() {
     const location = useLocation();
+    const { bot } = useParams();
 
-    const onViewBot = () => {};
-    const onInstall = () => {};
-    const onSourceCode = () => {};
+    const [Description, setDescription] = useState("");
+    const [Name, setName] = useState("");
+    const [Sourcecode, setSourcecode] = useState("");
+    const onViewBot = () => { };
+    const onInstall = () => { };
+    const onSourceCode = () => { window.open(Sourcecode) };
 
-    const reviews = reviewList.map ((review, index) => {
+    useEffect(() => {
+        if (bot) {
+            axios.get(`http://www.localhost:3006/marketplace/${bot}`)
+                .then(response => {
+                    setName(response.data.name);
+                    setDescription(response.data.description);
+                    setSourcecode(response.data.sourcecode);
+                });
+        }
+    }, [bot]);
+
+    const reviews = reviewList.map((review, index) => {
         return (
             <div key={index} className="comment-block">
                 <div className="rating">
@@ -42,17 +59,19 @@ function BotDetailPage() {
 
     return (
         <div className="bot-detail">
-            <Header 
+            <Header
                 lButtonText={<div><LeftOutlined /> Back to Search</div>}
-                title="Executor Bot" 
-                date="created: 2022-05-25 | last modified: 2022-05-26" 
+                title={Name}
+                date="created: 2022-05-25 | last modified: 2022-05-26"
             />
             <div className="container">
                 <div className="content">
                     <Section name="Description">
-                        <div>{descripton}</div>
+                        {/* <div>{getbotdescription(bot)}</div> */}
+                        <div>{Description}</div>
                     </Section>
                 </div>
+
                 <div className="content">
                     <Section name="Creator">
                         <div className="creator">
@@ -71,6 +90,7 @@ function BotDetailPage() {
                                 <DiLinux className={device[2] ? "icon-selected" : undefined} />
                                 <DiWindows className={device[3] ? "icon-selected" : undefined} />
                             </div>
+
                             <div className="devices-button">
                                 <BlueButton text="Install" onButton={onInstall} />
                                 <BlueButton text="Source Code" onButton={onSourceCode} />
