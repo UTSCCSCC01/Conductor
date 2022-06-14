@@ -1,0 +1,27 @@
+.page-header {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #DADADA;
+    width: 100%;
+    height: 100px;
+}
+
+.page-header>.header-button {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.page-header>.header-title {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    padding: 0px 40px;
+    width: 100%;
+}
+
+.page-header>.header-title>p {
+    font-size: 0.8em;
+}

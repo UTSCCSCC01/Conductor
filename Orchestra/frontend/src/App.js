@@ -7,20 +7,26 @@ import HomePage from './components/HomePage/HomePage';
 import NavBarOne from './components/NavBar/NavBarOne';
 import NavBarTwo from './components/NavBar/NavBarTwo';
 import TopBar from './components/TopBar/TopBar';
+import Marketplace from './components/Marketplace/Marketplace';
+import BotDetailPage from './components/BotDetailPage/BotDetailPage';
 
 const login = true;
 
 function App() {
   return (
     <div>
-      {!login 
-        ? <div><NavBarOne /></div> 
+      {!login
+        ? <div><NavBarOne /></div>
         : <div className="sidebar"><NavBarTwo /></div>
       }
       {login && <TopBar />}
       <div className={!login ? "App-pre" : "App"}>
         <Routes>
           <Route exact path='/' element={<HomePage />} />
+          <Route path='/home' element={<HomePage />} />
+          <Route path='/marketplace' element={<Marketplace />} />
+          {/* <Route path='/marketplace/:botId' element={<BotDetailPage />} /> */}
+          <Route path='/marketplace/:bot' element={<BotDetailPage />} />
         </Routes>
       </div>
     </div>

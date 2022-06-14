@@ -6,7 +6,7 @@ function NavBarTwo() {
     return (
         <div className="navbar">
             <a href='/home' className="navbar-logo">
-                <img src='logo1.png' />
+                <img src='/logo1.png' />
             </a>
             <a href='/home' className={window.location.pathname === '/home' ? "selected" : undefined}>
                 <PieChartFilled />
@@ -24,7 +24,7 @@ function NavBarTwo() {
                 <HddFilled />
                 <p>Device Status</p>
             </a>
-            <a href='/marketplace' className={window.location.pathname === '/marketplace' ? "selected" : undefined}>
+            <a href='/marketplace' className={window.location.pathname.includes('/marketplace') ? "selected" : undefined}>
                 <ShopFilled />
                 <p>Marketplace</p>
             </a>
