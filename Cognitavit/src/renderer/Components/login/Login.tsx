@@ -1,9 +1,13 @@
 import { useContext, useState } from 'react';
 import { getAuth } from 'renderer/utils/getAuth';
 import { Navigate } from 'react-router-dom'; 
+import { AuthContext } from 'renderer/AuthContext';
+import { toast } from 'react-toastify';
 
 import './Login.css'
-import { AuthContext } from 'renderer/AuthContext';
+import 'react-toastify/dist/ReactToastify.css';
+import logo from './assets/logo.png'
+
 
 const Login = () => {
     //Global AppStates
@@ -12,9 +16,15 @@ const Login = () => {
     //UI related states
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const [error, setError] = useState('Did not do anything yet');
+    const [error, setError] = useState('');
     const [signedIn, setSignedIn] = useState(false);
     
+    //User Toast Notifications
+    const serverOffline = () => {toast.error("Authentication service is not avaliable.")}
+    const authFailure = () => {toast.error("Incorrect Username or password.")}
+    const authSuccess = () => {toast.success("Authentication was Successful")}
+
+
     async function handleAuthFromSubmission(event: React.FormEvent<HTMLFormElement>){
         event.preventDefault();
         console.log(email, password);
@@ -24,13 +34,14 @@ const Login = () => {
         
         if(!result){
             setError('Incorrect Username or password');
+            authFailure()
             console.log("Fauilure: " + result);
             setUserToken(result);
         }else{
             console.log(result);
             setUserToken(result);
             //Redirect to the dashboard. 
-            setError('Success')
+            authSuccess()
             setSignedIn(true);    
         }
     }
@@ -41,27 +52,34 @@ const Login = () => {
 
     return (
         <div className="login-container">
-            <p> {error} </p>
-            <form onSubmit={handleAuthFromSubmission}>
+            <div className="logo">
+                <img src={logo} alt="Orchestra Logo" />
+            </div>
+            
+            <div className="login-header">
+                    <h1>Sign in</h1>
+                    <p>Enter your email and password below</p>
+            </div>
+
+            <p className="error-code"> {error} </p>
+            <form onSubmit={handleAuthFromSubmission} >
+
                 <div className="auth-input-container">
-                    <p>Username</p>
-                    <input type="text" name="email" onChange = {(e) => {setEmail(e.target.value)}} required />
+                    <p>Email</p>
+                    <input type="text" name="email" onChange = {(e) => {setEmail(e.target.value)}} required placeholder="Email" />
                 </div>
                 <div className="auth-input-container">
                     <p>Password</p>
-                    <input type="text" name="password" onChange = {(e) => {setPassword(e.target.value)}} required />
+                    <input type="text" name="password" onChange = {(e) => {setPassword(e.target.value)}} required placeholder="Password" />
                 </div>
 
                 <div className="auth-button-container">
-                    <input type="submit" />
+                    <button type="submit"  value="Submit">Sign in</button>
                 </div>
             </form>
-
-            <p>Current User Token State</p>
-            <p>{(userToken) ? userToken.localId : "null"}</p>
+        {/* <p className="debug">Current User Token State</p> */}
+        {/* <p>{(userToken) ? userToken.localId : "null"}</p>*/}
         </div>
-
-
     )
 };
 

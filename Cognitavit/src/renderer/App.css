@@ -3,18 +3,29 @@
 @tailwind utilities;
 
 
+@import url('https://fonts.googleapis.com/css2?family=Mulish:ital,wght@0,200;0,300;0,400;0,500;0,700;1,200;1,300;1,400;1,500&display=swap');
+
+*{
+    margin: 0px;
+    font-family: "Mulish";
+}
 
 /*
  * @NOTE: Prepend a `~` to css file paths that are in your node_modules
  *        See https://github.com/webpack-contrib/sass-loader#imports
  */
-body {
-  position: relative;
-
+body, #root, .dashboard-layout{
   height: 100vh;
+  width: 100vw;
   overflow-y: hidden;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  display: grid;    
+}
+
+.dashboard-layout{
+  grid-template-columns: 1fr 6fr;
+  grid-template-areas: 
+    "sidebar  content"
+    "sidebar content"
+    "sidebar  content";
 }
 
