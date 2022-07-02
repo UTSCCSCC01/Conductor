@@ -5,6 +5,7 @@ import PrivateRoute from './Components/privateroute/PrivateRoute'
 import { AuthContext } from './AuthContext';
 import './App.css';
 import { useState } from 'react';
+import { ToastContainer } from 'react-toastify';
 
 
 
@@ -14,6 +15,7 @@ export default function App() {
   return (
     <Router>
       <AuthContext.Provider value={[userToken, setUserToken]}>
+      <ToastContainer />
         <Routes>
           <Route path="/dashboard" element={<PrivateRoute/>}>
             <Route path="/dashboard" element={<Home />} />
