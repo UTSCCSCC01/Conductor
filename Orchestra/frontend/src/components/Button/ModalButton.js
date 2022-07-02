@@ -2,9 +2,9 @@ import React from 'react';
 import './Button.css';
 import { Button } from 'antd';
 
-function NewItemButton({ text, onButton }) {
+function ModalButton({ text, onButton }) {
     return (
-        <div className="new-button">
+        <div className="modal-button">
             <Button onClick={onButton}>
                 {text}
             </Button>
@@ -12,4 +12,4 @@ function NewItemButton({ text, onButton }) {
     );
 }
 
-export default NewItemButton;
+export default ModalButton;

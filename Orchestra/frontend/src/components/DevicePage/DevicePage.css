@@ -1,3 +1,4 @@
+/* DEVICE STATUS PAGE */
 .device-container {
     display: flex;
     flex-direction: column;
@@ -22,12 +23,59 @@
     margin-bottom: 30px;
 }
 
+.device-modal.ant-modal {
+    width: 360px !important;
+}
+
+.device-modal.ant-modal .ant-modal-header {
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+
+}
+
+.device-modal.ant-modal .ant-modal-content {
+    border-radius: 10px !important;
+}
+
+.device-modal.ant-modal p {
+    margin-bottom: 5px;
+}
+
+.device-modal.ant-modal p:not(:first-child) {
+    margin-top: 20px;
+}
+
+.device-modal.ant-modal .device-input.ant-input,
+.device-modal.ant-modal .device-input.ant-select {
+    border: 1px solid #F0F1F7;
+    border-radius: 5px;
+    text-align: left;
+    background-color: #FCFDFE;
+}
+
+.device-modal.ant-modal .device-input.ant-input.ant-input-status-error {
+    border-color: #FF4D4F;
+}
+
 /* Device Table */
 .device-table {
     display: flex;
     flex-direction: column;
     width: 100%;
     padding: 0px 20px;
+}
+
+.device-table.empty {
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    font-size: 17px;
+    color: #111;
+}
+
+.device-table.empty>svg {
+    margin-right: 5px;
 }
 
 .device-table>.table-header {
@@ -83,4 +131,16 @@
 
 .device-table>.table-body>.table-body-row .device-platform {
     font-size: 1.5em;
+}
+
+/* DEVICE LIST PAGE */
+.device-list {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 10px;
+    width: 100%;
+    height: 100%;
+    background-color: #fff;
+    box-shadow: 0px 0px 10px #ccc;
 }

@@ -26,3 +26,15 @@
     align-items: center;
     margin-right: 5px;
 }
+
+/* Modal Button */
+.modal-button>.ant-btn {
+    border-radius: 10px;
+    font-weight: bold;
+}
+
+.modal-button>.ant-btn:hover {
+    border-color: #7F6CA1;
+    background-color: #fff;
+    color: #7F6CA1;
+}
