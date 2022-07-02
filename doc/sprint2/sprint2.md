@@ -98,7 +98,7 @@ The capacity for this sprint is 35 story points.
 
 ### User story 4
 
-[CON-78] As a standard user, i want to be able search for a bot on marketplace by name or tags so that i can search for a specific automation task
+[CON-34] As a standard user, i want to be able search for a bot on marketplace by name or tags so that i can search for a specific automation task
 
 * Priority: High
 * Assignee: Rubaiz Momin
