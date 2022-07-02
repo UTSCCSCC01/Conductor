@@ -1,0 +1,54 @@
+
+
+.logo{
+    margin-top: 24px;
+}
+
+.navbar{
+    width: 175px;
+    grid-area: sidebar;
+    background-color: #604883;
+    height: 100vh;
+    display:flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.links{
+    margin-top: 25px;
+}
+
+
+
+.menu-options{
+    margin-top: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 0px;
+}
+
+.menu-options>a{
+    text-decoration: none;
+    display: flex;
+    width: 175px;
+    height: 56px;
+    justify-content: center;
+    align-items: center;
+
+    font-family: 'Mulish';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 20px;
+    letter-spacing: 0.2px;
+    color: #D6D8E5;
+    transition: background 200ms ease;
+}
+
+.menu-options>a:visited{
+    color: inherit;
+}
+
+.menu-options>a:hover{
+    background-color: #584279;
+}

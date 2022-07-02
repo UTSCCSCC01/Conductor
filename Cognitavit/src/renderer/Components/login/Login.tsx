@@ -47,7 +47,7 @@ const Login = () => {
     }
 
     if(signedIn){
-        return <Navigate to="/dashboard" />
+        return <Navigate to="/dashboard/home" />
     }
 
     return (
