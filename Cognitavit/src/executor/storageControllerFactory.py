@@ -1,0 +1,1 @@
+#Implements storage factory for writing into secret storage

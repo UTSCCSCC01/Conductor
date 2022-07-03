@@ -1,0 +1,3 @@
+-Instead of using custom global store migrate to redux.
+-Apply Typescript interface, types for axios return values. 
+-Apply TypeScript type for global states if not migrating to redux.
