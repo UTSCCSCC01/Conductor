@@ -45,7 +45,7 @@ The capacity for this sprint is 35 story points.
 [CON-26] As a new user, I want to create a unique account that I can log back into so that I can save and securely access my services. (Orchestra)
 
 * Priority: High
-* Assignee: Yashanl Bhola
+* Assignee: Yashank Bhola
 * Task Point: 7
 
 #### Subtasks for story 2
@@ -65,7 +65,7 @@ The capacity for this sprint is 35 story points.
 [CON-82] Registering an account
 
 * Priority: Medium
-* Assignee: Yashanl Bhola
+* Assignee: Yashank Bhola
 * Task Point: 3
 
 ### User story 3
