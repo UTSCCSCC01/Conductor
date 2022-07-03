@@ -10,6 +10,8 @@ import { DiAndroid, DiApple, DiLinux, DiWindows } from 'react-icons/di';
 
 const { Option } = Select;
 
+const userId = "user1";
+
 const platforms = [
     <Option key={0}>Android</Option>,
     <Option key={1}>iOS</Option>,
@@ -29,7 +31,7 @@ function DeviceRunning() {
     const [DevicePlatform, setDevicePlatform] = useState([false, false, false, false]);
 
     useEffect(() => {
-        axios.get(`http://www.localhost:3007/api/devices/getAllDevices`)
+        axios.get(`http://www.localhost:3007/api/devices/getAllDevices`, { params: { userId: userId } })
             .then(response => {
                 if (response.data.success) {
                     console.log(response.data.devicesData);
@@ -111,7 +113,7 @@ function DeviceRunning() {
         if (value.includes('2')) devicePlatform[2] = true;
         if (value.includes('3')) devicePlatform[3] = true;
         setDevicePlatform(devicePlatform);
-    }
+    };
 
     // Function for Add Device Submit Button
     const addDevice = () => {
@@ -127,7 +129,7 @@ function DeviceRunning() {
             platform: DevicePlatform,
             name: DeviceName,
             status: true,
-            user: "user1",
+            userId: "user1",
         };
         axios.post(`http://www.localhost:3007/api/devices/addDevice`, variables)
             .then(response => {
