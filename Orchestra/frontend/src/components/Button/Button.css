@@ -1,0 +1,64 @@
+/* Blue Button */
+.blue-button>.ant-btn {
+    border-color: #000057;
+    border-radius: 10px;
+    background-color: #000057;
+    font-weight: bold;
+    color: #fff;
+}
+
+.blue-button>.ant-btn:hover {
+    border-color: #7F6CA1;
+    background-color: #fff;
+    color: #7F6CA1;
+}
+
+/* Prev Button */
+.purple-button {
+    display: flex;
+    justify-content: flex-start;
+    color: #530BF4;
+}
+
+.purple-button>.anticon {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-right: 5px;
+}
+
+/* Modal Button */
+.modal-button>.ant-btn {
+    border-radius: 10px;
+    font-weight: bold;
+}
+
+.modal-button>.ant-btn:hover {
+    border-color: #7F6CA1;
+    background-color: #fff;
+    color: #7F6CA1;
+}
+
+/* Icon Button */
+.icon-button>.ant-btn {
+    border-color: #000057;
+    border-radius: 10px;
+    background-color: #FFF;
+    font-weight: bold;
+    color: #000057;
+    line-height: 0px;
+}
+
+.icon-button.delete>.ant-btn {
+    border-color: #D85050;
+    color: #D85050;
+}
+
+.icon-button>.ant-btn:hover {
+    background-color: #000057;
+    color: #FFF;
+}
+
+.icon-button.delete>.ant-btn:hover {
+    background-color: #D85050;
+}
