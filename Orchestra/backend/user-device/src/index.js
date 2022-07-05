@@ -1,20 +1,31 @@
-const express = require('express');
-const cors = require('cors');
 
-// Server Port Connection
-const app = express();
-const port = 3007;
-
-// MongoDB Connection
-const mongoose = require('mongoose');
-const mongoURI = "mongodb://localhost:27017/orchestra";
-// MongoDB models
+//Import models, and server configs.
+const { MONGO_DB_URI, PORT } = require("./config/config");
 const { Device } = require('../model/Device');
 
-const connect = mongoose.connect(mongoURI)
-    .then(() => console.log("MongoDB Connected..."))
+const express = require('express');
+const cors = require('cors');
+const mongoose = require('mongoose');
+
+
+// Set Configs/Mongodb Connection
+const app = express();
+const port = PORT;
+const mongoURI = MONGO_DB_URI;
+
+console.log("Mongodb URI")
+console.log(mongoURI)
+//Connect to mongodb.
+const connect = mongoose.connect(mongoURI, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  },)
+    .then(() => console.log("Connect to the MONGODB server."))
     .catch(err => console.log(err));
 
+
+//CORS enabled as any ip can ping this microservice. 
+//Todo: add authentication middleware. 
 app.use(cors());
 app.use(express.json());
 
@@ -30,16 +41,8 @@ app.use((err, req, res, next) => {
    next();
 });
 
-app.post('/user-device', (req, res) => {
+app.post('/api/devices', (req, res) => {
     res.send("This is the device service. If working through port 8080 nginx working");
-});
-
-// Remove ALLOW-CORS headers after we dockerize and setup nginx for frontend
-app.options('/auth', function (req, res) {
-   res.setHeader("Access-Control-Allow-Origin", "*");
-   res.setHeader('Access-Control-Allow-Methods', '*');
-   res.setHeader("Access-Control-Allow-Headers", "*");
-   res.end();
 });
 
 // Adds a new device to the DB
@@ -51,7 +54,8 @@ app.post('/api/devices/addDevice', (req, res) => {
     });
 });
 
-// Gets all devices from the DB
+
+//Get 
 app.get('/api/devices/getAllDevices', (req, res) => {
     Device.find({ userId: req.query.userId })
         .populate("name")
@@ -63,6 +67,7 @@ app.get('/api/devices/getAllDevices', (req, res) => {
 });
 
 // Gets one device from the DB
+// Rename to getDevice in future. 
 app.get('/api/devices/getOneDevice', (req, res) => {
     const userId = req.params.userId;
     const deviceId = req.params.deviceId;
@@ -81,6 +86,7 @@ app.delete('/api/devices/deleteOneDevice', (req, res) => {
         return res.status(200).json({ success: true });
     });
 });
+
 
 // Server Port
 app.listen(port, () => {

@@ -13,6 +13,11 @@ import { app, BrowserWindow, Menu, shell, ipcMain } from 'electron';
 import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
 import { resolveHtmlPath } from './util';
+import { get_device_id } from './utils/deviceinfo/deviceInfo';
+
+//import {get_device_id, get_platform} from './utils/deviceinfo/deviceinfo'
+
+
 
 export default class AppUpdater {
     constructor() {
@@ -133,3 +138,17 @@ app.whenReady()
         });
     })
     .catch(console.log);
+
+//Handles
+//get_device_id, get_platform
+
+ipcMain.handle("get_device_id", async (event, args) => {
+    let device_id = get_device_id();
+    return device_id;
+});
+
+ipcMain.handle("get_platform", async (event, args) => {
+    let device_id = get_device_id();
+    return device_id;
+});
+
