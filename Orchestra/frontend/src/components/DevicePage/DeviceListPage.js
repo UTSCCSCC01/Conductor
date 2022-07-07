@@ -170,7 +170,7 @@ function DeviceListPage() {
                 if (response.data.success) {
                     console.log(response.data.deviceData);
                     alert("Successfully Added!");
-                    window.location.reload();
+                    window.location.reload(); //Future: Use reace usestate/useeffect to dynamically update screen instead of refreshing.
                 }
             });
     };

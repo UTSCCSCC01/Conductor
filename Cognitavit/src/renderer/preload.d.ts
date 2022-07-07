@@ -12,6 +12,13 @@ declare global {
                 once(channel: string, func: (...args: unknown[]) => void): void;
             };
         };
+        //Register the ipc function calls to be visible in main window.
+        registration_device: {
+            get_device_id(): Promise<any>;
+            get_platform(): Promise<any>;
+            get_hostname(): Promise<any>;
+        }
+
     }
 }
 

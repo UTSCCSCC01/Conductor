@@ -7,7 +7,7 @@ import { useNavigate } from "react-router-dom";
 
 
 const Home = () => {
-    //const [userToken, setUserToken] = useContext(AuthContext)
+
     const logoutNotice = () => {toast.info("User has been logged out.")}
     let navigate = useNavigate();
 
@@ -17,14 +17,12 @@ const Home = () => {
         navigate("/logout");
     }
 
-   // if(!userToken){ return <Navigate to="/" /> }
-    
+
     return (
         <div className="homepage-container">
             <button onClick={revokeUserToken}>Signout</button>
-            <p>Current User Token State test</p>
-            {//<p>{(userToken) ? userToken.localId : "null"}</p>
-            }
+            <p>Hello world im homepage</p>
+
         </div>
     )
 };

@@ -13,7 +13,7 @@ import { app, BrowserWindow, Menu, shell, ipcMain } from 'electron';
 import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
 import { resolveHtmlPath } from './util';
-import { get_device_id } from './utils/deviceinfo/deviceInfo';
+import { get_device_id, get_device_hostname, get_platform } from './utils/deviceinfo/deviceInfo';
 
 //import {get_device_id, get_platform} from './utils/deviceinfo/deviceinfo'
 
@@ -148,7 +148,18 @@ ipcMain.handle("get_device_id", async (event, args) => {
 });
 
 ipcMain.handle("get_platform", async (event, args) => {
-    let device_id = get_device_id();
-    return device_id;
+    let platform = get_platform();
+    return platform;
 });
+
+
+ipcMain.handle("get_hostname", async (event, args) => {
+    let hostname_dev = get_device_hostname();
+    return hostname_dev;
+});
+
+
+
+
+
 
