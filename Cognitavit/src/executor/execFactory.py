@@ -7,9 +7,13 @@ class FactoryExecutor():
     def __init__(self) -> None:
         pass
 
-    
+
     def create(self, platform: str) -> Executor:
         device_type = platform.lower().strip()
+
+        print("device_type")
+        print(device_type)
+
         if(device_type == 'win'):
             return WinExecutor()
         elif(device_type == 'linux'):
@@ -18,5 +22,4 @@ class FactoryExecutor():
             return MacExecutor()
         else:
             return -1
-    
-    
+
