@@ -14,6 +14,7 @@ import {Provider} from 'react-redux';
 import {store} from './store/store'
 import Login from './Components/auth/login/Login';
 import { Logout } from './Components/auth/logout/Logout';
+import DeviceLoader from './Components/deviceloader/DeviceLoader';
 
 export default function App() {
 
@@ -22,6 +23,7 @@ export default function App() {
       <Provider store = {store}>
         <ToastContainer />
         <Routes>
+          <Route path="/deviceloader" element={<DeviceLoader/>} />
           <Route path="/dashboard" element={<PrivateRoute/>}>
             {/*Anything here is only rendered when logged in.*/}
             <Route path="/dashboard/home" element={<div className="dashboard-layout"><Navbar/><Home /></div>} />

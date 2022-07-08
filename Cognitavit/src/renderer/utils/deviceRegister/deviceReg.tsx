@@ -4,43 +4,40 @@
 
 import axios from "axios";
 import { store } from "renderer/store/store";
-import { device_type_to_arr, get_device_info } from "../deviceInfo/getDeviceInfo";
+import { get_device_info } from "../deviceInfo/getDeviceInfo";
 
 
 
 //Check Device Registration
+//Todo: Add types for expected recieve type from database.
+
+
 async function checkDeviceRegistration(){
-
-    //Pause execution
-    const [deviceUUID, platform, hostname] = await get_device_info() //Future?: Move device_info into redux state. non-changing
-    const auth_token = store.getState().app_reduce.auth;
-    const user_id = auth_token.auth_token?.localId;
-
-    //Device Information.
-    console.log(deviceUUID, platform, hostname)
-    console.log(auth_token)
-    console.log(user_id)
-
-    /*
-    const check_device = axios.post("/api/devices/getOneDevice", {
-        "userId": user_id,
-        "deviceId": deviceUUID
-    }).then((res:any) => {
-        console.log("Successful Response. Read Device");
-        console.log(res);
-        if("data" in res){
-            console.log(res["data"]);
-         //   auth_status =  res["data"]
-        }
-    }).catch((res_error:any) => {
-        console.log(res_error);
-    
-    })
-    const blocker = await check_device;
-    console.log("Finished running get checkDeviceRegistration: Returning result to caller");
-    */
+    let status: string;
+    status = 'none';
    
-    return;
+    const payload = {
+        userId: store.getState().app_reduce.auth.auth_token?.localId,
+        deviceId: store.getState().app_reduce.devinfo.deviceInfo?.deviceUUID,
+    }
+
+    //Send post request to device microservice
+    const check_reg = axios.post('http://localhost:8080/api/devices/getOneDevice',payload)
+    .then((res:any)=>{
+        status = res["data"]["status"];
+    }).catch((err:any) => {
+        if(err.response.data == undefined){ //server not responded
+            status = 'none'
+        }else if("status" in err.response["data"]){
+            status = err.response["data"]['status'];
+        }else{
+            console.log("Undefined behavior has occured!");
+        }
+    })
+
+    const blocker = await check_reg;
+    //console.log(status);
+    return status;
 }
 
 
@@ -50,18 +47,17 @@ async function registerDevice(){
     let [deviceUUID, platform, hostname] = await get_device_info() //Future?: Move device_info into redux state. non-changing
     let auth_token = store.getState().app_reduce.auth;
     let user_id = auth_token.auth_token?.localId;
-    platform = device_type_to_arr(platform);
+
+    let status_reg: boolean;
+    status_reg = false;
 
     const payload = {
-        bots: [],
-        created: Date.now(),
         deviceId: deviceUUID,
         description: "Device added via Cognitavit.",
         platform: platform,
         name: hostname,
-        status: true,
-        userId: user_id,  
-    }
+        userId: user_id,          
+    };
 
     console.log(payload)
 
@@ -70,14 +66,14 @@ async function registerDevice(){
         console.log("Successful Response from addDevice microservice. Service");
         if (res.data.success) {
             console.log(res.data.deviceData);
+            status_reg = true;
         }
     }).catch((res_error:any) => {
-
         console.log(res_error);
     })
     const blocker = await add_device;
-    console.log("Finished running get auth status: Returning result to caller");
-    return;
+
+    return status_reg;
 }
 
 export {checkDeviceRegistration, registerDevice} 

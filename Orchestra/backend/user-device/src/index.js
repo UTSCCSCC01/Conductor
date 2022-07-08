@@ -6,6 +6,7 @@ const { Device } = require('../model/Device');
 const express = require('express');
 const cors = require('cors');
 const mongoose = require('mongoose');
+const { query } = require("express");
 
 
 // Set Configs/Mongodb Connection
@@ -57,41 +58,50 @@ app.options('/api/devices/addDevice', function (req, res) {
 
 // Adds a new device to the DB
 app.post('/api/devices/addDevice', (req, res) => {
-     //Check if device/user pair is valid
-    //Check if auth tokens are valid
-    //Reject o/w if malformed 
-
-
-    //check query details.
-    const req_userId = (req.body.userId).trim();
-    const req_deviceIds = (req.body.deviceId).trim();
-
-    if(req_userId == "" || req_deviceIds == "" || req_userId == undefined || req_deviceIds == undefined){
-        return res.status(400).send({ status: "invalid response"});
+    //Check if string type
+    const check_query = [req.body.deviceId, req.body.description, req.body.platform, req.body.name, req.body.userId]
+    for (const element of check_query){
+        if((typeof element != "string")){
+            return res.status(400).send({success: false, status: "invalid response"});
+        }
+    }
+    //Check if not empty string.
+    const check_not_empty = [req.body.deviceId, req.body.userId, req.body.platform, req.body.name];
+    for (const element of check_not_empty){
+        if((element === "")){
+            return res.status(400).send({success: false, status: "invalid response"});
+        }
+    }
+    //Perform checks on query.
+    const req_userId = req.body.userId.trim();
+    const req_deviceId = (req.body.deviceId).trim();
+    //Generate the payload
+    const payload = {
+        bots: [],
+        created: Date.now(),
+        status: true,
+        //User provided payload.
+        deviceId: (req.body.deviceId).trim(),
+        description: req.body.description.trim(),
+        platform: req.body.platform.trim(),
+        name: req_userId,
+        userId: req_userId,          
+    }
+    //Verify if the generate payload matches Device
+    let device = null;
+    try{
+        device = new Device(payload);
+    }catch(err){
+        return res.status(400).send({success: false, status: "payload corrupted"});
     }
 
-    const device = new Device(req.body);
-    /*
-    Queries for userid, req_deviceId.
-    If there is no such pair when querying then insert. otherwise do nothing. 
-    */
-    Device.updateOne({userId: req_userId, deviceId: req_deviceIds}, {$setOnInsert: device}, {upsert:true}, function (err, deviceData){
+    /*Insert if the document exists, otherwise do nothing by updating nothing, and return null.*/
+    Device.updateOne({userId: req_userId, deviceId: req_deviceId}, {$setOnInsert: device}, {upsert:true}, function (err, deviceData){
         if (err){
-            return res.status(409).send(error); //error 409 resource already exists.
+            return res.status(409).send(error);
         }
-            return res.status(200).json({ success: true,  deviceData});
+        return res.status(200).json({ success: true,  deviceData});
     });
-
-
-    /*
-    device.save((error, deviceData) => {
-        if (error){
-            console.log(error)
-            return res.status(400).send(error);
-        }
-        return res.status(200).json({ success: true, deviceData });
-    });
-    */
 });
 
 
@@ -117,28 +127,30 @@ app.get('/api/devices/getAllDevices', (req, res) => {
 app.post('/api/devices/getOneDevice', (req, res) => {
     //Behavior: returns null if a collection is not found, o/w returns the first one.
     //Do error checking of userID or deviceId is null
+
+    //Todo: Check if req_userid, req_deviceId even is in the payload of the body request. 
     const req_userId = (req.body.userId).trim();
     const req_deviceIds = (req.body.deviceId).trim();
 
-    if(req_userId == "" || req_deviceIds == "" || req_userId == undefined || req_deviceIds == undefined){
-        return res.status(400).send({ status: "invalid response", errorCode: error});
+    if(req_userId == "" || req_deviceIds == "" || typeof req_userId != "string" || typeof req_deviceIds != "string"){
+        return res.status(400).send({success: false, status: "invalid response", errorCode: error});
     }
 
     //Debug
-    console.log("user, deviceID", req_userId, req_deviceIds); 
+    //console.log("user, deviceID", req_userId, req_deviceIds); 
 
     Device.findOne({userId: req_userId , deviceId: req_deviceIds }, (error, deviceData) => {
-        console.log(deviceData)
+        //console.log(deviceData)
         if (error){
-            console.log(error, deviceData)
-            return res.status(400).send({ status: "error", errorCode: error});
+          //  console.log(error, deviceData)
+            return res.status(400).send({success: false, status: "error", result: error});
         }
-        console.log(deviceData);
+       // console.log(deviceData);
         if(deviceData == null){
-            return res.status(404).send({ status: "device and user pair not found.", errorCode: error});
+            return res.status(404).send({success: false, status: "not found", result: error});
         }
 
-        return res.status(200).json({ status: "success", result: deviceData});
+        return res.status(200).json({success: true, status: "found", result: deviceData});
     });
 });
 

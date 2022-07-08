@@ -13,16 +13,4 @@ async function get_device_info(){
     return [deviceUUID, platform, hostname]
 }
 
-function device_type_to_arr(name:string){
-    if(name === 'win32'){
-        return [0,0,0,1];
-    }else if(name === 'darwin'){
-        return [0,1,0,0];
-    }else if(name === 'linux'){
-        return [0,0,1,0]
-    }else{
-        return [0,0,0,0]
-    }
-}
-
-export {get_device_info, device_type_to_arr}
+export {get_device_info}

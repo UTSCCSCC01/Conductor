@@ -19,4 +19,10 @@ type UserProfileDetails = {
     name: string;
 };
 
-export {AuthDetails, AuthenticationToken, UserProfileDetails};
+type DeviceDetails = {
+    platform: string;
+    hostname: string;
+    deviceUUID: string;
+}
+
+export {AuthDetails, AuthenticationToken, UserProfileDetails, DeviceDetails};

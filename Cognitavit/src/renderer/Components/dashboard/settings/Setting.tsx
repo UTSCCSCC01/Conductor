@@ -1,29 +1,32 @@
 import { useState } from "react";
 import { store } from "renderer/store/store";
 
-import { registerDevice } from "renderer/utils/deviceRegister/deviceReg";
+import { checkDeviceRegistration, registerDevice } from "renderer/utils/deviceRegister/deviceReg";
 
 
 
 const Setting = () => {
 
-    const [deviceUUID, setDeviceUUID] = useState("Loading")
-    const [platform, setPlatform] = useState("Loading")
-    const [hostname, setHostname] = useState("Loading")
+
+    const [isreg, setIsReg] = useState("Loading")
 
     const authToken = store.getState().app_reduce.auth;
     const localid = authToken.auth_token?.localId
+    const deviceUUID = store.getState().app_reduce.devinfo.deviceInfo?.deviceUUID;
+    const platform = store.getState().app_reduce.devinfo.deviceInfo?.platform;
+    const hostname = store.getState().app_reduce.devinfo.deviceInfo?.hostname;
 
-    Promise.all([window.registration_device.get_device_id(), window.registration_device.get_platform(), window.registration_device.get_hostname()])
-    .then(([device_id, device_plat, deivce_hostname]) => {
-        setDeviceUUID(device_id);
-        setPlatform(device_plat);
-        setHostname(deivce_hostname);
-    })
-    
+  
+    const test = async () => {
+        const value = checkDeviceRegistration();
+        value.then((res)=>{
+            setIsReg(res);
+        })
+    }
 
     return (
         <div className="homepage-container">
+            <p>This is a testing Page</p>
             <p>I am the Setting page</p>
             
             <h1>Device information</h1>
@@ -33,6 +36,10 @@ const Setting = () => {
             <p>Account Userid is {localid}</p>
 
             <button onClick={registerDevice} >Register Device.</button>
+
+            <button onClick={test}>Check Status</button>
+
+            <p>{isreg}</p>
         </div>
     )
 }

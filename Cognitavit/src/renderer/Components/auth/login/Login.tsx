@@ -42,10 +42,17 @@ const Login = () => {
             authFailure()
             console.log("Fauilure: " + result);
 
+            //Restore redux state.
             store.dispatch({
                 type: "removeAuth",
                 payload: undefined
             })
+
+            store.dispatch({
+                type: "removeDeviceDetails",
+                payload: undefined
+            })
+
         }else{
             console.log(result);
             store.dispatch({
@@ -59,7 +66,7 @@ const Login = () => {
     }
 
     if(signedIn){
-        return <Navigate to="/dashboard/home" />
+        return <Navigate to="/deviceloader" />
     }
 
     return (
