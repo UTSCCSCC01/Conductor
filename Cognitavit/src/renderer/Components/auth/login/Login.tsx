@@ -1,17 +1,22 @@
 import { useContext, useState } from 'react';
-import { getAuth } from 'renderer/utils/getAuth';
+
 import { Navigate } from 'react-router-dom'; 
-import { AuthContext } from 'renderer/AuthContext';
+
 import { toast } from 'react-toastify';
+
 
 import './Login.css'
 import 'react-toastify/dist/ReactToastify.css';
 import logo from './assets/logo.png'
 
+import { store } from '../../../store/store'
+import { getAuth } from 'renderer/utils/auth/getAuth';
+
 
 const Login = () => {
-    //Global AppStates
-    const [userToken, setUserToken] = useContext(AuthContext)
+
+    //console.log(store);
+    //console.log(store.getState().app_reduce.auth)
 
     //UI related states
     const [email, setEmail] = useState('');
@@ -36,18 +41,32 @@ const Login = () => {
             setError('Incorrect Username or password');
             authFailure()
             console.log("Fauilure: " + result);
-            setUserToken(result);
+
+            //Restore redux state.
+            store.dispatch({
+                type: "removeAuth",
+                payload: undefined
+            })
+
+            store.dispatch({
+                type: "removeDeviceDetails",
+                payload: undefined
+            })
+
         }else{
             console.log(result);
-            setUserToken(result);
-            //Redirect to the dashboard. 
+            store.dispatch({
+                type: "setAuth",
+                payload: result    
+            })
             authSuccess()
+
             setSignedIn(true);    
         }
     }
 
     if(signedIn){
-        return <Navigate to="/dashboard/home" />
+        return <Navigate to="/deviceloader" />
     }
 
     return (

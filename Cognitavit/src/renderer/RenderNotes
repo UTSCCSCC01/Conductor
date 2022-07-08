@@ -1,3 +1,8 @@
 -Instead of using custom global store migrate to redux.
 -Apply Typescript interface, types for axios return values. 
 -Apply TypeScript type for global states if not migrating to redux.
+
+
+2022-07-03
+-Migrated to redux, as there are more global states required across different components. 
+-Added logout component, easier to reset app state.
