@@ -1,0 +1,166 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+
+body{
+    background: #705C8D;
+}
+
+.reg-container {
+
+    margin:0 auto;
+    width: 350px; /* Ratio: 2:3 */
+    height: 645px;
+    background-color: #FFF;
+    filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25));
+    border: 1px solid #DFE0EB;
+    border-radius: 8px;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center
+}
+
+#reg-contain2{
+    height: 700px;
+}
+
+
+.reg-container > .logo{
+    margin-top: 40px;
+}
+
+.reg-container > .login-header{
+    text-align: center;
+}
+
+.previous-page{
+    margin-top: 20px;
+    margin-right: 200px;
+
+    height: 35px;
+    width: 100px;
+    background: #692feb;
+    
+    border: 1px solid #530BF4;
+    border-radius: 12px;
+    text-align: center;
+    color: #FFFFFF;
+    font-style: normal;
+    font-size: 14px;
+    
+}
+
+.previous-page:button:hover{
+    background: #4101CF;
+}
+.previous-page:button:active{
+    background: #240171;
+}
+
+
+.reg-container>.login-header>p {
+    font-family: 'Mulish';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 20px;
+    text-align: center;
+    letter-spacing: 0.3px;
+    color: #9FA2B4;
+}
+
+.reg-container>.login-header>h1 {
+    font-family: 'Mulish';
+    font-style: normal;
+    font-weight: 700;
+    font-size: 24px;
+    line-height: 30px;
+    text-align: center;
+    letter-spacing: 0.3px;
+}
+/* grayscale / black */
+.auth-input-container>p{
+    /* Bold 12 (0.3 px, CAPS) */
+    margin-top: 10px;
+    font-style: normal;
+    font-weight: 700;
+    font-size: 12px;
+    line-height: 15px;
+    letter-spacing: 0.3px;
+    text-transform: uppercase;
+    color: #9FA2B4;
+    padding: 5px;
+}
+
+.auth-input-container>input{
+    /* Bold 12 (0.3 px, CAPS) */
+    padding-left: 10px;
+  
+    width: 275px;
+    height: 42px;
+    border: 1px solid #F0F1F7;
+    border-radius: 8px;
+}
+
+
+
+.auth-button-container>input:focus{
+    background: "red";
+}
+
+.auth-button-container{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    
+}
+
+.auth-button-container>button{
+    margin-top: 32px;
+    background: #530BF4;
+    /* Orchestra Menu */
+    width: 170px;
+    height: 48px;
+    border: 1px solid #530BF4;
+    border-radius: 12px;
+    text-align: center;
+    color: #FFFFFF;
+    font-style: normal;
+    font-size: 14px;
+
+}
+
+.auth-button-container>button:hover{
+    background: #4101CF;
+}
+.auth-button-container>button:active{
+    background: #240171;
+}
+
+.reg-container > .error-code{
+    margin: 0px;
+    color: #D85050;
+}
+
+.login-bk{
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+
+    font-family: 'Mulish';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 20px;
+    text-align: center;
+    letter-spacing: 0.3px;
+    color: #9FA2B4;
+}
+
+.login-bold{
+    color: #6f7287;
+    font-weight: bold;
+}

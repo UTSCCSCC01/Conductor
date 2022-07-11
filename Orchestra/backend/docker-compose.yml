@@ -7,6 +7,8 @@ services:
     environment:
       - FIREBASE_API_KEY=AIzaSyB48jisOlggl4LFKoYSIcm2DhlfjWuRStY
       - FIREBASE_AUTH_ENDPOINT=https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=
+      - FIREBASE_REG_ENDPOINT=https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=
+      - MONGO_DB_URI=mongodb+srv://P1REcH4R8OGficA0:XEEx2aGFa72zfoQL@cluster0.wnx0m.mongodb.net/?retryWrites=true&w=majority
 
   devicelink:
     build: './user-device'
