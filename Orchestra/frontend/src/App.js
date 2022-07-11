@@ -1,4 +1,3 @@
-import logo from './logo.svg';
 import { Route, Routes } from 'react-router-dom';
 import './App.css';
 import 'antd/dist/antd.min.css';
@@ -10,25 +9,38 @@ import TopBar from './components/TopBar/TopBar';
 import DeviceStatusPage from './components/DevicePage/DeviceStatusPage';
 import DeviceListPage from './components/DevicePage/DeviceListPage';
 
-const login = true;
+import {Provider} from 'react-redux';
+import { ToastContainer } from 'react-toastify';
+import Login from './components/auth/login/Login';
+import { Logout } from './components/auth/logout/Logout';
+import  Register  from './components/auth/register/Register';
+
+import PrivateRoute from './components/privateroute/PrivateRoute'
+import Register2 from './components/auth/register/Register2';
+
+import { BrowserRouter } from "react-router-dom";
+
+const login = false;
 
 function App() {
+  let login = true;
   return (
-    <div>
-      {!login 
-        ? <div><NavBarOne /></div> 
-        : <div className="sidebar"><NavBarTwo /></div>
-      }
-      {login && <TopBar />}
-      <div className={!login ? "App-pre" : "App"}>
+    <BrowserRouter>
+        <ToastContainer />
         <Routes>
-          <Route exact path='/' element={<HomePage />} />
-          <Route path='/home' element={<HomePage />} />
-          <Route path='/devices' element={<DeviceStatusPage />} />
-          <Route path='/devices/list' element={<DeviceListPage />} />
+          <Route path="/" element={<Login />} />
+          <Route path="/logout" element={<Logout />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/register/2" element={<Register2 />} />
+          {/*Anything here is only rendered when logged in.*/}
+          <Route path="/dashboard" element={<PrivateRoute/>}>
+            <Route path="/dashboard" element={<div className='dashboard-layout'><NavBarTwo/> <TopBar/> <HomePage /></div>} />
+            <Route path="/dashboard/home" element={<div className='dashboard-layout'><NavBarTwo/> <TopBar/> <HomePage /></div>} />
+            <Route path="/dashboard/devices" element={<div className='dashboard-layout'><NavBarTwo/> <TopBar/> <DeviceStatusPage /></div>} />
+            <Route path="/dashboard/devices/list" element={<div className='dashboard-layout'><NavBarTwo/> <TopBar/> <DeviceListPage /></div>} />
+          </Route>
         </Routes>
-      </div>
-    </div>
+    </BrowserRouter>
   );
 }
 

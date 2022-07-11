@@ -196,7 +196,7 @@ function DeviceRunning() {
                 buttonName1="View Devices" 
                 buttonName2="Add a Device" 
                 onButton={onModal}
-                path='/devices/list'
+                path='/dashboard/devices/list'
             />
             <DeviceTable 
                 tableHeader={deviceRunningHeader} 

@@ -1,3 +1,9 @@
+@import url('https://fonts.googleapis.com/css2?family=Mulish:ital,wght@0,200;0,300;0,400;0,500;0,700;1,200;1,300;1,400;1,500&display=swap');
+
+*{
+  font-family: "Mulish";
+}
+
 .App-pre {
   min-width: 700px;
   width: 100vw;
@@ -5,6 +11,7 @@
   text-align: center;
 }
 
+/*
 .App {
   margin-left: 230px;
   padding: 100px 50px 50px 50px;
@@ -14,9 +21,28 @@
   background-color: #F0F0F0;
   text-align: center;
 }
+*/
+
+body, #root, .dashboard-layout{
+  height: 100vh;
+  width: 100vw;
+  background-color: #F0F0F0;
+  overflow-y: hidden;
+  display: grid;    
+}
+
+.dashboard-layout{
+  grid-template-columns: 230px 6fr;
+  grid-template-areas: 
+    "sidebar  header"
+    "sidebar content"
+    "sidebar  content";
+    grid-template-rows: 140px;
+}
 
 .sidebar {
-  position: absolute;
+  grid-area: sidebar;
+  width: 175px;
   display: flex;
   justify-content: flex-start;
   height: 100vh;

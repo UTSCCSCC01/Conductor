@@ -247,7 +247,7 @@ function DeviceListPage() {
                 <Header
                     lButtonText={<div><LeftOutlined /> Back to Device Status</div>}
                     title="All Devices"
-                    path='/devices'
+                    path='/dashboard/devices'
                 />
                 <DeviceTable 
                     tableHeader={deviceRunningHeader} 
