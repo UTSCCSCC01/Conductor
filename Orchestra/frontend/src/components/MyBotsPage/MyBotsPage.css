@@ -1,5 +1,5 @@
 /* DEVICE STATUS PAGE */
-.device-container {
+.mybots-container {
     margin-left: 50px;
     margin-right: 50px;
     display: flex;
@@ -8,7 +8,7 @@
     height: 100%;
 }
 
-.device-status {
+.mybots-status {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -20,7 +20,7 @@
     box-shadow: 0px 0px 10px #ccc;
 }
 
-.device-status:not(:last-child) {
+.mybots-status:not(:last-child) {
     margin-bottom: 30px;
 }
 
@@ -86,7 +86,7 @@
     height: 100%;
 }
 
-.device-list>.top>.device-table {
+.device-list>.top>.table {
     padding: 20px 40px;
 }
 

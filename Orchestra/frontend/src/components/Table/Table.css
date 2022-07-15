@@ -1,0 +1,87 @@
+/* Device Table */
+.table {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    padding: 0px 20px;
+}
+
+.table.empty {
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    font-size: 17px;
+    color: #111;
+}
+
+.table.empty>svg {
+    margin-right: 5px;
+}
+
+.table>.table-header {
+    display: flex;
+    flex-direction: row;
+    border-bottom: 2px solid #DADADA;
+}
+
+.table .row {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    /* background-color: #ccc; */
+}
+
+.table .row:not(:last-child) {
+    margin-right: 10px;
+}
+
+.table .row.large {
+    width: 30%;
+}
+
+.table .row.medium {
+    width: 25%;
+}
+
+.table .row.small {
+    width: 15%;
+}
+
+.table .row.small.icon {
+    justify-content: flex-end;
+}
+
+.table .row.small>.icon-button:not(:last-child) {
+    margin-right: 5px;
+}
+
+.table .row.small-icon {
+    width: 10%;
+}
+
+.table .row {
+    margin: 5px 0px;
+}
+
+.table .row>p {
+    margin: 0;
+}
+
+.table>.table-body {
+    display: flex;
+    flex-direction: column;
+}
+
+.table>.table-body>.table-body-row {
+    display: flex;
+    flex-direction: row;
+}
+
+.table>.table-body>.table-body-row:not(:last-child) {
+    border-bottom: 1px solid #DADADA;
+}
+
+.table>.table-body>.table-body-row .device-platform {
+    font-size: 1.5em;
+}

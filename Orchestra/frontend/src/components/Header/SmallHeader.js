@@ -10,7 +10,7 @@ function SmallHeader({ title, buttonName1, buttonName2, onButton, path }) {
 
     const onPathButton = () => {
         navigate(path);
-    }
+    };
 
     return (
         <div className="page-header small">

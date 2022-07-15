@@ -1,8 +1,8 @@
 import React from 'react';
-import '../DevicePage.css';
+import './Table.css';
 import { AiFillExclamationCircle } from 'react-icons/ai';
 
-function DeviceTable({ tableHeader, tableBody, isEmpty }) {
+function Table({ tableHeader, tableBody, isEmpty }) {
     // If no devices
     if (isEmpty) {
         return (
@@ -12,7 +12,7 @@ function DeviceTable({ tableHeader, tableBody, isEmpty }) {
         );
     } else {
         return (
-            <div className="device-table">
+            <div className="table">
                 {tableHeader}
                 {tableBody}
             </div>
@@ -20,4 +20,4 @@ function DeviceTable({ tableHeader, tableBody, isEmpty }) {
     }
 }
 
-export default DeviceTable;
+export default Table;
