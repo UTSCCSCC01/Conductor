@@ -22,6 +22,7 @@ If there are **robots** that can perform the desired _function_ and **Orchestra*
 
 ### Database
 Install [MongoDB Community Edition](https://www.mongodb.com/docs/manual/administration/install-community/).
+Install [Docker](https://www.docker.com/get-started/).
 
 ### Front-End
 Use a Node version manager [nvm](https://github.com/nvm-sh/nvm) to install Node.js and npm. `npm` will be used to install and run Orchestra.
@@ -35,6 +36,33 @@ $ npm install
 # Execute react-app
 $ npm start
 ```
+
+### Back-end
+
+Move into '/Orchestra/backend' and insert your own api tokens in the'docker-compose.yml'
+```
+- FIREBASE_API_KEY = <Firebase API KEY>
+- MONGO_DB_URI = <Mongodb URI>
+```
+
+Move into '/Orchestra/backend' and type in the following commands:
+```
+# Creates and run the backend containers.
+$ docker-compose up --build
+```
+
+### Cognitavit Client Application
+
+Move into `/Cognitavit` and type in the following commands:
+
+```
+# Install dependencies
+$ npm install
+
+# Execute electron-app
+$ npm start
+```
+
 
 ## Documentation
 
