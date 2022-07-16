@@ -1,5 +1,5 @@
 .App-pre {
-  min-width: 700px;
+  min-width: 800px;
   width: 100vw;
   height: calc(100vh - 46px);
   text-align: center;
@@ -8,7 +8,7 @@
 .App {
   margin-left: 230px;
   padding: 100px 50px 50px 50px;
-  min-width: 700px;
+  min-width: 800px;
   width: calc(100vw - 230px);
   height: 100vh;
   background-color: #F0F0F0;

@@ -1,4 +1,3 @@
-/* Header */
 .page-header {
     display: flex;
     flex-direction: column;
@@ -25,22 +24,4 @@
 
 .page-header>.header-title>p {
     font-size: 0.8em;
-}
-
-/* Small Header */
-.page-header.small {
-    flex-direction: row;
-    justify-content: space-between;
-    padding: 10px 20px;
-    height: auto;
-    border: none;
-}
-
-.page-header.small>.header-buttons {
-    display: flex;
-    flex-direction: row;
-}
-
-.page-header.small>.header-buttons>.blue-button {
-    margin-right: 10px;
 }
