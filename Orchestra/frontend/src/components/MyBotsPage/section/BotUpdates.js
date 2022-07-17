@@ -4,7 +4,7 @@ import SmallHeader from '../../Header/SmallHeader';
 import Table from '../../Table/Table';
 import StatusButton from '../../Button/StatusButton';
 // Style
-import '../MyBotsPage';
+import '../MyBotsPage.css';
 
 // Sample Data
 const botsData = [
@@ -43,11 +43,11 @@ function BotUpdates() {
     const [BotsData, setBotsData] = useState([]);
 
     useEffect(() => {
-        // Installed bots show at most 5 bots
+        // Update bots show at most 5 bots
         setBotsData(botsData.slice(0, 5));
     }, [botsData]);
 
-    // Device Running Table Header
+    // Bot Updates Table Header
     const installedBotsHeader = <div className="table-header">
         <div className="row medium"><h3>Name</h3></div>
         <div className="row medium"><h3>Current Version</h3></div>
@@ -55,7 +55,7 @@ function BotUpdates() {
         <div className="row small"><h3>Status</h3></div>
     </div>;
 
-    // Installed Bots Table Body
+    // Bot Updates Table Body
     const installedBotsBody = () => {
         const rows = BotsData.map((row, index) => {
             const getNewVersion = () => {
@@ -98,6 +98,7 @@ function BotUpdates() {
                 tableHeader={installedBotsHeader} 
                 tableBody={installedBotsBody()} 
                 isEmpty={BotsData.length === 0} 
+                emptyText="No Bots"
             />
         </div>
     );

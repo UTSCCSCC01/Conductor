@@ -48,6 +48,10 @@
     padding: 10px;
 }
 
+.calendar-module>.ant-picker-calendar .ant-picker-panel .ant-picker-month-panel .ant-picker-content {
+    height: 256px;
+}
+
 .calendar-module>.ant-picker-calendar .ant-picker-panel .ant-picker-body {
     padding: 0;
 }

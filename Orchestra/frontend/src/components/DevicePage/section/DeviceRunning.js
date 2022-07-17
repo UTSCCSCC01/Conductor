@@ -195,6 +195,7 @@ function DeviceRunning() {
                 tableHeader={deviceRunningHeader} 
                 tableBody={deviceRunningBody()} 
                 isEmpty={DeviceData.length === 0} 
+                emptyText="No Devices"
             />
         </div>
     );

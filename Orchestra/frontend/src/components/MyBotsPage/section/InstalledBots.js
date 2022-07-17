@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import SmallHeader from '../../Header/SmallHeader';
 import Table from '../../Table/Table';
 // Style
-import '../MyBotsPage';
+import '../MyBotsPage.css';
 import { Typography } from 'antd';
 import { DiAndroid, DiApple, DiLinux, DiWindows } from 'react-icons/di';
 
@@ -39,11 +39,11 @@ function InstalledBots() {
     const [BotsData, setBotsData] = useState([]);
 
     useEffect(() => {
-        // Installed bots show at most 5 bots
+        // Bot events show at most 5 bots
         setBotsData(botsData.slice(0, 5));
     }, [botsData]);
 
-    // Device Running Table Header
+    // Bot Events Table Header
     const installedBotsHeader = <div className="table-header">
         <div className="row medium"><h3>Name</h3></div>
         <div className="row large"><h3>Description</h3></div>
@@ -97,6 +97,7 @@ function InstalledBots() {
                 tableHeader={installedBotsHeader} 
                 tableBody={installedBotsBody()} 
                 isEmpty={BotsData.length === 0} 
+                emptyText="No Bots"
             />
         </div>
     );

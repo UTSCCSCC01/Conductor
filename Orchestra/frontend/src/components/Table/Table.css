@@ -32,8 +32,16 @@
     /* background-color: #ccc; */
 }
 
+.table .row.flexend {
+    justify-content: center;
+}
+
 .table .row:not(:last-child) {
     margin-right: 10px;
+}
+
+.table .row.extralarge {
+    width: 50%;
 }
 
 .table .row.large {
