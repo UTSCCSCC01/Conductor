@@ -30,6 +30,10 @@ function NavBarTwo() {
                 <ShopFilled />
                 <p>Marketplace</p>
             </a>
+            <a href='/dashboard/upload' className={window.location.pathname === '/upload' ? "selected" : undefined}>
+                <ShopFilled />
+                <p>Upload</p>
+            </a>
             <a href='/dashboard/builder' className={window.location.pathname === '/builder' ? "selected" : undefined}>
                 <RobotFilled />
                 <p>Bot Builder</p>

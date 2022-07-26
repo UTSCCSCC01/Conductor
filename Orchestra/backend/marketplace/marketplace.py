@@ -1,0 +1,122 @@
+from flask import Flask
+from flask import request
+from flask_cors import CORS
+import os
+import uuid
+import ibm_boto3
+import sys
+from ibm_botocore.client import Config, ClientError
+from werkzeug.utils import secure_filename
+import pymongo
+from pymongo import MongoClient
+
+cluster = MongoClient("mongodb+srv://marketplace:marketplace@cluster18630.3wlh3.mongodb.net/?retryWrites=true&w=majority")
+db = cluster["marketplace"]
+collection = db["bots"]
+
+app = Flask(__name__)
+CORS(app)
+
+config = {
+    "apikey": "_Z8L-OX6qYySkHozSrzOALgyTYLzqjbL0K6zYcZNR2dE",
+    "endpoints": "https://s3.us-east.cloud-object-storage.appdomain.cloud",
+    "iam_apikey_description": "Auto-generated for key crn:v1:bluemix:public:cloud-object-storage:global:a/02c1628a91ee4acb9bf7eac5136647df:e5b80be6-b9e3-4506-a03c-8ec116f1bd51:resource-key:08bae43f-d99d-4720-8746-e12f9b1b3d58",
+    "iam_apikey_name": "orchestra-store-microservice",
+    "iam_role_crn": "crn:v1:bluemix:public:iam::::serviceRole:Writer",
+    "iam_serviceid_crn": "crn:v1:bluemix:public:iam-identity::a/02c1628a91ee4acb9bf7eac5136647df::serviceid:ServiceId-ed655772-d31a-43f2-bdd1-aa79b8d24ce8",
+    "resource_instance_id": "crn:v1:bluemix:public:cloud-object-storage:global:a/02c1628a91ee4acb9bf7eac5136647df:e5b80be6-b9e3-4506-a03c-8ec116f1bd51::"
+}
+
+
+cos = ibm_boto3.resource("s3",
+    ibm_api_key_id=config["apikey"],
+    ibm_service_instance_id="e5b80be6-b9e3-4506-a03c-8ec116f1bd51",
+    config=Config(signature_version="oauth"),
+    endpoint_url=config["endpoints"]
+)
+
+BUCKET_NAME = "orchestra-store-microservice"
+
+def upload_file(bucket_name, item_name, file_path):
+    try:
+        print("Starting file transfer for {0} to bucket: {1}\n".format(item_name, bucket_name))
+        # set 5 MB chunks
+        part_size = 1024 * 1024 * 5
+
+        # set threadhold to 15 MB
+        file_threshold = 1024 * 1024 * 15
+
+        # set the transfer threshold and chunk size
+        transfer_config = ibm_boto3.s3.transfer.TransferConfig(
+            multipart_threshold=file_threshold,
+            multipart_chunksize=part_size
+        )
+
+        # the upload_fileobj method will automatically execute a multi-part upload
+        # in 5 MB chunks for all files over 15 MB
+        with open(file_path, "rb") as file_data:
+            cos.Object(bucket_name, item_name).upload_fileobj(
+                Fileobj=file_data,
+                Config=transfer_config
+            )
+
+        print("Transfer for {0} Complete!\n".format(item_name))
+    except ClientError as be:
+        print("CLIENT ERROR: {0}\n".format(be))
+    except Exception as e:
+        print("Unable to complete multi-part upload: {0}".format(e))
+
+
+def return_uploaded_file_names(bucket_name, enable_debug=0):
+    if(enable_debug):
+        print("Retrieving bucket contents from: {0}".format(bucket_name))
+    file_names = []
+    try:
+        files = cos.Bucket(bucket_name).objects.all()
+        for file in files:
+            file_names.append(file.key)
+            if(enable_debug):
+                print("Item: {0} ({1} bytes).".format(file.key, file.size))
+    except ClientError as be:
+        print("CLIENT ERROR: {0}\n".format(be))
+    except Exception as e:
+        print("Unable to retrieve bucket contents: {0}".format(e))
+    return file_names
+
+
+def delete_item(bucket_name, object_name):
+    try:
+        cos.delete_object(Bucket=bucket_name, Key=object_name)
+        print("Item: {0} deleted!\n".format(object_name))
+    except ClientError as be:
+        print("CLIENT ERROR: {0}\n".format(be))
+    except Exception as e:
+        print("Unable to delete object: {0}".format(e))
+
+@app.route('/upload', methods=["POST"])
+def upload():
+    buid = str(uuid.uuid4())
+    name = request.form.get('name')
+    description = request.form.get('description')
+    platform = request.form.get('platform')
+
+    """ For debugging """
+    original_stdout = sys.stdout
+    with open(name + 'metadata', 'w') as f:
+        sys.stdout = f 
+        print(buid)
+        print(name)
+        print(description)
+        print(platform)
+        sys.stdout = original_stdout
+    
+    collection.insert_one({"buid": buid, "name": name, "description": description, "platform": platform})
+    file = request.files['file']
+    if file.filename == "":
+        return "<p>Upload failed</p>"
+    else:
+        filename = secure_filename(file.filename)
+        file.save(filename)
+        upload_file(BUCKET_NAME, buid, filename)
+    
+    return "<p>Upload successful</p>"

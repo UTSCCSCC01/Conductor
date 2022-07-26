@@ -1,0 +1,52 @@
+.upload-bot {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+    min-width: 850px;
+
+    margin-left: 50px;
+    margin-right: 50px;
+    
+    height: 100%;
+    background-color: #fff;
+    box-shadow: 0px 0px 10px #ccc;
+}
+
+.upload-bot .header-title {
+    justify-content: center;
+}
+
+.upload-bot>.upload-form {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    width: 360px !important;
+    height: 100%;
+    margin-bottom: 20px;
+}
+
+.upload-bot>.upload-form p {
+    margin-bottom: 5px;
+}
+
+.upload-bot>.upload-form p:not(:first-child) {
+    margin-top: 20px;
+}
+
+.upload-bot>.upload-form .upload-bot-input.ant-input,
+.upload-bot>.upload-form .upload-bot-input.ant-select {
+    border: 1px solid #F0F1F7;
+    border-radius: 5px;
+    text-align: left;
+    background-color: #FCFDFE;
+}
+
+.upload-bot>.upload-form .upload-bot-input.ant-input.ant-input-status-error {
+    border-color: #FF4D4F;
+}
+
+.upload-bot .blue-button {
+    margin: 0 0 20px 0;
+}
