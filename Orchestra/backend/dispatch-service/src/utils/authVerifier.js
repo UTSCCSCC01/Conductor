@@ -29,6 +29,7 @@ async function auth_verify(payload){
             return_payload = response["data"];
         }
      }).catch(error => {
+        console.log(error.data);
         console.log("Failure connecting to google identityplatform");
       if (error.response) {
         // The request was made and the server responded with a status code

@@ -22,7 +22,7 @@ const {
     Server
 } = require("socket.io");
 
-const io = new Server(server);
+const io = new Server(server, { path: '/dispatch'});
 io.on('connection', connected);
 
 
@@ -180,6 +180,9 @@ app.post('/dispatch/refresh-applet-list', async (req, res) => {
     }
     return;
 })
+
+app.get('/dispatch/entry');
+
 /*
     request:
         -device_id
