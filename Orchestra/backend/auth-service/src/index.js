@@ -2,7 +2,7 @@ const express = require('express')
 const axios = require('axios')
 const cors = require('cors')
 
-const { FIREBASE_AUTH_ENDPOINT, FIREBASE_REG_ENDPOINT, MONGO_DB_URI } = require("./config/config");
+const { FIREBASE_AUTH_ENDPOINT, FIREBASE_REG_ENDPOINT, MONGO_DB_URI, FIREBASE_VERIFY_ENDPOINT} = require("./config/config");
 const { UserProfile } = require('../model/UserProfile');
 const mongoose = require('mongoose');
 
@@ -84,11 +84,73 @@ app.post('/auth',(req, res) => {
 /* Implement verification of JSON Web Tokens.
 Idea: Use the firebase-admin-sdk. Take a post request from the client with the tokenid. tokenid is a simple json web token
 Note: Perhaps we reduce dependency on this microservice, and have all microservices use firebase-sdk on its own.
+
+Rejected: can only use firebase-sdk if the tokens themselves are generated using firebase-sdk. These tokens are generated
+via identitiyplatform.
 */
 app.post('/verify-token', (req,res) => {
-  res.send("To be implemented? " + process.env.FIREBASE_AUTH_ENDPOINT + " current: " + FIREBASE_AUTH_ENDPOINT )
+   let idToken;
+   try{
+       idToken = req.body["idToken"]
+   }catch{
+      console.log("Invalid body", req.body);
+      res.status(400).json({
+         auth: false,
+         localId: null,
+         message: "Valid token id"
+      })
+      return;
+   }
+   console.log("idToken:", idToken);
+   /*Future: You need to compare the date from epoche to see if its valuid.*/
+   const auth_req = axios.post(FIREBASE_VERIFY_ENDPOINT, {idToken: idToken}).then(response => {
+      
+      if ("data" in response) {
+         try{
+            const id_fire = response["data"]["users"][0]["localId"];
+            console.log("Success!", id_fire);
+            res.status(200).json({
+               auth: true,
+               localId: id_fire,
+               message: "Valid token id"
+            })
+         }catch{
+            res.status(200).json({
+               auth: false,
+               localId: null,
+               message: "malformed response from firebase api."
+            });
+         }
+      }
+   }).catch(error => {
+    if (error.response) {
+      // The request was made and the server responded with a status code
+      // that falls out of the range of 2xx
+      console.log(error.response)
+      res.status(400).json({
+         auth: false,
+         localId: null,
+         message: "Invalid token"
+      });
+    } else if (error.request) {
+      // The request was made but no response was received
+      // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
+      // http.ClientRequest in node.js
+      res.status(400).json({
+         auth: false,
+         localId: null,
+         message: "No response fore identitytoolkit"
+      });
+    } else {
+      // Something happened in setting up the request that triggered an Error
+      res.status(400).json({
+         auth: false,
+         localId: null,
+         message: "Internal server error. Issue with setting up the request."
+      });
+    }
+   })
 })
-
 
 /* Register user account. First adds user to the firebase auth database using firebases rest api. We 
    then add the user information in the userprofile database. 

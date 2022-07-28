@@ -7,7 +7,7 @@ const { AUTH_VERIFY_ENDPOINT } = require('../config/config')
     message: "message from the backend"
 */
 
-failure_payload_no_contact = {
+const failure_payload_no_contact = {
     auth: false,
     localId: null,
     message: "not valid token"

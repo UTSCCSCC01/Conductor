@@ -1,10 +1,10 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { Navigate } from 'react-router-dom'; 
+import { Navigate, useNavigate } from 'react-router-dom'; 
 import { toast } from 'react-toastify';
 
 import 'react-toastify/dist/ReactToastify.css';
 import logo from './assets/logo.png'
-import { getAuth } from 'renderer/utils/auth/getAuth';
+import { getAuth, verifyAuth } from 'renderer/utils/auth/getAuth';
 import { store } from 'renderer/store/store';
 
 import { BarLoader } from 'react-spinners';
@@ -13,14 +13,43 @@ import { get_device_id } from 'main/utils/deviceinfo/deviceInfo';
 
 import { checkDeviceRegistration, registerDevice } from "renderer/utils/deviceRegister/deviceReg";
 
+import {sessionStorage_save, sessionStorage_get} from '../../utils/webstorage/storage'
 
 
 const DeviceLoader = () => {
+
+    /* 
+        Device Loader States:
+        Stage 0: Entry point to device loader is if the user logins, or page is refreshed.
+        Regardless of entry point, we have that sessionstorage auth != undefine or != null.
+
+        Stage 1: Clear redux state, send sigkill to python executor if applicable, clear main process state. 
+        Stage 2: Pull auth state from session storage, and verify it using verifyAuth. If good proceed to Stage 2,
+        o/w clear sessionstorage state and return to login page. 
+
+        Stage 3: Save auth keys into redux store, pull device information and save into redux store. 
+        Stage 4: send signal to main via ipc to start python executor
+
+        Stage 5: send ipc signal to main to start socket connection with orchestra dispatcher
+
+        Stage 6: send ipc signal to main which sends ipc signal to python to get list of apps/custom bin and send back.
+        Stage 7: send post request to deviceinfo-aggregator with list of apps/custom bin installed
+
+        Stage 8: Pull device information. 
+
+        <inject future stage/feature loading> 
+        
+        Stage Final: redirect to dashboard
+    
+    */
+
+    const navigator = useNavigate();
+
+
     const [deviceInfoLoaded, setDeviceInfoLoaded] = useState(false); 
     const [deviceProfileLoaded, setdeviceProfileLoaded] = useState(false); 
     const [message, setMessage] = useState("Preloader Started.")
     const [preloaderState, setPreloaderState] = useState(0);
-
     const [finishDeviceLoader, setFinishDeviceLoader] = useState(false);  
 
     //Executes all our loaders. 
@@ -82,10 +111,29 @@ const DeviceLoader = () => {
         })
     }
     
+    const verify_state_tokens = async () => {
+        const token = sessionStorage_get("auth");
+        if(token == null || token == undefined || token == ""){
+            toast.error("INVALID AUTH TOKENS IN SESSION STORAGE");
+            navigator("/");
+            return;
+        }
+
+        //Check validity of auth tokens.
+        let result = await verifyAuth(token);
+
+        if(result == undefined || result == null){
+            console.log("verifyAuth returned null??.");
+            return false;   
+        }
+
+        return result.auth; 
+    }
     
-    useEffect(() => {
+    /* Reads the device information and store in the redux store*/
+    const device_loader_entry = () => {
         //Preloader: Read device information, and store in redux store.
-        setMessage("Reading Device Information")
+        setMessage("Reading Device Information");
         Promise.all([window.registration_device.get_device_id(), window.registration_device.get_platform(), window.registration_device.get_hostname()])
             .then(([device_id, device_plat, device_hostname]) => {
             store.dispatch({
@@ -100,11 +148,50 @@ const DeviceLoader = () => {
             //execute the bootstrap_loader
             bootstrap_loader(preloaderState);
         });
+    }
+
+    
+
+    useEffect(() => {
+        //Clears the redux store, and terminate any executors via sigkill. 
+        toast.info("Clearing app state");
+        setMessage("performing init state");
+        store.dispatch({
+            type: "removeAuth",
+            payload: undefined
+        })
+
+        store.dispatch({
+            type: "removeDeviceDetails",
+            payload: undefined
+        })
+
+        toast.info("Verifying authentication tokens");
+        setTimeout( () =>{
+            let result = verify_state_tokens().then((auth_validity:any) => {
+                if(!auth_validity){
+                    //Remove the auth keys
+                    toast.error("Authentication tokens in session storage expired or invalid");
+                    sessionStorage_save("auth", undefined);
+                    navigator("/");
+                }else{
+                    toast.success("Auth tokens are valid and has been stored in redux store");
+                    let token_final = sessionStorage_get("auth");
+                    store.dispatch({
+                        type: "setAuth",
+                        payload: token_final
+                    });
+                    device_loader_entry();
+                }
+
+            })
+        }, 3000);
     },[]);
 
 
     if(finishDeviceLoader){
-        return <Navigate to="/dashboard/home"/>
+        navigator("/dashboard/home");
+        //return <Navigate to="/dashboard/home"/>
     }
 
     return (

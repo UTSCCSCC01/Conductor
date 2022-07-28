@@ -12,6 +12,9 @@ import logo from './assets/logo.png'
 import { store } from '../../../store/store'
 import { getAuth } from 'renderer/utils/auth/getAuth';
 
+import {sessionStorage_save, sessionStorage_get} from '../../../utils/webstorage/storage';
+
+
 
 const Login = () => {
 
@@ -42,7 +45,6 @@ const Login = () => {
             authFailure()
             console.log("Fauilure: " + result);
 
-            //Restore redux state.
             store.dispatch({
                 type: "removeAuth",
                 payload: undefined
@@ -55,17 +57,14 @@ const Login = () => {
 
         }else{
             console.log(result);
-            store.dispatch({
-                type: "setAuth",
-                payload: result    
-            })
-            authSuccess()
-
+            sessionStorage_save("auth", result);
+            authSuccess(); //set the toast notification
             setSignedIn(true);    
         }
     }
 
-    if(signedIn){
+    //when page gets refreshed/or logged in via rerender
+    if(signedIn || sessionStorage_get("auth") != undefined){
         return <Navigate to="/deviceloader" />
     }
 
