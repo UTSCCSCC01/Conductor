@@ -12,7 +12,10 @@ from pymongo import MongoClient
 
 cluster = MongoClient("mongodb+srv://marketplace:marketplace@cluster18630.3wlh3.mongodb.net/?retryWrites=true&w=majority")
 db = cluster["marketplace"]
-collection = db["bots"]
+bot_collection = db["bots"]
+review_collection = db["reviews"]
+
+dl_link = "https://orchestra-store-microservice.s3.us-east.cloud-object-storage.appdomain.cloud/"
 
 app = Flask(__name__)
 CORS(app)
@@ -109,14 +112,36 @@ def upload():
         print(description)
         print(platform)
         sys.stdout = original_stdout
+
+    dl_link = "https://orchestra-store-microservice.s3.us-east.cloud-object-storage.appdomain.cloud/"
     
-    collection.insert_one({"buid": buid, "name": name, "description": description, "platform": platform})
     file = request.files['file']
     if file.filename == "":
         return "<p>Upload failed</p>"
     else:
         filename = secure_filename(file.filename)
         file.save(filename)
-        upload_file(BUCKET_NAME, buid, filename)
+        upload_file(BUCKET_NAME, buid+filename, filename)
+
+    bot_collection.insert_one({"buid": buid, "name": name, "description": description, "platform": platform, "og_filename" : filename, "url": dl_link + buid+filename})
     
     return "<p>Upload successful</p>"
+
+@app.route('/reviews/<buid>', methods=["GET"])
+def reviews(buid):
+    search_results = list(review_collection.find({"buid" : buid}, {"_id" : 0, "buid" : 0}))
+    results = {"results" : search_results}
+    return results
+
+@app.route('/reviews/submit', methods=["POST"])
+def submit_review():
+    content = request.get_json(force=True)
+    buid = content["buid"]
+    username = content["username"]
+    comments = content["comments"]
+    rating = content["rating"]
+    review_collection.insert_one({"buid": buid, "username": username, "comments": comments, "rating": rating})
+    return "<p>review submitted</p>"
+    
+    
+    
