@@ -15,6 +15,9 @@ import log from 'electron-log';
 import { resolveHtmlPath } from './util';
 import { get_device_id, get_device_hostname, get_platform } from './utils/deviceinfo/deviceInfo';
 
+import { orchestraSocket } from './sockets/orcherstraSocket/orchestraSocket'
+
+
 //import {get_device_id, get_platform} from './utils/deviceinfo/deviceinfo'
 
 
@@ -120,6 +123,13 @@ const createWindow = async () => {
  * Add event listeners...
  */
 
+
+/**
+ * Create a dispatcher socket object. 
+ */
+
+ const dispatcher_socket = orchestraSocket.getInstance();
+
 app.on('window-all-closed', () => {
     // Respect the OSX convention of having the application in memory even
     // after all windows have been closed
@@ -141,7 +151,6 @@ app.whenReady()
 
 //Handles
 //get_device_id, get_platform
-
 ipcMain.handle("get_device_id", async (event, args) => {
     let device_id = get_device_id();
     return device_id;
@@ -159,6 +168,77 @@ ipcMain.handle("get_hostname", async (event, args) => {
 });
 
 
+
+//------------------------------------------------------------------//
+ipcMain.handle("start_socket", async (event, auth_tokens) => {
+    
+    if(!auth_tokens){ return false;}
+
+    let machine_payload = await get_device_id()
+    //Generate payload
+    let payload = {
+        machine_id: machine_payload,
+        auth_token: auth_tokens
+    }
+    console.log(payload);
+
+    //Start the socket connection
+    dispatcher_socket.start(payload);
+    console.log("Socket has been init");
+    return true;
+});
+
+ipcMain.handle("destroy_socket", async (event, args) => {
+    //Destroy the socket
+    console.log("Socket has been destroyed");
+    dispatcher_socket.resetConfigs();
+    return true;
+});
+
+ipcMain.handle("start_executor", async (event, args) => {
+    //to be implemented later
+    let hostname_dev = get_device_hostname();
+    return hostname_dev;
+});
+    //to be implemented later.
+ipcMain.handle("destroy_executor", async (event, args) => {
+    dispatcher_socket.resetConfigs();
+
+});
+
+//-----------------------------------------------------------------//
+
+/**
+ * init_socket: (auth_token: AuthenticationToken) => ipcRenderer.invoke("start_socket", auth_token),
+    destroy_socket: () => ipcRenderer.invoke("destroy_socket"),
+    init_exec: (auth_token: AuthenticationToken) => ipcRenderer.invoke("start_executor", auth_token),
+    destroy_exec: () => ipcRenderer.invoke("destroy_executor"),
+ */
+
+
+
+
+
+
+//Handles for executor.py
+
+/* 
+    These are all routes in the exector.py file
+    Getters
+
+    1. get_app_list -> returns a list applications running, and list of custom binaries
+    2. get_store_list -> returns a list of installed orchestra web applications [BOTS]
+    3. get_status_exec -> returns true [if anything else then python executors not running]
+
+    Execution fxns
+    1. execute_app(event) -> executes a event, and sends a status report to the status-aggregator microservice
+    2. uninstall_app(event): remove shortcut + any leftover binaries. 
+    2. refresh_bot_list(event) -> get list of bots from user-device, compare with internal, and install. (install means adding a shortcut to /cognitavit/userid/storeapps/<shortcut>) 
+    3. refresh_appList(event) -> gets list of applications/custom binaries and send a update to orchestra user-device service with new list of apps installed + binaries
+    4. execute_app(name) -> executes a app.
+ 
+
+*/
 
 
 

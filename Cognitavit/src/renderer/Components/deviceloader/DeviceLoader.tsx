@@ -14,6 +14,7 @@ import { get_device_id } from 'main/utils/deviceinfo/deviceInfo';
 import { checkDeviceRegistration, registerDevice } from "renderer/utils/deviceRegister/deviceReg";
 
 import {sessionStorage_save, sessionStorage_get} from '../../utils/webstorage/storage'
+import { windowsStore } from 'process';
 
 
 const DeviceLoader = () => {
@@ -66,6 +67,9 @@ const DeviceLoader = () => {
                 case 0:
                     device_register();
                     break;
+                case 1:
+                    init_ipc_subsystems();
+                    break;
                 default:
                     setFinishDeviceLoader(true);
                     break;
@@ -109,6 +113,31 @@ const DeviceLoader = () => {
             }
             bootstrap_loader(preloaderState+1); //state variables are updated upon rerender.
         })
+    }
+
+    let init_ipc_subsystems = () => {
+        //precondition: user is authenticated, with valid tokens
+        let value = window.exec_calls.init_socket(sessionStorage_get("auth"));
+        toast.promise(value,{
+            pending: "INITIALIZING SOCKET CONNECTION",
+            error: "CONNECTION FAILURE",
+            success: "CONNECTED"
+        })
+
+        //Check
+        /**
+         * value.then() :TODO FUTURE
+         * 
+         */
+
+        console.log("Status connection: FINISHED");
+        setPreloaderState(preloaderState+2);
+
+        //TODO: 
+        //Init flask-python ipc for executing/getting.s
+
+        bootstrap_loader(preloaderState+2); //state variables are updated upon rerender.
+
     }
     
     const verify_state_tokens = async () => {

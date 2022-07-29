@@ -22,7 +22,8 @@ const {
     Server
 } = require("socket.io");
 
-const io = new Server(server, { path: '/dispatch'});
+const io = new Server(server, { path: '/entry'});
+//io = new Server(server);
 io.on('connection', connected);
 
 
@@ -283,17 +284,18 @@ async function connected(socket, data) {
         //console.log("auth result from init connect: " , result);
 
         //Check Auth
-        if (result.auth == false) {
+        if (result.auth == false || !(typeof callback == 'function')) {
             socket.disconnect();
         } else {
             register_device(result.localId, payload.machine_id, socket.id)
             callback({
-                status: "message was acknowledged"
+                status: true
             })
 
             let auth_payload = {
                 message: "Authentication was success"
             }
+
             payload_bus_stream(payload.machine_id, result.localId, auth_payload, "auth-result");
         }
     })

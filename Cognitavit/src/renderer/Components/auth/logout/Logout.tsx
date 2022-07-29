@@ -11,6 +11,7 @@ const Logout = () => {
     })
 
     sessionStorage_save("auth", undefined);
+    window.exec_calls.destroy_socket();
     
     return <Navigate to="/" />
 }

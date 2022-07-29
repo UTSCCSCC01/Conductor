@@ -1,4 +1,5 @@
 import { contextBridge, ipcRenderer, IpcRendererEvent } from 'electron';
+import { AuthenticationToken } from '../main/types'
 
 export type Channels = 'ipc-example';
 
@@ -33,4 +34,12 @@ contextBridge.exposeInMainWorld("registration_device", {
     //Api calls involving internal os api calls should be allowed for api.
     //check_device_registration: () => ipcRenderer.invoke("registration_check"),
    // register_device: () => ipcRenderer.invoke("register_device"),
+});
+
+//IPC calls for starting the 
+contextBridge.exposeInMainWorld("exec_calls", {
+    init_socket: (auth_token: AuthenticationToken) => ipcRenderer.invoke("start_socket", auth_token),
+    destroy_socket: () => ipcRenderer.invoke("destroy_socket"),
+    init_exec: (auth_token: AuthenticationToken) => ipcRenderer.invoke("start_executor", auth_token),
+    destroy_exec: () => ipcRenderer.invoke("destroy_executor"),
 });

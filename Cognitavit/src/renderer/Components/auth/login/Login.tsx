@@ -1,4 +1,4 @@
-import { useContext, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 
 import { Navigate } from 'react-router-dom'; 
 
@@ -17,10 +17,9 @@ import {sessionStorage_save, sessionStorage_get} from '../../../utils/webstorage
 
 
 const Login = () => {
-
+    
     //console.log(store);
     //console.log(store.getState().app_reduce.auth)
-
     //UI related states
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -62,6 +61,10 @@ const Login = () => {
             setSignedIn(true);    
         }
     }
+    
+    useEffect(() => {
+        window.exec_calls.destroy_socket();
+    },[])
 
     //when page gets refreshed/or logged in via rerender
     if(signedIn || sessionStorage_get("auth") != undefined){

@@ -1,4 +1,5 @@
 import { Channels } from 'main/preload';
+import { AuthenticationToken } from './types';
 
 declare global {
     interface Window {
@@ -18,6 +19,19 @@ declare global {
             get_platform(): Promise<any>;
             get_hostname(): Promise<any>;
         }
+
+        
+        //Load authentication keys to main
+
+        exec_calls: {
+            init_socket: (auth_token: AuthenticationToken) => Promise<any>,
+            destroy_socket: () => Promise<any>,
+            init_exec: (auth_token: AuthenticationToken) => Promise<any>,
+            destroy_exec: () => Promise<any>,
+        }
+
+ 
+
 
     }
 }
