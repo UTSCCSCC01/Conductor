@@ -17,6 +17,7 @@ node_modules
 
 __pycache__
 venv
+.venv
 
 # OSX
 .DS_Store
