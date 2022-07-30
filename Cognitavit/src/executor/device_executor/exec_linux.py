@@ -68,7 +68,10 @@ class LinuxExecutor(Executor):
             return -2
 
 
-
+    def execute(self, name:str, params:str) ->None:
+        '''Wrapper for native_exec, user does not pass in exec_app_list, but instead the fxn 
+        will generate using one of its built in functions'''
+        pass
 
 
     def bot_exec(self, params) -> None:
