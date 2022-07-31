@@ -37,7 +37,7 @@ body, #root, .dashboard-layout{
     "sidebar  header"
     "sidebar content"
     "sidebar  content";
-    grid-template-rows: 140px;
+    grid-template-rows: 130px;
 }
 
 .sidebar {
