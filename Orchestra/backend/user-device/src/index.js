@@ -80,11 +80,11 @@ app.post('/api/devices/addDevice', (req, res) => {
         bots: [],
         created: Date.now(),
         status: true,
-        //User provided payload.
+        // User provided payload.
         deviceId: (req.body.deviceId).trim(),
         description: req.body.description.trim(),
         platform: req.body.platform.trim(),
-        name: req_userId,
+        name: req.body.name,
         userId: req_userId,          
     }
     //Verify if the generate payload matches Device

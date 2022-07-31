@@ -17,6 +17,13 @@ services:
     environment:
       - MONGO_DB_URI=mongodb+srv://P1REcH4R8OGficA0:XEEx2aGFa72zfoQL@cluster0.wnx0m.mongodb.net/?retryWrites=true&w=majority
 
+  eventbuilderlink:
+    build: './event-builder'
+    ports:
+      - "3004:3008"
+    environment:
+      - MONGO_DB_URI=mongodb+srv://P1REcH4R8OGficA0:XEEx2aGFa72zfoQL@cluster0.wnx0m.mongodb.net/?retryWrites=true&w=majority
+
   nginx:
     image: nginx:latest
     ports:
@@ -26,3 +33,4 @@ services:
     depends_on:
       - auth
       - devicelink
+      - eventbuilderlink
