@@ -19,14 +19,29 @@ services:
     environment:
       - MONGO_DB_URI=mongodb+srv://P1REcH4R8OGficA0:XEEx2aGFa72zfoQL@cluster0.wnx0m.mongodb.net/?retryWrites=true&w=majority
 
+  predicateserves:
+    container_name: predicatemicroservice
+    build:
+      context: ./predicatemicroservice
+      dockerfile: Dockerfile
+    ports:
+      - "3004:3014"
+    external_links:
+      - mongo
+    depends_on:
+      - mongo
+     
   dispatch-service:
       container_name: dispatch-service
       build: './dispatch-service'
       ports:
-        - "3004:3000"
-
-
-
+        - "3005:3000"
+        
+  mongo:
+    container_name: mongo
+    image: mongo
+    ports:
+      - "27017:27017"
 
   nginx:
     image: nginx:latest
@@ -39,4 +54,5 @@ services:
       - auth
       - devicelink
       - dispatch_service
+      - predicateserves
 
