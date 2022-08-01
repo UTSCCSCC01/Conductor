@@ -1,6 +1,7 @@
 version: '3'
 services:
   auth:
+    container_name: auth
     build: './auth-service'
     ports:
       - "3002:3000"
@@ -11,6 +12,7 @@ services:
       - MONGO_DB_URI=mongodb+srv://P1REcH4R8OGficA0:XEEx2aGFa72zfoQL@cluster0.wnx0m.mongodb.net/?retryWrites=true&w=majority
 
   devicelink:
+    container_name: devicelink
     build: './user-device'
     ports:
       - "3003:3007"
@@ -28,6 +30,13 @@ services:
       - mongo
     depends_on:
       - mongo
+     
+  dispatch-service:
+      container_name: dispatch-service
+      build: './dispatch-service'
+      ports:
+        - "3005:3000"
+        
   mongo:
     container_name: mongo
     image: mongo
@@ -36,6 +45,7 @@ services:
 
   nginx:
     image: nginx:latest
+    container_name: nginx
     ports:
       - "8080:8080"
     volumes:
@@ -43,4 +53,6 @@ services:
     depends_on:
       - auth
       - devicelink
+      - dispatch_service
       - predicateserves
+

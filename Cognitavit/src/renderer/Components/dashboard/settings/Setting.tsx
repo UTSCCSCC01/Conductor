@@ -1,3 +1,4 @@
+import { windowsStore } from "process";
 import { useState } from "react";
 import { store } from "renderer/store/store";
 
@@ -9,6 +10,7 @@ const Setting = () => {
 
 
     const [isreg, setIsReg] = useState("Loading")
+    const [applist, setAppList] = useState("No Apps installedd") //Remove later
 
     const authToken = store.getState().app_reduce.auth;
     const localid = authToken.auth_token?.localId
@@ -22,6 +24,13 @@ const Setting = () => {
         value.then((res)=>{
             setIsReg(res);
         })
+
+        const applist = window.exec_calls.proc_bus(["enviroment", ""])
+        applist.then((res) => {
+            console.log(res);
+            setAppList(res);
+        })
+
     }
 
     return (
@@ -40,6 +49,7 @@ const Setting = () => {
             <button onClick={test}>Check Status</button>
 
             <p>{isreg}</p>
+            <p>{JSON.stringify(applist)}</p>
         </div>
     )
 }

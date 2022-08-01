@@ -9,6 +9,7 @@ from typing import Tuple
 import subprocess, os, json
 
 from os import path as os_path
+from xmlrpc.client import boolean
 from AppStatus import  AppStatus
 
 from device_executor.exec import Executor
@@ -148,7 +149,17 @@ class WinExecutor(Executor):
         except Exception as e:
             return -2
 
-    
+    def execute(self, name:str, params:str) ->boolean:
+        '''Wrapper for native_exec, user does not pass in exec_app_list, but instead the fxn 
+        will generate using one of its built in functions'''
+        applist = self.read_native_app_list()
+        try:
+            self.native_exec(name, params, applist, APPLICATION_LIST)
+        except:
+            return False
+        
+        return True
+
 
        
 

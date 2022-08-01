@@ -2,8 +2,11 @@ import { useContext } from 'react';
 import {Route, Navigate, Outlet} from 'react-router-dom'
 import { store } from '../../store/store'
 
+import {sessionStorage_save, sessionStorage_get} from '../../utils/webstorage/storage';
+
+
 const PrivateRoute = () =>{
-    const authToken = store.getState().app_reduce.auth
+    const authToken = sessionStorage_get('auth');
     console.log("Inside Private Route Determiner")
     console.log(authToken)
     if(authToken == undefined) { //If not authenticated

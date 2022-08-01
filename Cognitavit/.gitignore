@@ -17,9 +17,13 @@ node_modules
 
 __pycache__
 venv
+.venv
 
 # OSX
 .DS_Store
+
+build/
+dist/
 
 release/app/dist
 release/build
