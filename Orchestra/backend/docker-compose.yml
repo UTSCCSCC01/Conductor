@@ -53,6 +53,6 @@ services:
     depends_on:
       - auth
       - devicelink
-      - dispatch_service
+      - dispatch-service
       - predicateserves
 
