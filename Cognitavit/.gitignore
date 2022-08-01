@@ -22,6 +22,9 @@ venv
 # OSX
 .DS_Store
 
+build/
+dist/
+
 release/app/dist
 release/build
 .erb/dll

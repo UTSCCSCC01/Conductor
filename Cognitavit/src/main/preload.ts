@@ -40,6 +40,7 @@ contextBridge.exposeInMainWorld("registration_device", {
 contextBridge.exposeInMainWorld("exec_calls", {
     init_socket: (auth_token: AuthenticationToken) => ipcRenderer.invoke("start_socket", auth_token),
     destroy_socket: () => ipcRenderer.invoke("destroy_socket"),
-    init_exec: (auth_token: AuthenticationToken) => ipcRenderer.invoke("start_executor", auth_token),
-    destroy_exec: () => ipcRenderer.invoke("destroy_executor"),
+
+    //Used to communicate to the trigger applicaion
+    proc_bus: (request: any) => ipcRenderer.invoke("proc_bus", request)
 });

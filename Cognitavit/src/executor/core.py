@@ -21,26 +21,75 @@ You may assume that you are already inside the userid/ folder
 
 '''
 
+from platform import platform
 from flask import Flask, request, jsonify
+from flask_socketio import SocketIO, emit
+
+import json, os, signal
+
+from engineio.async_drivers import threading
+
+
+
+import requests
 
 #Import Routes from network 
 from network.readApplication import read_app as readApplication
 from network.execApplication import exec_app as execApplication
-
-
 # To read the enviroment variables
 import sys
 
+port_start = 5000
 
-port = 0
+AUTHENiCATION_OBJECT = None
+USER_DATA_PATH = None
+PlATFORM_START = None
+
+
+
+
 if sys.argv.__len__() > 1:
-    port = sys.argv[1]
+    try:
+        AUTHENiCATION_OBJECT = sys.argv[1]
+    except:
+        print("failed to read json object")
+    USER_DATA_PATH = sys.argv[2]
+    PlATFORM_START = sys.argv[3]
 
 
 app = Flask(__name__)
+socketio = SocketIO(
+            app,
+            async_mode="threading"
+        )
+
 
 app.register_blueprint(readApplication)
 app.register_blueprint(execApplication)
 
+# Import Application flags
+
+@app.route('/is_alive', methods=['POST'])
+def alive():
+    return {"status": True}
+
+
+@app.route('/kill', methods=['POST'])
+def kill():
+    os.kill(os.getpid(), signal.SIGINT)
+
+@app.route('/enviroment', methods=['POST'])
+def enviroment():
+    return str([AUTHENiCATION_OBJECT, USER_DATA_PATH, PlATFORM_START])
+ 
+@socketio.event
+def connect():
+    print("I'm connected!")
+
+@socketio.event
+def disconnect():
+    print("Cognitavit disconnected. Im gonna die now.")
+    os.kill(os.getpid(), signal.SIGINT)
+
 if __name__ == '__main__':
-    app.run(host="0.0.0.0", port=5000,debug=True)
+    socketio.run(app,host="0.0.0.0", port=port_start,debug=True)

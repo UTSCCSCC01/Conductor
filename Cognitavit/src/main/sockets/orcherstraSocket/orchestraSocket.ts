@@ -40,6 +40,7 @@
 
 import { AuthenticationToken } from '../../types'
 import { io, Socket } from "socket.io-client";
+import { execManager } from '../execSocket/execManager';
 
 
 class orchestraSocket{
@@ -99,12 +100,21 @@ class orchestraSocket{
             });
         });
 
-        // Add event listener for refreshing apps
-        orchestraSocket.socket.on("refresh-applet-list",(payload:any) => {console.log(payload);});
+        // Get an instance of trigger socket, and link it to the commandlets
+        let trigger_executor = execManager.getInstance();
+    // --------------------------------------------------------------------------//
+        orchestraSocket.socket.on("refresh-applet-list",(payload:any) => {
+            // CHANGE refresh-applet-list to actual route.
+            trigger_executor.sendRequest("refresh-applet-list", "")
+        });
 
-        // Add event listener for getting events
-        orchestraSocket.socket.on("send-event", (payload:any) => {console.log(payload);})
-        
+        // Add event listener for getting events ["TESTING"]
+
+        orchestraSocket.socket.on("send-event", (payload:any) => {
+            // UPDATE TO send-event
+            trigger_executor.sendRequest("executeApp", payload);
+        })
+    // --------------------------------------------------------------------------//
 
 
         // Returns the socket object. 

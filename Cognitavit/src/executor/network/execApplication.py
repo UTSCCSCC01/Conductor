@@ -45,3 +45,13 @@ def execute_application():
 
     return {"status": True}
     
+
+@exec_app.route('/send-event', methods=['GET', 'POST'])
+def execute_event():
+    '''
+    Executes an event
+
+    
+    '''
+
+    return {"status": True}

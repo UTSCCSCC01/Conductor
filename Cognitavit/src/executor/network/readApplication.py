@@ -6,7 +6,7 @@ read_app = Blueprint("/read", __name__)
 sys_platform = 'win'
 
 
-@read_app.route('/getApplist')
+@read_app.route('/getApplist', methods=['POST'])
 def read_list():
     '''
     Returns a list of applications installed

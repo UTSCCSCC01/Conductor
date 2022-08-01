@@ -26,12 +26,8 @@ declare global {
         exec_calls: {
             init_socket: (auth_token: AuthenticationToken) => Promise<any>,
             destroy_socket: () => Promise<any>,
-            init_exec: (auth_token: AuthenticationToken) => Promise<any>,
-            destroy_exec: () => Promise<any>,
+            proc_bus: (request: any) => Promise<any>
         }
-
- 
-
 
     }
 }
