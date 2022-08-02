@@ -61,24 +61,22 @@ API Operations Endpoints. Use post for [easier]:
 
 
 // create_predicate:
-// curl -v -X POST http://localhost:8080/api/predicates/addPredicate -H "Content-Type: application/json" -d '{"name": "s", "descriptor": "o", "userId": "f"}'
-// curl -v -X POST http://localhost:8080/api/predicates/addPredicate -H "Content-Type: application/json" -d '{"name": "n", "descriptor": "o", "userId": "f"}'
-// curl -v -X POST http://localhost:8080/api/predicates/addPredicate -H "Content-Type: application/json" -d '{"name": "s", "descriptor": "o", "userId": "n"}'
-// curl -v -X POST http://localhost:8080/api/predicates/addPredicate -H "Content-Type: application/json" -d '{"name": "n", "descriptor": "o", "userId": "n"}'
+// curl -v -X POST http://localhost:8080/api/predicates/addPredicate -H "Content-Type: application/json" -d '{"name": "s", "descriptor": "o", "userId": "f", "eventId": "w"}'
+// curl -v -X POST http://localhost:8080/api/predicates/addPredicate -H "Content-Type: application/json" -d '{"name": "n", "descriptor": "o", "userId": "f", "eventId": "w"}'
+// curl -v -X POST http://localhost:8080/api/predicates/addPredicate -H "Content-Type: application/json" -d '{"name": "s", "descriptor": "o", "userId": "n", "eventId": "w"}'
+// curl -v -X POST http://localhost:8080/api/predicates/addPredicate -H "Content-Type: application/json" -d '{"name": "n", "descriptor": "o", "userId": "n", "eventId": "w"}'
 app.post('/api/predicates/addPredicate', (req, res) => {
 	const name = req.body.name; // = String
 	const descriptor = req.body.descriptor; // = String
 	const userId = req.body.userId; // = String
+	const eventId = req.body.eventId; // = String
 	const newPredicate = new Predicate({
 		name: name,
 		descriptor: descriptor,
-		userId: userId
+		userId: userId,
+		eventId: eventId
 	});
-	// newPredicate.save(function (err, predicateData) {
-	// 	if (err) return res.status(500).json({success: false, err});
-	// 	return res.status(200).json({success: true, predicateData});
-	// });
-	Predicate.updateOne({name: name, descriptor: descriptor, userId: userId}, {$setOnInsert: newPredicate}, {upsert: true}, function (err, predicateData) {
+	Predicate.updateOne({name: name, descriptor: descriptor, userId: userId, eventId: eventId}, {$setOnInsert: newPredicate}, {upsert: true}, function (err, predicateData) {
 		if (err) return res.status(500).json({success: false, err});
 		if (predicateData.acknowledged) {
 			return res.status(200).json({success: true, predicateData});
