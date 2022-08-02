@@ -16,16 +16,19 @@
  */
 body, #root, .dashboard-layout{
   height: 100vh;
-  width: 100vw;
-  overflow-y: hidden;
+  width: 100wh;
   display: grid;    
+  overflow-x: hidden;
+
 }
 
 .dashboard-layout{
-  grid-template-columns: 1fr 6fr;
+
+  grid-template-columns: 200px 1fr;
   grid-template-areas: 
-    "sidebar  content"
+    "sidebar  header"
     "sidebar content"
     "sidebar  content";
+  grid-template-rows: 75px;
 }
 

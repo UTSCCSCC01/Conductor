@@ -4,7 +4,10 @@ const mongoose = require('mongoose');
 const deviceSchema = mongoose.Schema({
     //Application Lists
     bots:{ type: [String], required: true},         // Bots connected to the device. [Future: replace type string to type: BotInfo]
-  
+    
+    native_app: [{type:[String], required: true}],
+    custom_app: [{type:[String], required: true}],
+
     //Device metadata
     name: { type: String, required: true},   
     description: { type: String, required: true},      // Description of the bot                         

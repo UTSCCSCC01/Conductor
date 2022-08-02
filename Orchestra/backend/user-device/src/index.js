@@ -78,6 +78,8 @@ app.post('/api/devices/addDevice', (req, res) => {
     //Generate the payload
     const payload = {
         bots: [],
+        native_app: [],
+        custom_app: [],
         created: Date.now(),
         status: true,
         //User provided payload.
@@ -164,6 +166,65 @@ app.delete('/api/devices/deleteOneDevice', (req, res) => {
         return res.status(200).json({ success: true });
     });
 });
+
+
+// Updates a list of bots/applications 
+app.post("/api/device/syncApps", (req,res) => {
+
+    const check_query = [req.body.machineId, req.body.userId]
+    for (const element of check_query){
+        if((typeof element != "string")){
+            return res.status(400).send({success: false, status: "invalid response"});
+        }
+    }
+    //Check if not empty string.
+    const check_not_empty = [req.body.machineId, req.body.userId]
+    for (const element of check_not_empty){
+        if((element === "")){
+            return res.status(400).send({success: false, status: "invalid response"});
+        }
+    }
+
+
+    let machineId = req.body.machineId;
+    let userId = req.body.userId;
+
+    let native_app = req.body.application_list;
+    let custom_bin = req.body.custom_bin;
+
+    if(native_app == undefined || custom_bin == undefined){
+        console.log("Undefined items detected");
+    }
+
+    if(Array.isArray(native_app)){
+        console.log("I AM A ARRAY", native_app);
+    }
+
+    if(Array.isArray(custom_bin)){
+        console.log("I AM A ARrAY CUSTOMBIN");
+    }
+
+    let query = {
+        userId: userId,
+        deviceId: machineId
+    }
+
+    console.log(native_app);
+    console.log(custom_bin);
+
+    let values = {$set: {
+        native_app: native_app,
+        custom_app: custom_bin
+    }}
+
+    Device.updateOne(query, values, (error,result) => {
+        if(error){
+            return res.status(500).send({success: false, status: "Server Error: Failed to update mongodb", error: error});
+        }
+        return res.status(200).send({success: true, status: "Application/Bot List has been updated."});
+    })
+})
+
 
 
 // Server Port
