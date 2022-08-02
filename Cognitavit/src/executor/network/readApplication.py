@@ -1,9 +1,56 @@
+import json
+import os
 from platform import platform
-from flask import Blueprint, jsonify
+from flask import Blueprint, jsonify, request
 from execFactory import FactoryExecutor
 
 read_app = Blueprint("/read", __name__)
 sys_platform = 'win'
+path_to_config_file = os.getenv("userpath") + '/installed.json'
+
+@read_app.route('/get_custombin', methods=['GET'])
+def get_custombin():
+    '''
+    Returns list of custom binaries from config
+
+    json format:
+    {custom_binaries:
+        [{
+            name: string
+            path: string
+        }
+        ]
+    }
+    '''
+
+    with open(path_to_config_file) as f:
+        data = json.load(f)
+
+    return jsonify({"custom_binaries": data["custom_binaries"]})
+
+@read_app.route('/add_custombin', methods=['POST'])
+def add_custombin():
+    '''
+    Saves name and binary location into config folder
+
+    json format:
+    {
+        name: string
+        path: string
+    }
+    '''
+    content = request.get_json(force=True)
+    name = content["name"]
+    path = content["path"]
+    
+    with open(path_to_config_file) as f:
+        data = json.load(f)
+    
+    new_custom_binary = {"name":name, "path":path}
+    data["custom_binaries"].append(new_custom_binary)
+
+    with open(path_to_config_file, 'w') as outfile:
+        json.dump(data, outfile)
 
 
 @read_app.route('/getApplist', methods=['POST'])
@@ -19,8 +66,12 @@ def read_list():
     }
 
     '''
+
+    with open(path_to_config_file) as f:
+        data = json.load(f)
+    
     application_list = []
-    orchestra_webapps = []
+    orchestra_webapps = data["installed"]
     execute_factory = FactoryExecutor()
     platform_exec = execute_factory.create(sys_platform)
       

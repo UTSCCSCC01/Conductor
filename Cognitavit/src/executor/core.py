@@ -36,6 +36,7 @@ import requests
 #Import Routes from network 
 from network.readApplication import read_app as readApplication
 from network.execApplication import exec_app as execApplication
+from network.downloadApplication import download_app as downloadApplication
 # To read the enviroment variables
 import sys
 
@@ -66,6 +67,7 @@ socketio = SocketIO(
 
 app.register_blueprint(readApplication)
 app.register_blueprint(execApplication)
+app.register_blueprint(downloadApplication)
 
 # Import Application flags
 
