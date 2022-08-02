@@ -159,11 +159,3 @@ class WinExecutor(Executor):
             return False
         
         return True
-
-
-       
-
-    def bot_exec(self, params:str) -> None:
-        '''Potentially unneeded.'''
-        '''Executes a bot application from the orchestra webstore'''
-        return {}

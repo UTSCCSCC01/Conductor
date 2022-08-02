@@ -73,7 +73,3 @@ class LinuxExecutor(Executor):
         will generate using one of its built in functions'''
         pass
 
-
-    def bot_exec(self, params) -> None:
-        '''Executes a bot application from the orchestra webstore'''
-        return {}

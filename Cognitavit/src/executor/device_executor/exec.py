@@ -26,10 +26,10 @@ class Executor(ABC):
     def execute(self, name:str, params:str) ->None:
         '''Wrapper for native_exec'''
 
-    def bot_exec(self, params:str) ->None:
+    def bot_exec(self, params:list) ->None:
         '''Executes a bot application from the orchestra webstore.
-           Params format is arg1 arg2 buid'''
-        params = params.split()
+           Params format is args buid'''
+        params = params.split(',')
         args = []
         if len(params) > 1:
             args = params[:-1]
