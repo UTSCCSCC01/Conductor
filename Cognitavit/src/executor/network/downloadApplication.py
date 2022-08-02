@@ -41,12 +41,15 @@ def download(url, filename, userpath):
     open(downloads_folder + "/" + filename, 'wb').write(r.content)
 
 def install(buid, name, path, userpath):
-    config_file = userpath + "/" + CONFIG_NAME
-    with open(config_file) as f:
-        data = json.load(f)
-
     new_bot = {"buid":buid, "name":name, "path":path}
-    data["installed"].append(new_bot)
-
-    with open(config_file, 'w') as outfile:
+    config_file = userpath + "/" + CONFIG_NAME
+    data = {}
+    if (os.path.exists(config_file) == True):
+        with open(config_file) as f:
+            data = json.load(f)
+        data["installed"].append(new_bot)
+    else:
+        data = {"installed": [new_bot], "custom_binaries": []}
+    
+    with open(config_file, 'w+') as outfile:
         json.dump(data, outfile)
