@@ -68,31 +68,29 @@ function AppletSelector({ addedApplet, appletIndex, deviceId, onAppletSelector, 
             return;
         }
         setAddedApplet(addedApplet);
-        setGivenApplets(webBots);
-        setFilteredApplets(webBots);
-        // Load Orchestra Web Bot
-        // axios.post("http://www.localhost:8080/api/devices/getOneDevice", {
-        //     userId: JSON.stringify(sessionStorage_get("auth").localId),
-        //     deviceId: deviceId
-        // })
-        //     .then(response => {
-        //         if (response.data.success && response.data.result) {
-        //             if (appletIndex === 0) {
-        //                 setGivenApplets(response.data.result.bots);
-        //                 setFilteredApplets(response.data.result.bots);
-        //             } else if (appletIndex === 1) {
-        //                 setGivenApplets(response.data.result.application_list);
-        //                 setFilteredApplets(response.data.result.application_list);
-        //             } else if (appletIndex === 2) {
-        //                 setGivenApplets(response.data.result.custombinaries);
-        //                 setFilteredApplets(response.data.result.custombinaries);
-        //             } else {
-        //                 console.log("Invalid applet index");
-        //             }
-        //         } else {
-        //             console.log("Failed to get applet");
-        //         }
-        //     });
+        // Load applets
+        axios.post("http://www.localhost:8080/api/devices/getOneDevice", {
+            userId: JSON.stringify(sessionStorage_get("auth").localId),
+            deviceId: deviceId
+        })
+            .then(response => {
+                if (response.data.success && response.data.result) {
+                    if (appletIndex === 0) {
+                        setGivenApplets(response.data.result.bots);
+                        setFilteredApplets(response.data.result.bots);
+                    } else if (appletIndex === 1) {
+                        setGivenApplets(response.data.result.native_app);
+                        setFilteredApplets(response.data.result.native_app);
+                    } else if (appletIndex === 2) {
+                        setGivenApplets(response.data.result.custom_app);
+                        setFilteredApplets(response.data.result.custom_app);
+                    } else {
+                        console.log("Invalid applet index");
+                    }
+                } else {
+                    console.log("Failed to load applet");
+                }
+            });
     }, [SearchText, addedApplet, appletIndex]);
 
     const onSearchText = (event) => {

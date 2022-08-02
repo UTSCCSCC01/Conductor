@@ -6,7 +6,6 @@ const { EventBuilder } = require('../model/EventBuilder');
 const express = require('express');
 const cors = require('cors');
 const mongoose = require('mongoose');
-const { query } = require("express");
 
 // Set Configs/Mongodb Connection
 const app = express();
@@ -79,6 +78,7 @@ app.post('/api/eventbuilder/addEvent', (req, res) => {
     const payload = {
         eventConfig: req.body.eventConfig,
         deviceId: reqDeviceId,
+        appletType: req.body.appletType,
         applet: req.body.applet.trim(),
         appletArg: req.body.appletArg.trim(),
         eventName: req.body.eventName.trim(),
@@ -86,21 +86,25 @@ app.post('/api/eventbuilder/addEvent', (req, res) => {
         executionDate: req.body.executionDate,
         predicate: req.body.predicate,
         userId: reqUserId,
+        created: req.body.created,
     }
+
+    console.log(payload);
 
     // Verify if the generate payload matches EventBuilder
     let eventBuilder = null;
     try {
         eventBuilder = new EventBuilder(payload);
+        eventBuilder.save((error, eventBuilderData) => {
+            if (error) {
+                console.log(error);
+                return res.status(409).send(error);
+            }
+            return res.status(200).json({ success: true, eventBuilderData });
+        });
     } catch (err) {
         return res.status(400).send({ success: false, status: "payload corrupted" });
-    }
-    
-    // Insert if the document exists, otherwise do nothing by updating nothing, and return null  
-    EventBuilder.updateOne({ userId: reqUserId, deviceId: reqDeviceId }, { $setOnInsert: eventBuilder }, { upsert: true }, (err, eventBuilderData) => {
-        if (err) return res.status(409).send(error);
-        return res.status(200).json({ success: true, eventBuilderData });
-    });
+    }    
 });
 
 app.get('/api/eventbuilder/getUserEvents', (req, res) => {

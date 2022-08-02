@@ -87,7 +87,8 @@ function BotEditorPage() {
             userId: JSON.stringify(sessionStorage_get("auth").localId),
             created: Date.now()
         };
-        axios.post('http://www.localhost:3008/api/eventbuilder/addEvent', variables)
+        console.log(variables);
+        axios.post('http://www.localhost:8080/api/eventbuilder/addEvent', variables)
             .then(response => {
                 if (response.data.success) {
                     console.log(response.data.eventBuilderData);

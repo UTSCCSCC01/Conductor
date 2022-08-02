@@ -78,6 +78,7 @@ function Predicates({ addedPredecates, onSave }) {
         setDisplayModal(false);
         onSave(predicates);
         // const variables = {
+        //     userId: _________,
         //     name: PredicateName,
         //     description: Description,
         // }

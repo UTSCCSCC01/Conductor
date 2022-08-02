@@ -74,6 +74,7 @@
 
 .table .row>p {
     margin: 0;
+    word-wrap: break-word;
 }
 
 .table>.table-body {

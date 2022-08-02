@@ -17,7 +17,7 @@ function BotEvents() {
     const [BotsData, setBotsData] = useState([]);
 
     useEffect(() => {
-        axios.get("http://www.localhost:3008/api/eventbuilder/getUserEvents", { params: { userId: userId } })
+        axios.get("http://www.localhost:8080/api/eventbuilder/getUserEvents", { params: { userId: userId } })
             .then(response => {
                 if (response.data.success) {
                     console.log(response.data.eventBuilderData);
@@ -68,7 +68,7 @@ function BotEvents() {
                     tableHeader={botEventsHeader} 
                     tableBody={botEventsBody()} 
                     isEmpty={BotsData.length === 0} 
-                    emptyText="No Bots"
+                    emptyText="No Events"
                 />
             </div>
         </div>

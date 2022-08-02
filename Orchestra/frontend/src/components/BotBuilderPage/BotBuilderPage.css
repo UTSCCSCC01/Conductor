@@ -37,6 +37,7 @@
 }
 
 .bot-events>.bot-events-table {
+    padding: 10px 20px;
     width: 100%;
     max-height: 500px;
     height: auto;
@@ -258,6 +259,15 @@
 .bot-event-blocks>.platform-execution>.user-device-list>.table .table-body-row>div:last-child {
     display: flex;
     justify-content: flex-end;
+}
+
+.bot-event-blocks>.platform-execution>.user-device-list>.table .table-body-row>.row.large {
+    max-width: 88px;
+}
+
+.bot-event-blocks>.platform-execution>.user-device-list>.table .table-body-row>.row.large p {
+    max-width: 88px;
+    word-wrap: break-word;
 }
 
 /* Applet */

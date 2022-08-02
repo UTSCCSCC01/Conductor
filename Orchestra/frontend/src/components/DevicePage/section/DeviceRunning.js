@@ -70,8 +70,6 @@ function DeviceRunning() {
         };
 
         const rows = DeviceData.map((row, index) => {
-            console.log(row);
-
             return (
                 <div key={index} className="table-body-row">
                     <div className="row large"><p>{row.name}</p></div>
@@ -100,7 +98,6 @@ function DeviceRunning() {
     };
 
     const onDeviceName = (event) => {
-        console.log(event.target.value);
         setDeviceName(event.target.value);
         setDeviceNameError(event.target.value === "");
     };

@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from 'react';
+import axios from 'axios';
+import { sessionStorage_get } from '../../../utils/store/store';
 // Components
 import SmallHeader from '../../Header/SmallHeader';
 import Table from '../../Table/Table';
@@ -46,13 +48,24 @@ const devices = [
     }
 ];
 
+const userId = sessionStorage_get("auth") && JSON.stringify(sessionStorage_get("auth").localId);
+
 function PlatformExecution({ selectedDevice, onSave }) {
     const [DeviceList, setDeviceList] = useState([]);
     const [SelectedDevice, setSelectedDevice] = useState(null);
 
     useEffect(() => {
         if (devices && devices.length > 0) {
-            setDeviceList(devices);
+            // setDeviceList(devices);
+            axios.get('http://www.localhost:8080/api/devices/getAllDevices', { params: { userId: userId } })
+                .then(response => {
+                    console.log(response.data);
+                    if (response.data.success) {
+                        setDeviceList(response.data.devicesData);
+                    } else {
+                        console.log("Failed to load devices");
+                    }
+                })
         }
         setSelectedDevice(selectedDevice);
     }, [devices, selectedDevice, onSave]);
@@ -87,7 +100,7 @@ function PlatformExecution({ selectedDevice, onSave }) {
             onSave(DeviceList[index]);
         };
         
-        const rows = devices.map((row, index) => {
+        const rows = DeviceList.map((row, index) => {
             return (
                 <div key={index} className="table-body-row">
                     <div className="row large"><p>{row.name}</p></div>
