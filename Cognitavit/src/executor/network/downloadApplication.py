@@ -1,10 +1,11 @@
 from flask import Blueprint, request
 import os
 import requests
-import json 
+import json
+from Cognitavit.src.executor.core import USER_DATA_PATH 
 
 download_app = Blueprint("/download", __name__)
-env_userpath = os.getenv("userpath")
+env_userpath = USER_DATA_PATH
 
 CONFIG_NAME = "installed.json"
 

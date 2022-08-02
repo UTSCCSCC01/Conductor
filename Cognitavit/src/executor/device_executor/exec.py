@@ -1,4 +1,7 @@
 from abc import ABC, abstractclassmethod
+import json
+import subprocess
+from Cognitavit.src.executor.core import USER_DATA_PATH
 
 class Executor(ABC):
     
@@ -23,8 +26,24 @@ class Executor(ABC):
     def execute(self, name:str, params:str) ->None:
         '''Wrapper for native_exec'''
 
-    @abstractclassmethod
     def bot_exec(self, params:str) ->None:
-        '''Executes a bot application from the orchestra webstore'''
+        '''Executes a bot application from the orchestra webstore.
+           Params format is arg1 arg2 buid'''
+        params = params.split()
+        args = []
+        if len(params) > 1:
+            args = params[:-1]
+        buid = params[-1]
+        config_file = USER_DATA_PATH + '/installed.json'
+        with open(config_file) as f:
+            data = json.load(f)
+        
+        path = ""
+        for entry in data["installed"]:
+            if entry["buid"] == buid:
+                path = entry["path"]
+                break
+        args.append(path)
+        subprocess.run(args)
 
     

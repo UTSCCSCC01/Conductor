@@ -2,11 +2,12 @@ import json
 import os
 from platform import platform
 from flask import Blueprint, jsonify, request
+from Cognitavit.src.executor.core import USER_DATA_PATH
 from execFactory import FactoryExecutor
 
 read_app = Blueprint("/read", __name__)
 sys_platform = 'win'
-path_to_config_file = os.getenv("userpath") + '/installed.json'
+path_to_config_file = USER_DATA_PATH + '/installed.json'
 
 @read_app.route('/get_custombin', methods=['GET'])
 def get_custombin():
@@ -42,12 +43,15 @@ def add_custombin():
     content = request.get_json(force=True)
     name = content["name"]
     path = content["path"]
-    
-    with open(path_to_config_file) as f:
-        data = json.load(f)
-    
     new_custom_binary = {"name":name, "path":path}
-    data["custom_binaries"].append(new_custom_binary)
+    data = {}
+    
+    if (os.path.exists(config_file) == True):
+        with open(path_to_config_file) as f:
+            data = json.load(f)
+        data["custom_binaries"].append(new_custom_binary)
+    else:
+        data = {"installed": [], "custom_binaries": [new_custom_binary]}
 
     with open(path_to_config_file, 'w') as outfile:
         json.dump(data, outfile)
