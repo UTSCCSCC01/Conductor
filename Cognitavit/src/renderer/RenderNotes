@@ -6,3 +6,12 @@
 2022-07-03
 -Migrated to redux, as there are more global states required across different components. 
 -Added logout component, easier to reset app state.
+
+2022-08-01
+- Upon login, we establish ipc connections between orchestra, and trigger.
+- Trigger is a local socket used to communicate with a compiled binary of python(using pyinstaller)
+- Orchestra websocket is build on socket.io that is used to listen for applications.
+
+- orchestra dispatch <-> main process [socket.io connection]
+- main_process <-> trigger process [flask for rest api, and socket.io for managing lifecycles]
+- render_process <-> main process [electron default model]

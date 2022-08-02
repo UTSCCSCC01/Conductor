@@ -1,0 +1,86 @@
+.container {
+    padding-top: 30px;
+    width: 700px;
+    margin: auto;
+  }
+  
+  .search-box {
+    padding: 5px 15px;
+    width: 700px;
+    border: 0.5px solid #A3A3A7;
+    border-radius: 5px;
+    height: 40px;
+  }
+  
+  .application-list {
+    margin-top: 30px;
+  }
+  
+  .app-item {
+    list-style: none;
+    margin: 10px 0;
+    padding: 10px;
+    background: #FFFFFF;
+    /* grayscale / divider */
+    border: 1px solid #DFE0EB;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+  }
+  
+
+  .application_name {
+    width: 212px;
+    height: 21.8px;
+
+    font-style: normal;
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 17px;
+    letter-spacing: 0.3px;
+    color: #6D6E76;
+
+  }
+  
+
+  .execute{
+    
+    margin-left: auto;
+    margin-right: 30px;
+    width: 70px;
+    height: 26px;
+    background-color: #50D876;
+    border: 1px solid #29D076;
+    border-radius: 8px;
+
+    color: #FFFFFF;
+    font-style: normal;
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 17px;
+    /* identical to box height */
+
+    letter-spacing: 0.3px;
+
+}
+
+.execute:hover{
+    background: #099606;
+}
+.execute:active{
+    background: #116D0F;
+}
+
+.button-container-exec{
+    display: flex;
+    align-items: center;
+    margin-top: 10px;
+    gap: 200px;
+}
+
+.input-region-exec{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}

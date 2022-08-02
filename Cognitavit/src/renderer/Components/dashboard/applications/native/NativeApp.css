@@ -1,0 +1,38 @@
+.homepage-container{
+    grid-area: content;
+    background-color: #F9F9F9;
+    padding: 20px;
+}
+
+.application-header-type-box{
+    width: 700px;
+    margin: auto auto;
+    margin-top: 25px;
+    display: flex;
+    background: #FFFFFF;
+    border: 1px solid #DFE0EB;
+    border-radius: 8px;
+    gap: 120px;
+    height: 75px;
+}
+
+.application-header-name, .application-header-name-sync{
+    display: flex;
+    font-family: 'Montserrat';
+    font-style: normal;
+    font-size: 8px;
+    letter-spacing: 0.3px;
+    color: #6D6E76;
+    align-items: center;
+    justify-content: center;
+
+    margin-left: 10px;
+}
+
+
+
+.application-header-name-sync{
+    gap: 10px;
+    margin-left: auto;
+    margin-right: 40px;
+}

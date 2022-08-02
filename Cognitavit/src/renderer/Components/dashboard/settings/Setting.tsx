@@ -35,22 +35,93 @@ const Setting = () => {
 
     return (
         <div className="homepage-container">
-            <p>This is a testing Page</p>
-            <p>I am the Setting page</p>
-            
-            <h1>Device information</h1>
-            <p>Device Platform is {platform}</p>
-            <p>Unique Device ID is: {deviceUUID}</p>
-            <p>Device Hostname is {hostname}</p>
-            <p>Account Userid is {localid}</p>
 
-            <button onClick={registerDevice} >Register Device.</button>
-
-            <button onClick={test}>Check Status</button>
-
-            <p>{isreg}</p>
-            <p>{JSON.stringify(applist)}</p>
+        <div className="device-info-header">
+            <h1>Device Information</h1>
         </div>
+
+        <div className="container-information">
+            <div className = "header">
+                Platform Information
+            </div>
+            <div className="image">
+                <p>image</p>
+            </div>
+            <div className="platform-info">
+                <p>Device Platform is {platform}</p>
+                <p>Device Hostname is {hostname}</p>
+               {/*  <p>Unique Device ID is: {deviceUUID}</p>*/}
+            </div>
+        </div>
+        <br></br>
+        <br></br>
+        <div className="container-information">
+            <div className = "header">
+                Cognitavit Information
+            </div>
+            <div className="image">
+                <p>image</p>
+            </div>
+            <div className="platform-info">
+                <p>Build Number: 3.10</p>
+                <p>IPC Connection: Successful</p>
+                {/*<p>Unique Device ID is: {localid + '.' + deviceUUID}</p>*/}
+            </div>
+        </div>
+
+
+        <br>
+        </br>
+        <br></br>
+        <br></br>
+
+
+        <div className="container-information">
+            <div className = "header">
+                Orchestra Dispatcher
+            </div>
+            <div className="image">
+                <p>image</p>
+            </div>
+            <div className="platform-info">
+                <p>Build Number: 3.10</p>
+                <p>IPC Connection: Successful</p>
+                {/* <p>Unique Device ID is: {localid + '.' + deviceUUID}</p> */}
+            </div>
+        </div>
+
+
+        <p>This is a testing Page</p>
+        <p>I am the Setting page</p>
+        
+        <h1>Device information</h1>
+        <p>Device Platform is {platform}</p>
+        <p>Unique Device ID is: {deviceUUID}</p>
+        <p>Device Hostname is {hostname}</p>
+        <p>Account Userid is {localid}</p>
+
+        <button onClick={registerDevice} >Register Device.</button>
+
+        <button onClick={test}>Check Status</button>
+        <p>{isreg}</p>
+
+        <br></br>
+        <br></br>
+        <div className="container-information">
+            <div className = "header">
+                Orchestra Dispatcher
+            </div>
+            <div className="image">
+                <p>image</p>
+            </div>
+            <div className="platform-info">
+                <p>Build Number: 3.10</p>
+                <p>IPC Connection: Successful</p>
+                {/* <p>Unique Device ID is: {localid + '.' + deviceUUID}</p> */}
+            </div>
+        </div>
+
+    </div>
     )
 }
 

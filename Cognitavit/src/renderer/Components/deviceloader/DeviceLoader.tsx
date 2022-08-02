@@ -15,6 +15,7 @@ import { checkDeviceRegistration, registerDevice } from "renderer/utils/deviceRe
 
 import {sessionStorage_save, sessionStorage_get} from '../../utils/webstorage/storage'
 import { windowsStore } from 'process';
+import { sync_application_list } from 'renderer/utils/appSync/AppSync';
 
 
 const DeviceLoader = () => {
@@ -70,6 +71,9 @@ const DeviceLoader = () => {
                 case 1:
                     init_ipc_subsystems();
                     break;
+                case 2: 
+                    sync_device_application_list();
+                    break;
                 default:
                     setFinishDeviceLoader(true);
                     break;
@@ -117,7 +121,9 @@ const DeviceLoader = () => {
 
     let init_ipc_subsystems = () => {
         //precondition: user is authenticated, with valid tokens
+        setMessage("Starting IPC,Socket with Trigger,Dispatcher")
         let value = window.exec_calls.init_socket(sessionStorage_get("auth"));
+
         toast.promise(value,{
             pending: "INITIALIZING SOCKET CONNECTION",
             error: "CONNECTION FAILURE",
@@ -140,6 +146,34 @@ const DeviceLoader = () => {
 
     }
     
+    let sync_device_application_list = async () => {
+         //precondition: user is authenticated, with valid tokens
+         setMessage("Syncing application list with Server")
+         let value = sync_application_list();
+ 
+         toast.promise(value,{
+             pending: "ATTEMPTING APPLICATION SYNC LIST",
+             error: "SYNC FAILED",
+             success: "SYNC SUCCESS"
+         })
+ 
+         //Check
+         /**
+          * value.then() :TODO FUTURE
+          * 
+          */
+         console.log("Status connection: FINISHED");
+         
+         await value;
+
+         setPreloaderState(preloaderState+3);
+ 
+         //TODO: 
+         //Init flask-python ipc for executing/getting.s
+ 
+         bootstrap_loader(preloaderState+3); //state variables are updated upon rerender.       
+    }
+
     const verify_state_tokens = async () => {
         const token = sessionStorage_get("auth");
         if(token == null || token == undefined || token == ""){
@@ -204,7 +238,7 @@ const DeviceLoader = () => {
                     sessionStorage_save("auth", undefined);
                     navigator("/");
                 }else{
-                    toast.success("Auth tokens are valid and has been stored in redux store");
+                    toast.success("Authentication tokens are validated");
                     let token_final = sessionStorage_get("auth");
                     store.dispatch({
                         type: "setAuth",
