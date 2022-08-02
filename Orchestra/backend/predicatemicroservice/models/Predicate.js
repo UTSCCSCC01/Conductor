@@ -24,6 +24,10 @@ const predicateSchema = new Schema({
 	userId: {
 		type: String,
 		required: true
+	},
+	eventId: {
+		type: String,
+		required: true
 	}
 });
 const Predicate = mongoose.model('Predicate', predicateSchema);
