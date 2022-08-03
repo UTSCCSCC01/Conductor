@@ -1,5 +1,5 @@
 from flask import Flask
-from flask import request
+from flask import request, jsonify
 from flask_cors import CORS
 import os
 import uuid
@@ -9,6 +9,8 @@ from ibm_botocore.client import Config, ClientError
 from werkzeug.utils import secure_filename
 import pymongo
 from pymongo import MongoClient
+from bson.json_util import dumps
+from bson.json_util import loads
 
 cluster = MongoClient("mongodb+srv://marketplace:marketplace@cluster18630.3wlh3.mongodb.net/?retryWrites=true&w=majority")
 db = cluster["marketplace"]
@@ -132,6 +134,11 @@ def reviews(buid):
     search_results = list(review_collection.find({"buid" : buid}, {"_id" : 0, "buid" : 0}))
     results = {"results" : search_results}
     return results
+
+@app.route('/marketplace/<buid>', methods=["GET"])
+def get_bot(buid):
+    result = bot_collection.find_one({"buid" : buid}, {"_id": 0})
+    return loads(dumps(result))
 
 @app.route('/reviews/submit', methods=["POST"])
 def submit_review():

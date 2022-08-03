@@ -10,6 +10,7 @@ import DeviceStatusPage from './components/DevicePage/DeviceStatusPage';
 import DeviceListPage from './components/DevicePage/DeviceListPage';
 import UploadBotPage from './components/UploadBotPage/UploadBotPage';
 import Marketplace from './components/Marketplace/Marketplace';
+import BotDetailPage from './components/BotDetailPage/BotDetailPage';
 
 import {Provider} from 'react-redux';
 import { ToastContainer } from 'react-toastify';
@@ -42,6 +43,7 @@ function App() {
             <Route path="/dashboard/devices/list" element={<div className='dashboard-layout'><NavBarTwo/> <TopBar/> <DeviceListPage /></div>} />
             <Route path="/dashboard/upload" element={<div className='dashboard-layout'><NavBarTwo/> <TopBar/> <UploadBotPage /></div>} />
             <Route path="/dashboard/marketplace" element={<div className='dashboard-layout'><NavBarTwo/> <TopBar/> <Marketplace /></div>} />
+            <Route path='/dashboard/marketplace/:bot' element={<BotDetailPage />} />
           </Route>
         </Routes>
     </BrowserRouter>
