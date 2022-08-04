@@ -275,11 +275,19 @@ app.post("/event/satisifypredicate", async (req,res) => {
         return res.status(500).send({success: false, status: "error", event_result: undefined});
     }
     
+    let predicate_satisfied = false;
+
+    console.log(event_result);
+    if(event_result["TotalPredicateSatisfied"] + 1 == event_result["NumberOfPredicates"]){
+        predicate_satisfied = true;
+    }
+
     if(!event_result["Terminated"] && event_result["TotalPredicateSatisfied"] < event_result["NumberOfPredicates"]){
         console.log(event_result["TotalPredicateSatisfied"],  event_result["NumberOfPredicates"])
         const query = {EventId: event_id}
         const updateExecutionDateFlag = {
-            $inc: {"TotalPredicateSatisfied": 1}
+            $inc: {"TotalPredicateSatisfied": 1},
+            PredicateState: predicate_satisfied
         }
         try{
             await EventOrchestrator.updateOne(query,updateExecutionDateFlag);
@@ -288,6 +296,10 @@ app.post("/event/satisifypredicate", async (req,res) => {
             console.log("EventID: ", event_id, " is now in an undefined state. -1 predicate");
             console.log("SEND THIS TO STATUS REPORT MODULE INSTANTLY");
         }
+    }else if(event_result["Terminated"]){
+        return res.status(400).send({success: false, status: "cannot increment terminated event", result: event_result});
+    }else{
+        return res.status(400).send({success: false, status: "predicate satisfied count greater than number of predicates", result: event_result});
     }
 
 
