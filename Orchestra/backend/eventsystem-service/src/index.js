@@ -52,16 +52,7 @@ app.use((err, req, res, next) => {
  */
 
 /*---------------------------------------- HELPERS TO OBTAIN INFORMATION ABOUT EVENT AND SETTING STATES -------------------------*/
-async function getEventState(event_id){
-    EventOrchestrator.findOne({EventId: event_id}, (error, event_info) => {
-        if (error || event_info == null){
-            return undefined;
-        }
-        return event_info;
-    });
 
-    return undefined;
-}
 
 /*----------------------------------------START OF EVENT DRIVEN FINITE STATE MACHINE LOGIC----------------------------------------*/
 
@@ -70,26 +61,6 @@ async function getEventState(event_id){
  * Adds a event to the EventOrchestrator DB
  * Adds event to the ClockWorkStream DB
  */
-
-
-
-
-
-
-
-/*----------------------------------------PREDICATE SIGNAL STATE REGION----------------------------------------*/
-
-
-
-
-
-
-
-
-
-
-
-/*--------------------------------------- PREDICATE SIGNAL STATE REGION----------------------------------------/*
 
 
 /*----------------------------------------TIME TO EXECUTE SIGNAL STATE REGION----------------------------------------*/
@@ -227,7 +198,7 @@ app.post("/event/get", async (req,res) => {
 
     let input = req.body;
     console.log("/event/get: Request Body:", req.body);
-    let event_id = input.EventId;
+    let event_id = input.eventId;
     
     try{
         EventOrchestrator.findOne({EventId: event_id}, (error, event) => {
@@ -235,7 +206,7 @@ app.post("/event/get", async (req,res) => {
                 return res.status(500).send({success: false, status: "error", result: undefined});
             }
         // console.log(deviceData);
-            if(event == null){
+            if(event == undefined){
                 return res.status(404).send({success: false, status: "not found", result: undefined});
             }
             return res.status(200).json({success: true, status: "found", result: event});
@@ -253,21 +224,24 @@ app.post("/event/delete", async (req,res) => {
             return res.status(400).send({success: false, status: "invalid request object"});
         }
     }
-    
+
     let input = req.body;
     console.log("/event/delete: Request Body:", req.body);
     let event_id = input.eventId;
+    console.log(event_id);
     
     try{
         // Delete its event timer.
-        EventClockStream.deleteOne({_id: event_id});
+        await EventClockStream.deleteOne({_id: event_id});
 
         EventOrchestrator.deleteOne({EventId: event_id}, (error, event) => {
+            console.log("delete here");
+
             if (error){
                 return res.status(500).send({success: false, status: "server error"});
             }
         // console.log(deviceData);
-            if(event == null){
+            if(event == undefined){
                 return res.status(404).send({success: false, status: "not found"});
             }
             return res.status(200).json({success: true, status: "deleted"});
@@ -278,6 +252,51 @@ app.post("/event/delete", async (req,res) => {
         return res.status(500).send({success: false, status: "server error"});
     }
 });
+
+
+/*----------------------------------------PREDICATE SIGNAL STATE REGION----------------------------------------*/
+
+app.post("/event/satisifypredicate", async (req,res) => {
+    const check_query = [req.body.eventId]
+    for (const element of check_query){
+        if((typeof element != "string")){
+            return res.status(400).send({success: false, status: "invalid request object"});
+        }
+    }
+
+    let input = req.body;
+    console.log("/event/get: Request Body:", req.body);
+    let event_id = input.eventId;
+    
+    let event_result;
+    try{
+        event_result = await EventOrchestrator.findOne({EventId: event_id});
+    }catch{
+        return res.status(500).send({success: false, status: "error", event_result: undefined});
+    }
+    
+    if(!event_result["Terminated"] && event_result["TotalPredicateSatisfied"] < event_result["NumberOfPredicates"]){
+        console.log(event_result["TotalPredicateSatisfied"],  event_result["NumberOfPredicates"])
+        const query = {EventId: event_id}
+        const updateExecutionDateFlag = {
+            $inc: {"TotalPredicateSatisfied": 1}
+        }
+        try{
+            await EventOrchestrator.updateOne(query,updateExecutionDateFlag);
+        }catch{
+            console.log("Critical Error has occured! Unable to increment PredicateSatisfyCount.");
+            console.log("EventID: ", event_id, " is now in an undefined state. -1 predicate");
+            console.log("SEND THIS TO STATUS REPORT MODULE INSTANTLY");
+        }
+    }
+
+
+    return res.status(500).send({success: true, status: "success", result: event_result});
+})
+
+
+
+/*--------------------------------------- PREDICATE SIGNAL STATE REGION----------------------------------------/*
 
 
 
@@ -324,34 +343,6 @@ async function setEventLifeCycleComplete(event, status, messag, send_to_user){
  * }
  * 
  */
-app.post("/event/satisfy_predicate", async (req,res) => {
-    const check_query = [req.body.eventId]
-    for (const element of check_query){
-        //shortcircuit
-        if((typeof element != "string")){
-            return res.status(400).send({success: false, status: "invalid response"});
-        }
-    }
-
-    let event_id = req.body.eventId;
-
-    //Locate the event field
-    let event_doc = await getEventState(event_id);
-
-    if(event_doc["SendToUser"] != false && event_doc["TotalPredicateSatisfied"] < event_doc["NumberOfPredicates"]){
-        const query = {EventId: eventid}
-        const updateExecutionDateFlag = {
-            $inc: {"TotalPredicateSatisfied": 1}
-        }
-        try{
-            await EventOrchestrator.updateOne(query,updateExecutionDateFlag);
-        }catch{
-            console.log("Critical Error has occured! Unable to increment PredicateSatisfyCount.");
-            console.log("EventID: ", event_id, " is now in an undefined state. -1 predicate");
-            console.log("SEND THIS TO STATUS REPORT MODULE INSTANTLY");
-        }
-    }
-});
 
 /**
  *  This is the event system: core of orchestra.
