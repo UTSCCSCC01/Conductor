@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { sessionStorage_get } from '../../utils/store/store';
@@ -20,7 +20,7 @@ function BotEditorPage() {
     
     const [DisplayApplet, setDisplayApplet] = useState(false);
     const [AppletIndex, setAppletIndex] = useState(null);
-    const [EventConfig, setEventConfig] = useState(null);
+    const [EventConfig, setEventConfig] = useState([]);
     const [Platform, setPlatform] = useState(null);
     const [ExecuteApplet, setExecuteApplet] = useState(null);
     const [ExecuteArg, setExecuteArg] = useState("");
@@ -84,7 +84,7 @@ function BotEditorPage() {
             description: Description,
             executionDate: ExecutionDate,
             predicate: predicates,
-            userId: JSON.stringify(sessionStorage_get("auth").localId),
+            userId: userId,
             created: Date.now()
         };
         console.log(variables);

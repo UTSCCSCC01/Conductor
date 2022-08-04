@@ -5,50 +5,49 @@ import { sessionStorage_get } from '../../../utils/store/store';
 import SmallHeader from '../../Header/SmallHeader';
 // Style
 import '../BotBuilderPage.css';
-import { Button, Input, Modal } from 'antd';
+import { Button, Input, Modal, Select } from 'antd';
 import { DiHaskell } from 'react-icons/di';
 import { MdAddCircleOutline } from 'react-icons/md';
+
+const { Option } = Select;
 
 function Predicates({ addedPredecates, onSave }) {
     const [DisplayModal, setDisplayModal] = useState(false);
     const [Predicates, setPredicates] = useState([]);
+    const [LoadedPredicates, setLoadedPredicates] = useState([]);
+    const [SelectedLoadedPredicate, setSelectedLoadedPredicate] = useState(null);
     const [PredicateName, setPredicateName] = useState("");
     const [Description, setDescription] = useState("");
     const [DisplayPredicateModal, setDisplayPredicateModal] = useState(false);
     const [SelectedPredicate, setSelectedPredicate] = useState(null);
 
     useEffect(() => {
-        setPredicates(addedPredecates);
-        // axios to get predicates added by the user
-        // axios.post(`http://www.localhost:8080/api/predicates/get_predicate_by_userid`, { userId: JSON.stringify(sessionStorage_get("auth").localId) })
-        //     .then(response => {
-        //         if (response.data.success) {
-        //             setPredicates(response.data.predicateData);
-        //             alert("Successfully Added!");
-        //         } else {
-        //             console.log("Failed to add predicate");
-        //         }
-        //     });
-    }, [Predicates]);
+        axios.get(`http://www.localhost:3014/api/predicates/getViaUserId/${JSON.stringify(sessionStorage_get("auth").localId)}`)
+            .then(response => {
+                if (response.data.success) {
+                    setLoadedPredicates(response.data.predicatesData);
+                    console.log(response.data.predicatesData);
+                } else {
+                    console.log("Failed to add predicate");
+                }
+            });
+    }, []);
 
     const onAddPredicate = () => {
-        setDisplayModal(true);
-        if (!sessionStorage_get("auth")) {
-            return;
-        }
-        const variables = {
-            name: PredicateName,
-            descriptor: Description,
-            userId: JSON.stringify(sessionStorage_get("auth").localId)
-        };
-        // axios.post(`http://www.localhost:8080/api/predicate/create_predicate`, variables)
-        //     .then(response => {
-        //         if (response.data.success) {
-        //             alert("Successfully Added!");
-        //         } else {
-        //             console.log("Failed to add predicate");
-        //         }
-        //     });
+        if (!sessionStorage_get("auth")) alert("Failed to load user data");
+        else setDisplayModal(true);
+    };
+
+    const userPredicates = LoadedPredicates && LoadedPredicates !== []
+        ? LoadedPredicates.map((p, index) => {
+            return (
+                <Option key={index} value={index}>{p.name}</Option>
+            );
+        }): undefined;
+
+    const onUserPredicate = (value) => {
+        if (value < 0) setSelectedLoadedPredicate(null);
+        else setSelectedLoadedPredicate(LoadedPredicates[value]);
     };
 
     const onPredicateName = (event) => {
@@ -68,39 +67,41 @@ function Predicates({ addedPredecates, onSave }) {
     };
 
     const addPredicate = () => {
-        let predicates = Predicates;
-        predicates.push({
-            _id: '1',
+        if (SelectedLoadedPredicate) {
+            let predicates = Predicates;
+            predicates.push(SelectedLoadedPredicate);
+            setPredicates(predicates);
+            onSave(predicates);
+            setSelectedLoadedPredicate(null);
+            alert("Successfully Added!");
+            setDisplayModal(false);
+            return;
+        }
+        let variables = {
             name: PredicateName,
-            description: Description,
-        });
-        setPredicates(predicates);
-        setDisplayModal(false);
-        onSave(predicates);
-        // const variables = {
-        //     userId: _________,
-        //     name: PredicateName,
-        //     description: Description,
-        // }
-        // axios.post(`http://www.localhost:8080/api/predicates/add_predicate`, variables)
-        //     .then(response => {
-        //         if (response.data.success) {
-        //             alert("Successfully Added!");
-        //             predicates = Predicates.push({
-        //                 predicateId: response.data.predicateData.name._id,
-        //                 name: response.data.predicateData.name,
-        //                 description: response.data.predicateData.description,
-        //             });
-        //             setPredicates(predicates);
-        //             setDisplayModal(false);
-        //             onSave(predicates);
-        //         } else {
-        //             console.log("Failed to add predicate");
-        //         }
-        //     });
+            descriptor: Description,
+            userId: JSON.stringify(sessionStorage_get("auth").localId),
+            eventId: "",
+        };
+        axios.post(`http://www.localhost:3014/api/predicates/addPredicate`, variables)
+            .then(response => {
+                if (response.data.success) {
+                    console.log(response.data);
+                    let predicates = Predicates;
+                    variables.predicateId = response.data.predicateData.upsertedId;
+                    predicates.push(variables);
+                    setPredicates(predicates);
+                    onSave(predicates);
+                    alert("Successfully Added!");
+                    setDisplayModal(false);
+                } else {
+                    console.log("Failed to add predicate");
+                }
+            });
     };
 
     const onPredicate = (index) => {
+        console.log(index);
         setDisplayPredicateModal(true);
         setSelectedPredicate(index);
     };
@@ -123,7 +124,7 @@ function Predicates({ addedPredecates, onSave }) {
         setSelectedPredicate(null);
         setPredicateName("");
         setDescription("");
-        // axios.delete(`http://www.localhost:8080/api/predicates/delete_predicate`, { predicateId: Predicates[SelectedPredicate]._id })
+        // axios.delete(`http://www.localhost:8080/api/predicates/delete_predicate`, { predicateId: Predicates[SelectedPredicate].predicateId })
         //     .then(response => {
         //         if (response.data.success) {
         //             alert("Successfully Added!");
@@ -144,61 +145,32 @@ function Predicates({ addedPredecates, onSave }) {
     };
 
     const updatePredicate = () => {
-        setDisplayPredicateModal(false);
-        setPredicateName("");
-        setDescription("");
+        const variables = Predicates[SelectedPredicate];
+        if (PredicateName !== "") variables.name = PredicateName;
+        if (Description !== "") variables.descriptor = Description;
+        axios.post(`http://www.localhost:3014/api/predicates/updatePredicate`, variables)
+            .then(response => {
+                if (response.data.success) {
+                    console.log(response.data);
+                    let predicates = Predicates;
+                    predicates[SelectedPredicate] = variables;
+                    setPredicates(predicates);
+                    onSave(predicates);
+                    alert("Successfully Updated!");
+                    setDisplayPredicateModal(false);
+                } else {
+                    console.log("Failed to add predicate");
+                }
+            });
     };
 
     const predicates = Predicates ? Predicates.map((row, index) => {
         return (
-            <div key={index} className="applet predicates">
-                <Modal                     
-                    title="Predicate" 
-                    visible={DisplayPredicateModal} 
-                    destroyOnClose={true}
-                    onOk={updatePredicate} 
-                    onCancel={onCancel}
-                    footer={[
-                        <Button key="delete" type="primary" danger onClick={deletePredicate}>
-                            Delete
-                        </Button>,
-                        <div key={`modal-${index}`}>
-                            <Button key="back" onClick={onCancel}>
-                                Cancel
-                            </Button>
-                            <Button key="submit" type="primary" onClick={updatePredicate}>
-                                Submit
-                            </Button>
-                        </div>
-                    ]}
-                    className="predicate-update-modal"
-                >
-                    <p>Predicate Name</p>
-                    <Input 
-                        placeholder="Predicate Name"
-                        defaultValue={Predicates && Predicates[SelectedPredicate] && Predicates[SelectedPredicate].name}
-                        onChange={onPredicateName}
-                        className="predicate-input"
-                    />
-                    <p>Predicate Description</p>
-                    <Input 
-                        placeholder="Description"
-                        defaultValue={Predicates && Predicates[SelectedPredicate] && Predicates[SelectedPredicate].description}
-                        onChange={onDescription}
-                        className="predicate-input"
-                    />
-                    <p>Predicate ID</p>
-                    <Input 
-                        placeholder="Predicate ID"
-                        onChange={onDescription}
-                        className="predicate-input"
-                        disabled
-                    />
-                </Modal>
+            <div key={index} className="applet predicates" onClick={() => onPredicate(index)}>
                 <DiHaskell />
-                <div onClick={() => onPredicate(index)}>
+                <div>
                     <h3>{row.name}</h3>
-                    <p>{row.description}</p>
+                    <p>{row.descriptor}</p>
                 </div>
             </div>
         );
@@ -222,6 +194,11 @@ function Predicates({ addedPredecates, onSave }) {
                 ]}
                 className="predicate-modal"
             >
+                <p>Choose Your Predicate</p>
+                <Select style={{ width: "100%" }} onChange={onUserPredicate} className="predicate-input">
+                    <Option value={-1}>N/A</Option>
+                    {userPredicates}
+                </Select>
                 <p>Predicate Name</p>
                 <Input 
                     placeholder="Predicate Name"
@@ -233,6 +210,50 @@ function Predicates({ addedPredecates, onSave }) {
                     placeholder="Description"
                     onChange={onDescription}
                     className="predicate-input"
+                />
+            </Modal>
+            <Modal                     
+                title="Predicate" 
+                visible={DisplayPredicateModal} 
+                destroyOnClose={true}
+                onOk={updatePredicate} 
+                onCancel={onCancel}
+                footer={[
+                    <Button key="delete" type="primary" danger onClick={deletePredicate}>
+                        Delete
+                    </Button>,
+                    <div>
+                        <Button key="back" onClick={onCancel}>
+                            Cancel
+                        </Button>
+                        <Button key="submit" type="primary" onClick={updatePredicate}>
+                            Submit
+                        </Button>
+                    </div>
+                ]}
+                className="predicate-update-modal"
+            >
+                <p>Predicate Name</p>
+                <Input 
+                    placeholder="Predicate Name"
+                    defaultValue={Predicates && Predicates[SelectedPredicate] && Predicates[SelectedPredicate].name}
+                    onChange={onPredicateName}
+                    className="predicate-input"
+                />
+                <p>Predicate Description</p>
+                <Input 
+                    placeholder="Description"
+                    defaultValue={Predicates && Predicates[SelectedPredicate] && Predicates[SelectedPredicate].descriptor}
+                    onChange={onDescription}
+                    className="predicate-input"
+                />
+                <p>Predicate ID</p>
+                <Input 
+                    placeholder="Predicate ID"
+                    defaultValue={Predicates && Predicates[SelectedPredicate] && Predicates[SelectedPredicate].predicateId}
+                    onChange={onDescription}
+                    className="predicate-input"
+                    disabled
                 />
             </Modal>
             <SmallHeader title="Predicates" />

@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 
 // Note: MongoDB automatically creates each document's identifier as "_id".
 const eventSchema = mongoose.Schema({
-    eventConfig: { type: Number, required: true },      // Event config
+    eventConfig: { type: [Number], required: true },    // Event config
                                                             // 1: Run after event passed
                                                             // 2: Hang till predicate satisfied
                                                             // 3: On client failure. Retry signal

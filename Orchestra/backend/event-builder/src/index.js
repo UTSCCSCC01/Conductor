@@ -44,7 +44,7 @@ app.post('/api/eventbuilder', (req, res) => {
     res.send("This is the event service. If working through port 8080 nginx working");
 });
 
-app.options('/api/events/addEvent', function (req, res) {
+app.options('/api/eventbuilder/addEvent', function (req, res) {
     res.setHeader("Access-Control-Allow-Origin", "*");
     res.setHeader('Access-Control-Allow-Methods', '*');
     res.setHeader("Access-Control-Allow-Headers", "*");
@@ -54,11 +54,11 @@ app.options('/api/events/addEvent', function (req, res) {
 // Adds a new device to the DB
 app.post('/api/eventbuilder/addEvent', (req, res) => {
     // Check if nonempty variable
-    const notEmptyQuery = [req.body.eventConfig, req.body.predicate];
-    for (const element of notEmptyQuery) {
-        if ((!element || element === undefined) && element !== 0) {
-            return res.status(400).send({ success: false, status: "invalid response" });
-        }
+    if (!req.body.eventConfig || req.body.eventConfig === undefined || req.body.eventConfig.length === 0) {
+        return res.status(400).send({ success: false, status: "invalid response" });
+    }
+    if ((!req.body.predicate || req.body.predicate === undefined) && req.body.predicate !== 0) {
+        return res.status(400).send({ success: false, status: "invalid response" });
     }
 
     // Check if nonempty string

@@ -630,7 +630,8 @@
 .bot-event-blocks>.event-info .event-input.ant-input,
 .bot-event-blocks>.event-info .event-input.ant-picker,
 .predicate-modal .predicate-input.ant-input,
-.predicate-update-modal .predicate-input.ant-input {
+.predicate-update-modal .predicate-input.ant-input,
+.predicate-modal .predicate-input.ant-select {
     margin-bottom: 10px;
     border: 1px solid #F0F1F7;
     border-radius: 5px;

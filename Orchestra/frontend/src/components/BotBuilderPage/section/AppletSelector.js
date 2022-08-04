@@ -78,6 +78,8 @@ function AppletSelector({ addedApplet, appletIndex, deviceId, onAppletSelector, 
                     if (appletIndex === 0) {
                         setGivenApplets(response.data.result.bots);
                         setFilteredApplets(response.data.result.bots);
+                        setGivenApplets(webBots);
+                        setFilteredApplets(webBots);
                     } else if (appletIndex === 1) {
                         setGivenApplets(response.data.result.native_app);
                         setFilteredApplets(response.data.result.native_app);
