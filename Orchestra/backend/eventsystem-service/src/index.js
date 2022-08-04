@@ -277,9 +277,12 @@ app.post("/event/satisifypredicate", async (req,res) => {
     
     let predicate_satisfied = false;
 
-    console.log(event_result);
+
     if(event_result["TotalPredicateSatisfied"] + 1 == event_result["NumberOfPredicates"]){
         predicate_satisfied = true;
+        handlePredicateSatisfaction(event_id, event_result); //async task for server. 
+        //------------Execute Code----------// where predicate satisfied
+        
     }
 
     if(!event_result["Terminated"] && event_result["TotalPredicateSatisfied"] < event_result["NumberOfPredicates"]){
@@ -306,7 +309,12 @@ app.post("/event/satisifypredicate", async (req,res) => {
     return res.status(500).send({success: true, status: "success", result: event_result});
 })
 
-
+async function handlePredicateSatisfaction(event_id, event){
+    //handleEventExecution if (not terminated) and (TimeSatisfied) and  (not DispatcherAcknowledged)
+    console.log("Inside Predicate Satisfied");
+    console.log("predicateSatisfiedHandler", event_id, event)
+    //handle
+}
 
 /*--------------------------------------- PREDICATE SIGNAL STATE REGION----------------------------------------/*
 
