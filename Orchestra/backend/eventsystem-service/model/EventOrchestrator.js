@@ -14,6 +14,10 @@ const eventExecutionSchema = mongoose.Schema({
     TotalPredicateSatisfied: {type: Number, default: 0}, //Increment, signal sent by predicate microservice: Initally 0
     PredicateState: {type: Boolean, default: false}, //Finite State switch: switches to true iff NumberOfPredicates == TotalPredicateSatisfied.
     TimeSatisfied: {type: Boolean, default: false}, // Finite State switch: switches to true iff mongodb stream sends trigger of eventid
+    TimeTooLate: {type: Boolean, default: false}, //
+
+    RunUponSignIn: {type: Boolean, default: false}, 
+
 
     //Did the dispatcher see this event job, and try to process it
     DispatcherAcknowledged: {type: Boolean, default: false},
