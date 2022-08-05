@@ -73,6 +73,7 @@ async function signalWatcher(){
 
         
         if(next.operationType == 'delete'){
+            console.log("--------TIME TO EXECUTE HAS ARRIVED-------");
             console.log(next);
             //handleExecutionDateOccur(next.documentKey._id);
         }
@@ -275,18 +276,22 @@ app.post("/event/satisifypredicate", async (req,res) => {
         return res.status(500).send({success: false, status: "error", event_result: undefined});
     }
     
+    if(event_result["Terminated"]){
+        return res.status(405).send({success: false, status: "Event has been terminated. Cannot increment predidcate count", event_result: undefined});
+    }
     let predicate_satisfied = false;
 
 
-    if(event_result["TotalPredicateSatisfied"] + 1 == event_result["NumberOfPredicates"]){
+    if((event_result["TotalPredicateSatisfied"]) + 1 == event_result["NumberOfPredicates"]){
         predicate_satisfied = true;
         handlePredicateSatisfaction(event_id, event_result); //async task for server. 
         //------------Execute Code----------// where predicate satisfied
         
     }
 
+    console.log(event_result["TotalPredicateSatisfied"],  event_result["NumberOfPredicates"], event_result["TotalPredicateSatisfied"] ==  event_result["NumberOfPredicates"])
+
     if(!event_result["Terminated"] && event_result["TotalPredicateSatisfied"] < event_result["NumberOfPredicates"]){
-        console.log(event_result["TotalPredicateSatisfied"],  event_result["NumberOfPredicates"])
         const query = {EventId: event_id}
         const updateExecutionDateFlag = {
             $inc: {"TotalPredicateSatisfied": 1},
@@ -297,7 +302,7 @@ app.post("/event/satisifypredicate", async (req,res) => {
         }catch{
             console.log("Critical Error has occured! Unable to increment PredicateSatisfyCount.");
             console.log("EventID: ", event_id, " is now in an undefined state. -1 predicate");
-            console.log("SEND THIS TO STATUS REPORT MODULE INSTANTLY");
+            console.log("This incident has been reported to status microservice");
         }
     }else if(event_result["Terminated"]){
         return res.status(400).send({success: false, status: "cannot increment terminated event", result: event_result});
@@ -311,18 +316,75 @@ app.post("/event/satisifypredicate", async (req,res) => {
 
 async function handlePredicateSatisfaction(event_id, event){
     //handleEventExecution if (not terminated) and (TimeSatisfied) and  (not DispatcherAcknowledged)
-    console.log("Inside Predicate Satisfied");
-    console.log("predicateSatisfiedHandler", event_id, event)
-    //handle
+
+    //If event is terminated:
+    //  This is either because time has passed.
+    //  Suppose Dispatcher Acknowledged, and this function ran
+    //  then that means the event was processed even though predicate was not satisified
+    //  which is a contradiction. 
+
+    //  This means predicate either hangs and waits for time or execute an event
+    //  we dont check the current time and mark as failure to avoid race conditions
+    if(event["TimeSatisfied"] || ((event["TimeTooLate"]) && event["RunAfterEventPassed"])){
+        console.log("Going to send event to the dispatcher");
+        handleEventExecution(eventid,event);
+        return;
+    }
+
+    //Time not satisfied, exit and wait till time signal comes in.
 }
 
 /*--------------------------------------- PREDICATE SIGNAL STATE REGION----------------------------------------/*
 
-
-
-
 /*--------------------------------------------------DISPATCHER STATE REGION---------------------------------------------- */
+async function handleEventExecution(eventid,event){
+    //Send Post Request to the dispatcher microservice, and wait for a response
 
+    //In either case set DispatcherAcknowledged if dispatcher request tried to process it.
+
+    //If 200: Set UserSemiAcknowledged=True and terminate event
+
+    //If otherwise keep false.
+    
+    //If post request = 200
+}
+
+//Returns true is sent to client, false if not online or failed.
+async function sendEventExecution(eventid){
+    return 1;
+}
+
+async function handleDispatcherResponse(eventid,event){
+    let reached_client = undefined;
+    let dispatcher_acknowledged = true; //Maybe we dont need this
+    let terminate = true;
+    let RunUponSignIn = false;
+    let UserSemiAcknowledged = false;
+
+    /**
+     * Once we ready to send a event it terminates
+     * User is responsible for executing event based on RunUponSignIn flag
+     * 
+     * Event wont be in this state if it mismatched any of its execution preconditions
+     * unless otherwise specified by their status flags.
+     *  
+    */
+
+    try{
+        reached_client = await sendEventExecution(eventid);
+        dispatcher_acknowledged = true;
+    }catch{
+        if(event["ClientFailureRetrySignal"]){
+            RunUponSignIn = true;
+        }
+    }
+
+    if(reached_client){
+        UserSemiAcknowledged = true;
+    }
+
+
+}
 /*--------------------------------------------------DISPATCHER STATE REGION---------------------------------------------- */
 
 
