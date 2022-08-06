@@ -5,9 +5,10 @@
 }
 
 .navbar{
-    width: 175px;
+    position:fixed;
+    width: 200px;
     grid-area: sidebar;
-    background-color: #604883;
+    background-color: #2C1849;
     height: 100vh;
     display:flex;
     flex-direction: column;
@@ -30,7 +31,7 @@
 .menu-options>a{
     text-decoration: none;
     display: flex;
-    width: 175px;
+    width: 200px;
     height: 56px;
     justify-content: center;
     align-items: center;
@@ -41,7 +42,7 @@
     font-size: 16px;
     line-height: 20px;
     letter-spacing: 0.2px;
-    color: #D6D8E5;
+    color: #BDBEC6;
     transition: background 200ms ease;
 }
 

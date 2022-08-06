@@ -20,6 +20,10 @@ class Executor(ABC):
         '''Executes a native application with optional launch params'''
 
     @abstractclassmethod
+    def execute(self, name:str, params:str) ->None:
+        '''Wrapper for native_exec'''
+
+    @abstractclassmethod
     def bot_exec(self, params:str) ->None:
         '''Executes a bot application from the orchestra webstore'''
 

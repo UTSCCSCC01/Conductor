@@ -30,3 +30,7 @@ class MacExecutor(Executor):
     def bot_exec(self, params) -> None:
         '''Executes a bot application from the orchestra webstore'''
         return {}
+
+    def execute(self, name:str, params:str) ->None:
+        '''Wrapper for native_exec'''
+        pass

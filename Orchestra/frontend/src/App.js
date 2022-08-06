@@ -10,6 +10,8 @@ import CalendarPage from './components/CalendarPage/CalendarPage';
 import MyBotsPage from './components/MyBotsPage/MyBotsPage';
 import DeviceStatusPage from './components/DevicePage/DeviceStatusPage';
 import DeviceListPage from './components/DevicePage/DeviceListPage';
+import UploadBotPage from './components/UploadBotPage/UploadBotPage';
+import Marketplace from './components/Marketplace/Marketplace';
 import BotEventsPage from './components/BotBuilderPage/BotEventsPage';
 import EventEditorPage from './components/BotBuilderPage/EventEditorPage';
 
@@ -44,6 +46,8 @@ function App() {
             <Route path="/dashboard/mybots" element={<div className='dashboard-layout'><NavBarTwo/> <TopBar/> <MyBotsPage /></div>} />
             <Route path="/dashboard/devices" element={<div className='dashboard-layout'><NavBarTwo/> <TopBar/> <DeviceStatusPage /></div>} />
             <Route path="/dashboard/devices/list" element={<div className='dashboard-layout'><NavBarTwo/> <TopBar/> <DeviceListPage /></div>} />
+            <Route path="/dashboard/upload" element={<div className='dashboard-layout'><NavBarTwo/> <TopBar/> <UploadBotPage /></div>} />
+            <Route path="/dashboard/marketplace" element={<div className='dashboard-layout'><NavBarTwo/> <TopBar/> <Marketplace /></div>} />
             <Route path="/dashboard/builder" element={<div className='dashboard-layout'><NavBarTwo/> <TopBar/> <BotEventsPage /></div>} />
             <Route path="/dashboard/builder/editor" element={<div className='dashboard-layout'><NavBarTwo/> <TopBar/> <EventEditorPage /></div>} />
           </Route>
