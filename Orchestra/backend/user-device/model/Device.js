@@ -28,4 +28,4 @@ const deviceSchema = mongoose.Schema({
 const Device = mongoose.model('Device', deviceSchema);
 const BotInfo = mongoose.model('BotInfo', botInfoSchema);
 
-module.exports = { Device };
+module.exports = { Device, BotInfo };

@@ -2,7 +2,7 @@
 //Import models, and server configs.
 const { MONGO_DB_URI, PORT } = require("./config/config");
 const { Device } = require('../model/Device');
-const { BotInfo } = require('../model/BotInfo');
+const { BotInfo } = require('../model/Device');
 
 const express = require('express');
 const cors = require('cors');
