@@ -1,9 +1,14 @@
 const mongoose = require('mongoose');
 
+const botInfoSchema = mongoose.Schema({
+    name: {type: String, required: true},
+    buid: {type: String, required: true}
+});
+
 // Note: MongoDB automatically creates each document's identifier as "_id".
 const deviceSchema = mongoose.Schema({
     //Application Lists
-    bots:{ type: [String], required: true},         // Bots connected to the device. [Future: replace type string to type: BotInfo]
+    bots:[{ type: [botInfoSchema], required: true}],         // Bots connected to the device. [Future: replace type string to type: BotInfo]
     
     native_app: [{type:[String], required: true}],
     custom_app: [{type:[String], required: true}],
@@ -21,5 +26,6 @@ const deviceSchema = mongoose.Schema({
 });
 
 const Device = mongoose.model('Device', deviceSchema);
+const BotInfo = mongoose.model('BotInfo', botInfoSchema);
 
 module.exports = { Device };
