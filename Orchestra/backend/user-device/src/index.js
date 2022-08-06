@@ -114,6 +114,7 @@ app.post('/api/devices/addDevice', (req, res) => {
     //Check if not empty string.
     const check_not_empty = [req.body.deviceId, req.body.userId, req.body.platform, req.body.name];
     for (const element of check_not_empty){
+
         if((element === "")){
             return res.status(200).send({success: true, status: "empty element" + element});
         }
@@ -128,12 +129,12 @@ app.post('/api/devices/addDevice', (req, res) => {
         custom_app: [],
         created: Date.now(),
         status: true,
-        //User provided payload.
-        deviceId: (req.body.deviceId).trim(),
+        // User provided payload.
+        deviceId: req_deviceId,
+        name: req.body.name.trim(),
         description: req.body.description.trim(),
         platform: req.body.platform.trim(),
-        name: req_userId,
-        userId: req_userId,          
+        userId: req_userId,
     }
     //Verify if the generate payload matches Device
     let device = null;

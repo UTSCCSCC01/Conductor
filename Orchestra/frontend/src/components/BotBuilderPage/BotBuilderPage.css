@@ -1,0 +1,665 @@
+/* Scrollbar */
+::-webkit-scrollbar {
+    -webkit-appearance: none;
+    width: 7px;
+}
+::-webkit-scrollbar-thumb {
+    border-radius: 4px;
+    background-color: rgba(0, 0, 0, .5);
+    -webkit-box-shadow: 0 0 1px rgba(255, 255, 255, .5);
+}
+
+/* Bot Events Page */
+.bot-events-container {
+    margin-left: 50px;
+    margin-right: 50px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 100%;
+}
+
+.bot-events {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 10px;
+    border-radius: 10px;
+    width: 100%;
+    min-width: 1150px;
+    height: auto;
+    background-color: #fff;
+    box-shadow: 0px 0px 10px #ccc;
+}
+
+.bot-events:not(:last-child) {
+    margin-bottom: 30px;
+}
+
+.bot-events>.bot-events-table {
+    padding: 10px 20px;
+    width: 100%;
+    max-height: 500px;
+    height: auto;
+    overflow-y: scroll;
+}
+
+/* Event Editor Page */
+.bot-events.page-title {
+    align-items: flex-start;
+    padding-left: 30px;
+}
+
+.bot-events h2 {
+    margin: 0;
+}
+
+.bot-events-container>.bot-events-body {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    height: 100%;
+}
+
+.bot-events-container>.bot-events-body>.events-column {
+    width: 100%;
+    height: 100%;
+}
+
+.bot-events-container>.bot-events-body>.events-column:not(:last-child) {
+    margin-right: 30px;
+}
+
+.save-event {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    border: 1px solid #29D076;
+    border-radius: 10px;
+    padding: 20px 20px;
+    width: 100%;
+    background-color: #ABE4A9;
+    cursor: pointer;
+}
+
+.save-event:hover {
+    background-color: #fff;
+}
+
+.save-event>svg {
+    margin-right: 20px;
+    width: 50px;
+    height: 50px;
+    color: #6D6E76;
+}
+
+.save-event>div {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 70%;
+}
+
+.save-event>div>h2 {
+    margin-bottom: 0;
+    color: #6D6E76;
+    font-weight: 600;
+}
+
+/* Event Configs */
+.bot-event-blocks {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 10px;
+    border-radius: 10px;
+    width: 100%;
+    height: auto;
+    background-color: #fff;
+    box-shadow: 0px 0px 10px #ccc;
+}
+
+.bot-event-blocks:not(:last-child) {
+    margin-bottom: 30px;
+}
+
+.bot-event-blocks>.event-configs {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 10px;
+    padding: 0 20px;
+    width: 100%;
+}
+
+.bot-event-blocks>.event-configs>.config {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    border: 1px solid #696CFF;
+    border-radius: 5px;
+    padding: 5px 10px;
+    width: 100%;
+}
+
+.bot-event-blocks>.event-configs>.config:not(:last-child) {
+    margin-bottom: 10px;
+}
+
+.bot-event-blocks>.event-configs>.config>div {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+}
+
+.bot-event-blocks>.event-configs>.config>div>svg {
+    width: 20px;
+    height: 20px;
+    color: #ddd;
+}
+
+.bot-event-blocks>.event-configs>.config>.checked>svg {
+    color: #666;
+}
+
+.bot-event-blocks>.event-configs>.config>p {
+    margin-left: 10px;
+    margin-bottom: 0;
+    color: #697A8D;
+}
+
+/* Platform Execution */
+.bot-event-blocks>.platform-execution {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 10px;
+    padding: 0 20px;
+    width: 100%;
+}
+
+.bot-event-blocks>.platform-execution>div:not(:last-child) {
+    margin-bottom: 15px;
+}
+
+.bot-event-blocks>.platform-execution>.selected-device {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    width: 90%;
+}
+
+.bot-event-blocks>.platform-execution>.selected-device>.device-icon {
+    width: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-right: 1px solid #D8D8D8;
+}
+
+.bot-event-blocks>.platform-execution>.selected-device>.device-icon>svg {
+    width: 90px;
+    height: 90px;
+}
+
+.bot-event-blocks>.platform-execution>.selected-device>.device-info {
+    width: 50%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.bot-event-blocks>.platform-execution>.selected-device>.device-info>p {
+    margin-bottom: 3px;
+    font-weight: 600;
+    font-size: 1.3em;
+}
+
+.bot-event-blocks>.platform-execution>.no-device {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 1px dotted #D8D8D8;
+    border-radius: 10px;
+    width: 100%;
+    height: 90px;
+    font-weight: 600;
+    font-size: 1.3em;
+}
+
+.bot-event-blocks>.platform-execution>.search-device,
+.bot-event-blocks>.platform-execution>.search-device .ant-btn {
+    width: 100%;
+    color: #A3A3A7;
+    font-weight: 500;
+}
+
+.bot-event-blocks>.platform-execution>.search-device .ant-btn {
+    border-color: #A3A3A7;
+    border-radius: 5px;
+}
+
+.bot-event-blocks>.platform-execution>.user-device-list,
+.bot-event-blocks>.platform-execution>.user-device-list>.table {
+    width: 100%;
+    padding: 0;
+}
+
+.bot-event-blocks>.platform-execution>.user-device-list>.table .table-body {
+    height: 130px;
+    overflow-y: scroll;
+}
+
+.bot-event-blocks>.platform-execution>.user-device-list>.table .table-body-row>div:last-child {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.bot-event-blocks>.platform-execution>.user-device-list>.table .table-body-row>.row.large {
+    max-width: 88px;
+}
+
+.bot-event-blocks>.platform-execution>.user-device-list>.table .table-body-row>.row.large p {
+    max-width: 88px;
+    word-wrap: break-word;
+}
+
+/* Applet */
+.bot-event-blocks>.applet-list {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 10px;
+    padding: 0 20px;
+    width: 100%;
+}
+
+.bot-event-blocks>.applet-list .applet {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    border: 1px solid #DFE0EB;
+    border-radius: 10px;
+    padding: 10px 20px;
+    width: 100%;
+    cursor: pointer;
+}
+
+.bot-event-blocks>.applet-list .applet.save {
+    border-color: #76A382;
+}
+
+.bot-event-blocks>.applet-list .applet:not(:last-child) {
+    margin-bottom: 10px;
+}
+
+.bot-event-blocks>.applet-list .applet:hover,
+.bot-event-blocks>.applet-list .applet.selected {
+    background-color: #DFE0EB;
+}
+
+.bot-event-blocks>.applet-list .applet.save:hover {
+    background-color: #C2DFC0;
+}
+
+.bot-event-blocks>.applet-list .applet>svg {
+    margin-right: 20px;
+    width: 50px;
+    height: 50px;
+    color: #6D6E76;
+}
+
+.bot-event-blocks>.applet-list .applet.save>svg {
+    color: #76A382;
+}
+
+.bot-event-blocks>.applet-list .applet>div {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 70%;
+}
+
+.bot-event-blocks>.applet-list .applet>div>h3 {
+    margin-bottom: 0;
+    color: #6D6E76;
+    font-weight: 600;
+}
+
+.bot-event-blocks>.applet-list .applet.save>div>h3 {
+    color: #76A382;
+}
+
+.bot-event-blocks>.applet-list .applet>div>p {
+    margin-bottom: 0;
+    font-size: 0.9em;
+    color: #6D6E76;
+}
+
+.applet-modal.ant-modal {
+    width: 600px !important;
+}
+
+.applet-modal.delete {
+    width: 600px !important;
+}
+
+.applet-modal .ant-modal-header {
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+}
+
+.applet-modal .ant-modal-content {
+    border-radius: 10px !important;
+}
+
+.applet-modal .ant-modal-content .ant-modal-body {
+    padding: 10px;
+}
+
+.applet-modal .selected>.status-button>.ant-btn {
+    border-radius: 50px;
+    font-weight: bold;
+
+    border-color: #7F6CA1;
+    background-color: #fff;
+    color: #7F6CA1;
+}
+
+.applet-modal .selected>.status-button>.ant-btn:hover {
+    border-color: #530BF4;
+    background-color: #530BF4;
+    color: #fff;
+}
+
+/* Applet Selector */
+.applet-selector {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+}
+
+.applet-selector .selector-block {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 10px;
+    border-radius: 10px;
+    width: 100%;
+    height: auto;
+    background-color: #fff;
+    box-shadow: 0px 0px 10px #ccc;
+}
+
+.applet-selector .selector-block {
+    margin-bottom: 20px;
+    padding: 10px 20px;
+}
+
+.applet-selector .selector-block.selector-header {
+    margin-bottom: 50px;
+}
+
+.applet-selector .selector-block.selector-header svg {
+    margin-right: 15px;
+    width: 35px;
+    height: 35px;
+}
+
+.applet-selector .selector-block.selector-header .ant-input {
+    width: 100%;
+}
+
+.applet-selector .selector-block.selector-header h2 {
+    margin-bottom: 0;
+}
+
+.applet-selector .selector-block.selector-search {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+.applet-selector .selector-block.selector-search .search-icon {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-right: 15px;
+}
+
+.applet-selector .selector-block.selector-search svg {
+    width: 20px;
+    height: 20px;
+}
+
+.applet-selector .selector-block.selector-search .ant-input {
+    border: none;
+}
+
+.applet-selector .selector-block.selector-applet {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+    border: 2px solid #dcdcdc;
+    box-shadow: none;
+}
+
+.applet-selector .selector-block.selector-applet:last-child {
+    margin-bottom: 0;
+}
+
+.applet-selector .selector-block.selector-applet>.selector-info {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.applet-selector .selector-block.selector-applet>.selector-info svg {
+    margin-right: 15px;
+    width: 30px;
+    height: 30px;
+}
+
+.applet-selector .selector-block.selector-applet>.selector-info p {
+    margin-bottom: 0;
+}
+
+.applet-selector .selector-block.selector-button {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+
+.applet-selector .selector-block.exec-arg {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 20px;
+    width: 100%;
+}
+
+.applet-selector .selector-block.exec-arg>.arg-header {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.applet-selector .selector-block.exec-arg>.arg-header>svg {
+    width: 30px;
+    height: 30px;
+}
+
+.applet-selector .selector-block.exec-arg>.arg-header>h2 {
+    margin-bottom: 0;
+    margin-left: 10px;
+}
+
+.applet-selector .selector-block.exec-arg .arg-text {
+    width: 100%;
+}
+
+.applet-selector .selector-block.exec-arg .arg-input.ant-input {
+    padding: 15px 20px;
+    font-family: "Courier New";
+    font-weight: bold;
+}
+
+.applet-selector .selector-block.exec-arg>.arg-buttons {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    align-items: center;
+    margin-top: 10px;
+}
+
+.applet-selector .selector-block.selector-button .selector-cancel .ant-btn {
+    margin-right: 10px;
+    border-color: #7F6CA1;
+    border-radius: 50px;
+    background-color: #fff;
+    font-weight: bold;
+    color: #7F6CA1;
+}
+
+.applet-selector .selector-block.selector-button .selector-cancel .ant-btn:hover {
+    border-color: #530BF4;
+    background-color: #530BF4;
+    color: #fff;
+}
+
+.applet-selector>.selector-list {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    margin-bottom: 30px;
+    max-height: 190px;
+    overflow-y: scroll;
+}
+
+.applet-selector>.selector-list .selected>.status-button>.ant-btn {
+    border-color: #7F6CA1;
+    border-radius: 50px;
+    background-color: #fff;
+    font-weight: bold;
+    color: #7F6CA1;
+}
+
+.applet-selector>.selector-list .selected>.status-button>.ant-btn:hover {
+    border-color: #530BF4;
+    background-color: #530BF4;
+    color: #fff;
+}
+
+.applet-selector>.exec-arg {
+    margin-bottom: 30px;
+}
+
+.applet-modal .exec-arg>.arg-buttons>.ant-btn {
+    margin-left: 10px;
+    border-radius: 5px;
+}
+
+.applet-modal .exec-arg>.arg-buttons>.ant-btn.arg-exit {
+    border-color: #D85050;
+    color: #D85050;
+}
+
+.applet-modal .exec-arg>.arg-buttons>.ant-btn.arg-exit:hover {
+    background-color: #D85050;
+    color: #fff;
+}
+
+.applet-modal .exec-arg>.arg-buttons>.ant-btn.arg-add {
+    border-color: #00CE55;
+    color: #00CE55;
+}
+
+.applet-modal .exec-arg>.arg-buttons>.ant-btn.arg-add:hover {
+    background-color: #00CE55;
+    color: #fff;
+}
+
+/* .bot-events-container>.applet-selector-body {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    height: 100%;
+}
+
+.bot-events-container>.applet-selector-body>.events-column {
+    width: 100%;
+    height: 100%;
+}
+
+.bot-events-container>.applet-selector-body>.events-column:not(:last-child) {
+    margin-right: 30px;
+} */
+
+/* EventInfo */
+.bot-event-blocks>.event-info {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    margin-bottom: 21px;
+    padding: 0 20px;
+    width: 100%;
+}
+
+.exec-arg .arg-text>p,
+.bot-event-blocks>.event-info>p {
+    margin-bottom: 5px;
+}
+
+.exec-arg .arg-input.ant-input,
+.bot-event-blocks>.event-info .event-input.ant-input,
+.bot-event-blocks>.event-info .event-input.ant-picker,
+.predicate-modal .predicate-input.ant-input,
+.predicate-update-modal .predicate-input.ant-input,
+.predicate-modal .predicate-input.ant-select {
+    margin-bottom: 10px;
+    border: 1px solid #F0F1F7;
+    border-radius: 5px;
+    text-align: left;
+    background-color: #FCFDFE;
+}
+
+.bot-event-blocks>.event-info .event-input.ant-input.ant-input-status-error {
+    border-color: #FF4D4F;
+}
+
+/* Predicates */
+.predicate-modal p,
+.predicate-update-modal p {
+    margin-bottom: 10px;
+}
+
+.predicate-update-modal .ant-modal-footer {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    text-align: center;
+    padding: 10px 24px;
+}
+
+.applet-list>.added-applet {
+    width: 100%;
+    max-height: 200px;
+    overflow-y: scroll;
+    margin-bottom: 10px;
+}

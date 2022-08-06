@@ -6,10 +6,14 @@ import HomePage from './components/HomePage/HomePage';
 import NavBarOne from './components/NavBar/NavBarOne';
 import NavBarTwo from './components/NavBar/NavBarTwo';
 import TopBar from './components/TopBar/TopBar';
+import CalendarPage from './components/CalendarPage/CalendarPage';
+import MyBotsPage from './components/MyBotsPage/MyBotsPage';
 import DeviceStatusPage from './components/DevicePage/DeviceStatusPage';
 import DeviceListPage from './components/DevicePage/DeviceListPage';
 import UploadBotPage from './components/UploadBotPage/UploadBotPage';
 import Marketplace from './components/Marketplace/Marketplace';
+import BotEventsPage from './components/BotBuilderPage/BotEventsPage';
+import EventEditorPage from './components/BotBuilderPage/EventEditorPage';
 
 import {Provider} from 'react-redux';
 import { ToastContainer } from 'react-toastify';
@@ -38,10 +42,14 @@ function App() {
           <Route path="/dashboard" element={<PrivateRoute/>}>
             <Route path="/dashboard" element={<div className='dashboard-layout'><NavBarTwo/> <TopBar/> <HomePage /></div>} />
             <Route path="/dashboard/home" element={<div className='dashboard-layout'><NavBarTwo/> <TopBar/> <HomePage /></div>} />
+            <Route path="/dashboard/calendar" element={<div className='dashboard-layout'><NavBarTwo/> <TopBar/> <CalendarPage /></div>} />
+            <Route path="/dashboard/mybots" element={<div className='dashboard-layout'><NavBarTwo/> <TopBar/> <MyBotsPage /></div>} />
             <Route path="/dashboard/devices" element={<div className='dashboard-layout'><NavBarTwo/> <TopBar/> <DeviceStatusPage /></div>} />
             <Route path="/dashboard/devices/list" element={<div className='dashboard-layout'><NavBarTwo/> <TopBar/> <DeviceListPage /></div>} />
             <Route path="/dashboard/upload" element={<div className='dashboard-layout'><NavBarTwo/> <TopBar/> <UploadBotPage /></div>} />
             <Route path="/dashboard/marketplace" element={<div className='dashboard-layout'><NavBarTwo/> <TopBar/> <Marketplace /></div>} />
+            <Route path="/dashboard/builder" element={<div className='dashboard-layout'><NavBarTwo/> <TopBar/> <BotEventsPage /></div>} />
+            <Route path="/dashboard/builder/editor" element={<div className='dashboard-layout'><NavBarTwo/> <TopBar/> <EventEditorPage /></div>} />
           </Route>
         </Routes>
     </BrowserRouter>
