@@ -55,6 +55,50 @@ app.options('/api/devices/addDevice', function (req, res) {
     res.end();
   });
 
+  app.options('/api/devices/addToBots', function (req, res) {
+    res.setHeader("Access-Control-Allow-Origin", "*");
+    res.setHeader('Access-Control-Allow-Methods', '*');
+    res.setHeader("Access-Control-Allow-Headers", "*");
+    res.end();
+  });
+
+
+// Adds buid to bots list
+app.post('/api/devices/addToBots', (req, res) => {
+    const req_userId = (req.body.userId).trim();
+    const req_deviceId = (req.body.deviceId).trim();
+    const req_buid = (req.body.buid).trim();
+    const req_botName = (req.body.botname).trim();
+
+    if(req_botName == "" || req_buid == "" || req_userId == "" || 
+      req_deviceId == "" || typeof req_userId != "string" || 
+      typeof req_deviceId != "string" || 
+      typeof req_buid != "string" || typeof req_botName != "string"  ){
+        return res.status(400).send({success: false, status: "invalid response", errorCode: error});
+    }
+
+    //Debug
+    //console.log("user, deviceID, BUID", req_userId, req_deviceId, req_buid);
+
+    const payload = {name: req_botName, buid: req_deviceId}
+
+    let toAdd = null;
+    try{
+        toAdd = new BotInfo(payload);
+    }catch(err){
+        return res.status(400).send({success: false, status: "payload corrupted"});
+    }
+
+    let query = {userId: req_userId, deviceId: req_deviceId}
+    let values = {$push: { bots: toAdd}}
+
+    Device.updateOne(query, values, (error,result) => {
+        if(error){
+            return res.status(500).send({success: false, status: "Server Error: Failed to update mongodb", error: error});
+        }
+        return res.status(200).send({success: true, status: "Bot list has been updated."});
+    })
+});
   
 
 // Adds a new device to the DB
@@ -171,43 +215,6 @@ app.delete('/api/devices/deleteOneDevice', (req, res) => {
         if (error) return res.status(400).send(error);
         return res.status(200).json({ success: true });
     });
-});
-
-// Adds buid to bots list
-app.post('/api/devices/addToBots', (req, res) => {
-    const req_userId = (req.body.userId).trim();
-    const req_deviceId = (req.body.deviceId).trim();
-    const req_buid = (req.body.buid).trim();
-    const req_botName = (req.body.botname).trim();
-
-    if(req_botName == "" || req_buid == "" || req_userId == "" || 
-      req_deviceId == "" || typeof req_userId != "string" || 
-      typeof req_deviceId != "string" || 
-      typeof req_buid != "string" || typeof req_botName != "string"  ){
-        return res.status(400).send({success: false, status: "invalid response", errorCode: error});
-    }
-
-    //Debug
-    //console.log("user, deviceID, BUID", req_userId, req_deviceId, req_buid);
-
-    const payload = {name: req_botName, buid: req_deviceId}
-
-    let toAdd = null;
-    try{
-        toAdd = new BotInfo(payload);
-    }catch(err){
-        return res.status(400).send({success: false, status: "payload corrupted"});
-    }
-
-    let query = {userId: req_userId, deviceId: req_deviceId}
-    let values = {$push: { bots: toAdd}}
-
-    Device.updateOne(query, values, (error,result) => {
-        if(error){
-            return res.status(500).send({success: false, status: "Server Error: Failed to update mongodb", error: error});
-        }
-        return res.status(200).send({success: true, status: "Bot list has been updated."});
-    })
 });
 
 // Returns list of bots installed on each of this user's devices
