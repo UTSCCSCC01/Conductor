@@ -2,23 +2,21 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
-import moment from 'moment';
+import { sessionStorage_get } from '../../utils/store/store';
 // Components
 import BlueButton from '../Button/BlueButton';
+import Table from '../Table/Table';
 import SmallHeader from '../Header/SmallHeader';
+import StatusButton from '../Button/StatusButton';
 // Style
 import './BotDetailPage.css';
+import { Button, Modal } from 'antd';
+import { StarFilled } from '@ant-design/icons';
 import { DiAndroid, DiApple, DiLinux, DiWindows } from 'react-icons/di';
 import { FiDownload } from 'react-icons/fi';
 import { BiCodeAlt } from 'react-icons/bi';
 
-const sampleComments = [
-    { userId: "user1", text: "comment 1", created: moment() }, 
-    { userId: "user1", text: "comment 2", created: moment().subtract(1, 'days') },
-    { userId: "user2", text: "22345364758679878675641243254365476553423", created: moment().subtract(1, 'days') },
-    { userId: "user1", text: "asdsfgdhfjgkhljkhjghetrweqwrthjgryetwrqefrgfd", created: moment().subtract(1, 'days') },
-    { userId: "user3", text: "comment 5", created: moment().subtract(1, 'days') },
-];
+const userId = sessionStorage_get("auth") && JSON.stringify(sessionStorage_get("auth").localId);
 
 // Page that shows detail of the bot
 function BotDetailPage() {
@@ -29,8 +27,32 @@ function BotDetailPage() {
     const [Name, setName] = useState("");
     const [Platform, setPlatform] = useState("");
     const [Developer, setDeveloper] = useState("");
-    const [Sourcecode, setSourcecode] = useState("");
-    const [Comments, setComments] = useState([]);
+    const [SourcecodeUrl, setSourcecodeUrl] = useState("");
+    const [Filename, setFilename] = useState("");
+    const [Reviews, setReviews] = useState([]);
+    // Download sourcecode
+    const [DeviceList, setDeviceList] = useState([]);
+    const [SelectedDevice, setSelectedDevice] = useState("");
+    const [DisplayModal, setDisplayModal] = useState(false);
+
+    useEffect(() => {
+        if (bot) {
+            axios.get(`http://127.0.0.1:5000/marketplace/${bot}`)
+                .then(response => {
+                    setName(response.data.name);
+                    setDescription(response.data.description);
+                    setPlatform(response.data.platform);
+                    setDeveloper(response.data.developer);
+                    setSourcecodeUrl(response.data.url);
+                    setFilename(response.data.og_filename);
+                });
+            axios.get(`http://127.0.0.1:5000/reviews/${bot}`)
+                .then(response => {
+                    console.log(response.data.results);
+                    setReviews(response.data.results);
+                });
+        }
+    }, [bot]);
 
     const onViewBot = () => {
         if (bot) {
@@ -38,46 +60,125 @@ function BotDetailPage() {
         }
     };
 
-    const onInstall = () => { };
-
-    const onSourceCode = () => { 
-        window.open(Sourcecode);
+    const onInstall = () => {
+        axios.get('http://www.localhost:8080/api/devices/getAllDevices', { params: { userId: userId } })
+            .then(response => {
+                if (response.data.success) {
+                    setDeviceList(response.data.devicesData);
+                    setDisplayModal(true);
+                } else {
+                    console.log("Failed to load devices");
+                }
+            });
     };
 
-    useEffect(() => {
-        setName("TEST_NAME");
-        setDescription("TEST_DESCRIPTION TEST_DESCRIPTIONTEST_DESCRIPTIONTEST_DESCRIPTIONTEST_DESCRIPTIONTEST_DESCRIPTIONTEST_DESCRIPTIONTEST_DESCRIPTIONTEST_DESCRIPTIONTEST_DESCRIPTIONTEST_DESCRIPTIONTEST_DESCRIPTIONTEST_DESCRIPTIONTEST_DESCRIPTION");
-        setSourcecode("TEST_SOURCE_CODE");
-        setComments(sampleComments);
+    const onSourceCode = () => { 
+        window.open(SourcecodeUrl);
+    };
 
-        if (bot) {
-            axios.get(`http://www.localhost:3006/marketplace/${bot}`)
-                .then(response => {
-                    setName(response.data.name);
-                    setDescription(response.data.description);
-                    setPlatform(response.data.platform);
-                    setDeveloper(response.data.developer);
-                    setSourcecode(response.data.url);
-                    setComments(response.data.comments);
-                });
+    // Platform Table Header
+    const deviceHeader = <div className="table-header">
+        <div className="row large"><h3>Name</h3></div>
+        <div className="row large"><h3>UUID</h3></div>
+        <div className="row large"></div>
+    </div>;
+
+    // Installed Bots Table Body
+    const deviceBody = () => {
+        const onSelect = (index) => {
+            setSelectedDevice(DeviceList[index].deviceId);
+        };
+
+        const rows = DeviceList.map((row, index) => {
+            return (
+                <div key={index} className="table-body-row">
+                    <div className="row large"><p>{row.name}</p></div>
+                    <div className="row large"><p>{row.deviceId}</p></div>
+                    <div className="row large">
+                        <StatusButton text="Select" onButton={() => onSelect(index)} />
+                    </div>
+                </div>
+            );
+        });
+        
+        return (
+            <div className="table-body">{rows}</div>
+        );
+    };
+
+    const onDownload = () => {
+        const variables = {
+            userId: userId,
+            deviceId: SelectedDevice,
+            buid: bot,
+            url: SourcecodeUrl,
+            og_filename: Filename
+        };
+        console.log(variables);
+        axios.post('http://127.0.0.1:5000/api/marketplace/download', variables)
+            .then(response => {
+                console.log(response.data);
+                setSelectedDevice("");
+                setDisplayModal(false);
+            });
+    }
+
+    const onCancelModal = () => {
+        setDisplayModal(false);
+    };
+
+    const ratingStars = (rating) => {
+        let stars = [];
+        const ratingNum = parseInt(rating);
+        if (ratingNum && ratingNum > 0 && ratingNum <= 5) {
+            for (let i = 0; i < ratingNum; i++) {
+                stars.push(<StarFilled key={i} />)
+            }
         }
-    }, [bot]);
+        return <div>{stars}</div>;
+    };
 
-    const comments = Comments && Comments.length > 0
-        ? Comments.map((comment, index) => {
+    const comments = Reviews && Reviews.length > 0
+        ? Reviews.map((comment, index) => {
             return (
                 <div key={index} className="comment-block">
                     <div className="comment-user">
-                        <p className="comment-username">{comment.userId}</p>
-                        <p className="comment-date">{comment.created.format("YYYY-MM-DD")}</p>
+                        <div className="comment-left">
+                            <p className="comment-username">{comment.username}</p>
+                            <p className="comment-date">{comment.created}</p>
+                        </div>
+                        <div className="comment-rating">{ratingStars(comment.rating)}</div>
                     </div>
-                    <p className="comment-body">{comment.text}</p>
+                    <p className="comment-body">{comment.comments}</p>
                 </div>
             );
-        }) : undefined;
+        }) : <div>No comments</div>;
 
     return (
         <div className="bot-detail-container">
+            <Modal 
+                title="Download Source Code" 
+                visible={DisplayModal} 
+                destroyOnClose={true}
+                onOk={onDownload} 
+                onCancel={onCancelModal}
+                footer={[
+                    <Button key="back" onClick={onCancelModal}>
+                        Cancel
+                    </Button>,
+                    <Button key="submit" type="primary" onClick={onDownload}>
+                        Download
+                    </Button>
+                ]}
+                className="bot-detail-modal"
+            >
+                <Table 
+                    tableHeader={deviceHeader} 
+                    tableBody={deviceBody()}
+                    isEmpty={DeviceList.length === 0}
+                    emptyText="No Devices"
+                />
+            </Modal>
             <div className="bot-detail page-title">
                 <h2>{Name}</h2>
             </div>
@@ -134,8 +235,8 @@ function BotDetailPage() {
                             <div><h2>Source Code</h2></div>
                         </div>
                     </div>
-                    <div className="bot-detail-blocks">
-                        <SmallHeader title="Comments" buttonName1="Show All" />
+                    <div className="bot-detail-blocks review">
+                        <SmallHeader title="Reviews" buttonName1="Show All" />
                         <div className="bot-device-list comment">
                             {comments}
                         </div>

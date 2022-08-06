@@ -50,7 +50,6 @@ function App() {
             <Route path="/dashboard/upload" element={<div className='dashboard-layout'><NavBarTwo/> <TopBar/> <UploadBotPage /></div>} />
             <Route path="/dashboard/marketplace" element={<div className='dashboard-layout'><NavBarTwo/> <TopBar/> <Marketplace /></div>} />
             <Route path='/dashboard/marketplace/:bot' element={<div className='dashboard-layout'><NavBarTwo/> <TopBar/> <BotDetailPage /></div>} />
-            {/* <Route path='/dashboard/marketplace/bot' element={<div className='dashboard-layout'><NavBarTwo/> <TopBar/> <BotDetailPage /></div>} /> */}
             <Route path="/dashboard/builder" element={<div className='dashboard-layout'><NavBarTwo/> <TopBar/> <BotEventsPage /></div>} />
             <Route path="/dashboard/builder/editor" element={<div className='dashboard-layout'><NavBarTwo/> <TopBar/> <EventEditorPage /></div>} />
           </Route>

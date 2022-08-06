@@ -198,7 +198,29 @@
     margin: 0;
 }
 
+/* BotDeivce Source Code */
+.bot-detail-modal .ant-modal-body {
+    padding: 10px 25px;
+}
+
+.bot-detail-modal .table {
+    padding: 0;
+}
+
+.bot-detail-modal .table .row:last-child {
+    justify-content: flex-end;
+}
+
+.bot-detail-modal .ant-modal-body .table-body {
+    max-height: 400px;
+    overflow-y: scroll;
+}
+
 /* BotDevice Comment */
+.bot-detail-blocks.review .page-header>h2 {
+    margin: 0;
+}
+
 .bot-detail-blocks>.bot-device-list.comment {
     justify-content: flex-start;
     max-height: 360px;
@@ -227,19 +249,30 @@
 .bot-detail-blocks>.bot-device-list .comment-block>.comment-user {
     display: flex;
     flex-direction: row;
-    justify-content: flex-start;
+    justify-content: space-between;
     align-items: center;
     max-width: 260px;
 }
 
-.bot-detail-blocks>.bot-device-list .comment-block>.comment-user>.comment-username {
+.bot-detail-blocks>.bot-device-list .comment-block>.comment-user>.comment-left {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.bot-detail-blocks>.bot-device-list .comment-block>.comment-user .comment-username {
     margin-right: 10px;
     font-weight: bold;
 }
 
-.bot-detail-blocks>.bot-device-list .comment-block>.comment-user>.comment-date {
+.bot-detail-blocks>.bot-device-list .comment-block>.comment-user .comment-date {
     font-size: 11px;
     color: #AAA;
+}
+
+.bot-detail-blocks>.bot-device-list .comment-block>.comment-user>.comment-rating {
+    color: #000054;
 }
 
 .bot-detail-blocks>.bot-device-list .comment-block>.comment-body {
@@ -259,42 +292,7 @@
     font-weight: 600;
 }
 
-/* .bot-detail {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 10px;
-    width: 100%;
-    height: 100%;
-    background-color: #fff;
-    box-shadow: 0px 0px 10px #ccc;
-}
-
-.bot-detail>.container {
-    display: flex;
-    flex-direction: column;
-    padding: 20px 40px;
-    width: 100%;
-}
-
-.bot-detail>.container>.content {
-    display: flex;
-    width: 100%;
-}
-
-.bot-detail>.container>.content:not(:last-child) {
-    margin-bottom: 30px;
-}
-
-.bot-detail .content>.section {
-    width: 100%;
-}
-
-.bot-detail .content>.section:not(:last-child) {
-    margin-right: 30px;
-} */
-
-/* Section - Devices */
+/* Section - Supported Devices */
 .bot-detail .content .supported-devices {
     display: flex;
     flex-flow: row wrap;
@@ -323,32 +321,6 @@
 
 .bot-detail .content .supported-devices>.devices-button>.blue-button>.ant-btn {
     width: 100%;
-}
-
-/* Section - Review */
-.bot-detail .content .review {
-    display: flex;
-    justify-content: space-between;
-    width: 100%;
-}
-
-.bot-detail .content .review .comments {
-    flex-grow: 1;
-    display: flex;
-    flex-direction: column;
-    margin-left: 15px;
-    width: 100%;
-}
-
-.bot-detail .content .review .comments .comment-block {
-    margin-bottom: 10px;
-    width: 100%;
-}
-
-.bot-detail .content .review .comments .comment-block>.rating {
-    font-size: 25px;
-    text-align: left;
-    color: #000054;
 }
 
 /* Section Header */
