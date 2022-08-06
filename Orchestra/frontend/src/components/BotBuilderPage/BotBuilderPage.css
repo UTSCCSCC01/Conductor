@@ -44,6 +44,16 @@
     overflow-y: scroll;
 }
 
+.bot-events>.bot-events-table .status-button>button {
+    border-color: #ff4d4f;
+    background-color: #ff4d4f;
+}
+
+.bot-events>.bot-events-table .status-button>button:hover {
+    background-color: #fff;
+    color: #ff4d4f;
+}
+
 /* Event Editor Page */
 .bot-events.page-title {
     align-items: flex-start;

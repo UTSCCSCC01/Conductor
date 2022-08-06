@@ -135,6 +135,27 @@ app.get('/api/eventbuilder/getAll', (req, res) => {
         });
 });
 
+app.options('/api/eventbuilder/deleteUserEvent', function (req, res) {
+    res.setHeader("Access-Control-Allow-Origin", "*");
+    res.setHeader('Access-Control-Allow-Methods', '*');
+    res.setHeader("Access-Control-Allow-Headers", "*");
+    res.end();
+});
+
+app.delete('/api/eventbuilder/deleteUserEvent/:eventId', (req, res) => {
+    // Check if eventId is nonempty string
+    const eventId = req.params.eventId;
+    if (!eventId || typeof eventId !== "string" || eventId === "") {
+        return res.status(400).send({ success: false, status: "invalid response" });
+    }
+
+    // Get all events built by the user
+    EventBuilder.deleteOne({ _id: eventId }, (error, eventBuilderData) => {
+        if (error) return res.status(400).send(error);
+        return res.status(200).json({ success: true, eventBuilderData });
+    });
+});
+
 // Server Port
 app.listen(port, () => {
     console.log(`Orchestra backend listening on port ${port}`)

@@ -5,9 +5,8 @@ const {Predicate} = require('../models/Predicate');
 const cors = require('cors');
 const app = express();
 app.use(express.json());
-const mongoURI = 'mongodb://mongo:27017/predicatemicroservice';
-const port = 3014;
-const connect = mongoose.connect(mongoURI, {
+const { MONGO_DB_URI, PORT } = require("./config/config");
+const connect = mongoose.connect(MONGO_DB_URI, {
 	useNewUrlParser: true
 })
 .then(() => console.log("predicatemicroservice's MongoDB connected"))
@@ -15,11 +14,10 @@ const connect = mongoose.connect(mongoURI, {
 
 
 
-// //CORS enabled as any ip can ping this microservice.
-// //Todo: add authentication middleware.
+//CORS enabled as any ip can ping this microservice.
 
-// app.use(cors());
-// // app.use(express.json());
+app.use(cors());
+app.use(express.json());
 
 // // Middleware that handles malformed json objects in request body
 // app.use((err, req, res, next) => {
@@ -58,7 +56,16 @@ API Operations Endpoints. Use post for [easier]:
 > the date this occurred in date of satisfaction
 */
 
+app.post('/api/predicates', (req, res) => {
+    res.send("This is the predicate service. If working through port 8080 nginx working");
+});
 
+app.options('/api/predicates/addPredicate', function (req, res) {
+    res.setHeader("Access-Control-Allow-Origin", "*");
+    res.setHeader('Access-Control-Allow-Methods', '*');
+    res.setHeader("Access-Control-Allow-Headers", "*");
+    res.end();
+});
 
 // create_predicate:
 // curl -v -X POST http://localhost:8080/api/predicates/addPredicate -H "Content-Type: application/json" -d '{"name": "s", "descriptor": "o", "userId": "f", "eventId": "w"}'
@@ -86,10 +93,27 @@ app.post('/api/predicates/addPredicate', (req, res) => {
 	});
 });
 
+app.post('/api/predicates/updatePredicate', (req, res) => {
+	const predicateId = req.body.predicateId.trim();
+	const userId = req.body.userId.trim();
+	const updatePredicate = {
+		name: req.body.name.trim(),
+		descriptor: req.body.descriptor.trim()
+	};
+	Predicate.updateOne({_id: predicateId, userId: userId}, updatePredicate, {upsert: true}, function (err, predicateData) {
+		if (err) return res.status(500).json({success: false, err});
+		if (predicateData.acknowledged) {
+			return res.status(200).json({success: true, predicateData});
+		} else {
+			return res.status(404).json({success: false, predicateData});
+		}
+	});
+});
+
 // delete_predicate:
 // curl -v -X DELETE http://localhost:8080/api/predicates/deletePredicate -H "Content-Type: application/json" -d '{"_id":""}'
-app.delete('/api/predicates/deletePredicate', (req, res) => {
-	const id = req.body._id; // = String
+app.delete('/api/predicates/deletePredicate/:_id', (req, res) => {
+	const id = req.params._id; // = String
 	const oid = new ObjectId(id);
 	Predicate.deleteOne({_id: oid}, function (err, doc) {
 		if (err) return res.status(500).json({success: false, err});
@@ -163,4 +187,4 @@ app.get('/api/predicates/getViaUserId/:userId', (req, res) => {
 
 
 
-app.listen(port, () => console.log("predicatemicroservice's MongoDB server running..."));
+app.listen(PORT, () => console.log("predicatemicroservice's MongoDB server running..."));

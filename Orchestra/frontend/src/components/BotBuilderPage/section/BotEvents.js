@@ -15,6 +15,7 @@ const userId = sessionStorage_get("auth") && JSON.stringify(sessionStorage_get("
 
 function BotEvents() {
     const [BotsData, setBotsData] = useState([]);
+    const [Update, setUpdate] = useState(false);
 
     useEffect(() => {
         axios.get("http://www.localhost:8080/api/eventbuilder/getUserEvents", { params: { userId: userId } })
@@ -26,23 +27,50 @@ function BotEvents() {
                     console.log("Failed to load events.");
                 }
             });
-    }, []);
+    }, [Update]);
 
     // Bot Events Table Header
     const botEventsHeader = <div className="table-header">
         <div className="row medium"><h3>Name</h3></div>
         <div className="row medium"><h3>Description</h3></div>
         <div className="row medium"><h3>Device UUID</h3></div>
-        <div className="row small"><h3>Edit</h3></div>
+        <div className="row small"></div>
     </div>;
+
+    const onDelete = async (index) => {
+        console.log(BotsData[index]);
+        // Delete predicates
+        if (BotsData[index].predicate && BotsData[index].predicate.length > 0) {
+            console.log("HERE");
+            console.log(BotsData[index].predicate);
+            await Promise.all(BotsData[index].predicate.map(predicateId => {
+                console.log(predicateId);
+                axios.delete(`http://www.localhost:3014/api/predicates/deletePredicate/${predicateId}`)
+                    .then(response => {
+                        if (response.data.success) {
+                            console.log(response.data.doc);
+                        } else {
+                            console.log("Failed to delete predicate");
+                        }
+                    });
+            }));
+        }
+        // Delete event
+        axios.delete(`http://www.localhost:8080/api/eventbuilder/deleteUserEvent/${BotsData[index]._id}`)
+            .then(response => {
+                if (response.data.success) {
+                    alert("Successfully deleted event!");
+                    console.log(response.data.eventBuilderData);
+                    setUpdate(!Update);
+                } else {
+                    alert("Failed to delete event");
+                }
+            });
+    };
 
     // Installed Bots Table Body
     const botEventsBody = () => {
         const rows = BotsData.map((row, index) => {
-            const onEdit = () => {
-                console.log("Update bot");
-            };
-
             return (
                 <div key={index} className="table-body-row">
                     <div className="row medium"><p>{row.eventName}</p></div>
@@ -50,7 +78,7 @@ function BotEvents() {
                         <Text style={{ width: "95%" }} ellipsis={{ tooltip: "" }}>{row.description || "N/A"}</Text>
                     </div>
                     <div className="row medium">{row.deviceId && row.deviceId.length > 0 ? row.deviceId : "No device"}</div>
-                    <div className="row small"><StatusButton text="Edit" onButton={onEdit} /></div>
+                    <div className="row small"><StatusButton text="Delete" onButton={() => onDelete(index)} /></div>
                 </div>
             );
         });

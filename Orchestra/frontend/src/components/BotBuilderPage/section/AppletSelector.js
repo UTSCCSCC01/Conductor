@@ -63,11 +63,23 @@ function AppletSelector({ addedApplet, appletIndex, deviceId, onAppletSelector, 
     useEffect(() => {
         if (GivenApplets !== [] && SearchText !== "") {
             setFilteredApplets(GivenApplets.filter(applet => { 
-                return applet.name.toLowerCase().includes(SearchText.toLowerCase());
+                return applet.toLowerCase().includes(SearchText.toLowerCase());
             }));
             return;
         }
         setAddedApplet(addedApplet);
+
+        const fetchData = async (bots) => {
+            let botName = [];
+            await Promise.all(bots.predicate.map(botId => {
+                axios.get(`http://www.localhost:3006/marketplace/${botId}`)
+                    .then(response => {
+                        botName.push(response.data.name);
+                    });
+            }));
+            return botName;
+        };
+
         // Load applets
         axios.post("http://www.localhost:8080/api/devices/getOneDevice", {
             userId: JSON.stringify(sessionStorage_get("auth").localId),
@@ -76,10 +88,13 @@ function AppletSelector({ addedApplet, appletIndex, deviceId, onAppletSelector, 
             .then(response => {
                 if (response.data.success && response.data.result) {
                     if (appletIndex === 0) {
-                        setGivenApplets(response.data.result.bots);
-                        setFilteredApplets(response.data.result.bots);
-                        setGivenApplets(webBots);
-                        setFilteredApplets(webBots);
+                        const bots = response.data.result.bots;
+                        let botName = [];
+                        if (bots && bots.length > 0) {
+                            botName = fetchData(bots);
+                        }
+                        setGivenApplets(botName);
+                        setFilteredApplets(botName);
                     } else if (appletIndex === 1) {
                         setGivenApplets(response.data.result.native_app);
                         setFilteredApplets(response.data.result.native_app);
@@ -114,7 +129,7 @@ function AppletSelector({ addedApplet, appletIndex, deviceId, onAppletSelector, 
                 <div key={index} className="selector-block selector-applet">
                     <div className="selector-info">
                         <RiCodeBoxFill />
-                        <p>{row.name}</p>
+                        <p>{row}</p>
                     </div>
                     {SelectedApplet 
                         ? SelectedApplet[1] === index 
@@ -132,8 +147,8 @@ function AppletSelector({ addedApplet, appletIndex, deviceId, onAppletSelector, 
     const executionArg = <div className="selector-block exec-arg">
         <div className="arg-header">
             <RiCodeBoxFill />
-            <h2>{(SelectedApplet !== null && FilteredApplets[SelectedApplet[1]].name) 
-                || (AddedApplet && AddedApplet[2].name)}</h2>
+            <h2>{(SelectedApplet !== null && FilteredApplets[SelectedApplet[1]]) 
+                || (AddedApplet && AddedApplet[2])}</h2>
         </div>
         <div className="arg-text">
             <p>Execution Arguments (Optional)</p>
