@@ -11,43 +11,6 @@ import { Button } from 'antd';
 import { MdComputer, MdPhoneAndroid } from 'react-icons/md';
 import { BsQuestionSquareFill } from 'react-icons/bs';
 
-// Sample device data
-const devices = [
-    {
-        name: "Adratic",   
-        description: "",
-        status: false,
-        created: Date.now(),
-        userId: "user1",
-        deviceId: "123456",
-        platform: "win32"
-    }, {
-        name: "Home",   
-        description: "",
-        status: false,
-        created: Date.now(),
-        userId: "user1",
-        deviceId: "9876543",
-        platform: "darwin"
-    }, {
-        name: "Gaming PC",   
-        description: "",
-        status: false,
-        created: Date.now(),
-        userId: "user1",
-        deviceId: "13579",
-        platform: "win32"
-    }, {
-        name: "Work",   
-        description: "",
-        status: false,
-        created: Date.now(),
-        userId: "user1",
-        deviceId: "2468",
-        platform: "android"
-    }
-];
-
 const userId = sessionStorage_get("auth") && JSON.stringify(sessionStorage_get("auth").localId);
 
 function PlatformExecution({ selectedDevice, onSave }) {
@@ -55,20 +18,16 @@ function PlatformExecution({ selectedDevice, onSave }) {
     const [SelectedDevice, setSelectedDevice] = useState(null);
 
     useEffect(() => {
-        if (devices && devices.length > 0) {
-            // setDeviceList(devices);
-            axios.get('http://www.localhost:8080/api/devices/getAllDevices', { params: { userId: userId } })
-                .then(response => {
-                    console.log(response.data);
-                    if (response.data.success) {
-                        setDeviceList(response.data.devicesData);
-                    } else {
-                        console.log("Failed to load devices");
-                    }
-                })
-        }
+        axios.get('http://www.localhost:8080/api/devices/getAllDevices', { params: { userId: userId } })
+            .then(response => {
+                if (response.data.success) {
+                    setDeviceList(response.data.devicesData);
+                } else {
+                    console.log("Failed to load devices");
+                }
+            });
         setSelectedDevice(selectedDevice);
-    }, [devices, selectedDevice, onSave]);
+    }, [userId, selectedDevice, onSave]);
 
     const deviceIcon = (platform) => {
         if (platform === "android") return <MdPhoneAndroid />;
@@ -137,7 +96,7 @@ function PlatformExecution({ selectedDevice, onSave }) {
                     <Table 
                         tableHeader={platformHeader} 
                         tableBody={platformBody()}
-                        isEmpty={devices.length === 0}
+                        isEmpty={DeviceList.length === 0}
                         emptyText="No Devices"
                     />
                 </div>

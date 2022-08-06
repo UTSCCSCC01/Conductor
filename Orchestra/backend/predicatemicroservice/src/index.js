@@ -96,10 +96,13 @@ app.post('/api/predicates/addPredicate', (req, res) => {
 app.post('/api/predicates/updatePredicate', (req, res) => {
 	const predicateId = req.body.predicateId.trim();
 	const userId = req.body.userId.trim();
-	const updatePredicate = {
-		name: req.body.name.trim(),
-		descriptor: req.body.descriptor.trim()
-	};
+
+	const updatePredicate = {};
+
+	if (req.body.name) updatePredicate.name = req.body.name.trim();
+	if (req.body.descriptor) updatePredicate.descriptor = req.body.descriptor.trim();
+	if (req.body.eventId) updatePredicate.eventId = req.body.eventId.trim();
+
 	Predicate.updateOne({_id: predicateId, userId: userId}, updatePredicate, {upsert: true}, function (err, predicateData) {
 		if (err) return res.status(500).json({success: false, err});
 		if (predicateData.acknowledged) {

@@ -25,8 +25,9 @@ function Predicates({ addedPredecates, onSave }) {
         axios.get(`http://www.localhost:3014/api/predicates/getViaUserId/${JSON.stringify(sessionStorage_get("auth").localId)}`)
             .then(response => {
                 if (response.data.success) {
-                    setLoadedPredicates(response.data.predicatesData);
-                    console.log(response.data.predicatesData);
+                    let predicateData = response.data.predicatesData;
+                    predicateData.filter(predicate => { return (!predicate.eventId || predicate.eventId === "") });
+                    setLoadedPredicates(predicateData);
                 } else {
                     console.log("Failed to add predicate");
                 }
@@ -114,34 +115,26 @@ function Predicates({ addedPredecates, onSave }) {
     };
 
     const deletePredicate = () => {
-        // Remove
-        let predicates = Predicates;
-        predicates.splice(SelectedPredicate, 1);
-        setPredicates(predicates);
-        onSave(predicates);
-        // Reset
-        setDisplayPredicateModal(false);
-        setSelectedPredicate(null);
-        setPredicateName("");
-        setDescription("");
-        // axios.delete(`http://www.localhost:8080/api/predicates/delete_predicate`, { predicateId: Predicates[SelectedPredicate].predicateId })
-        //     .then(response => {
-        //         if (response.data.success) {
-        //             alert("Successfully Added!");
-        //             // Remove
-        //             let predicates = Predicates;
-        //             predicates.splice(SelectedPredicate, 1);
-        //             setPredicates(predicates);
-        //             onSave(predicates);
-        //             // Reset
-        //             setDisplayPredicateModal(false);
-        //             setSelectedPredicate(null);
-        //             setPredicateName("");
-        //             setDescription("");
-        //         } else {
-        //             console.log("Failed to add predicate");
-        //         }
-        //     });
+        const predicateId = Predicates[SelectedPredicate]._id;
+        console.log(Predicates);
+        axios.delete(`http://www.localhost:3014/api/predicates/deletePredicate/${predicateId}`)
+            .then(response => {
+                if (response.data.success) {
+                    alert("Successfully deleted!");
+                    // Remove
+                    let predicates = Predicates;
+                    predicates.splice(SelectedPredicate, 1);
+                    setPredicates(predicates);
+                    onSave(predicates);
+                    // Reset
+                    setDisplayPredicateModal(false);
+                    setSelectedPredicate(null);
+                    setPredicateName("");
+                    setDescription("");
+                } else {
+                    console.log("Failed to delete predicate");
+                }
+            });
     };
 
     const updatePredicate = () => {

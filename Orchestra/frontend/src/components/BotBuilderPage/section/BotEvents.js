@@ -38,11 +38,8 @@ function BotEvents() {
     </div>;
 
     const onDelete = async (index) => {
-        console.log(BotsData[index]);
         // Delete predicates
         if (BotsData[index].predicate && BotsData[index].predicate.length > 0) {
-            console.log("HERE");
-            console.log(BotsData[index].predicate);
             await Promise.all(BotsData[index].predicate.map(predicateId => {
                 console.log(predicateId);
                 axios.delete(`http://www.localhost:3014/api/predicates/deletePredicate/${predicateId}`)
