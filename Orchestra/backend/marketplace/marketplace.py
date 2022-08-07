@@ -159,7 +159,7 @@ def download():
     content = request.get_json(force=True)
     print(content, file=sys.stderr)
     if(content is None):
-        return "<p>Failed</p>"
+        return "<p>Failed, empty payload</p>"
     userId = content["userid"]
     deviceId = content["deviceid"]
     buid = content["buid"]
@@ -175,7 +175,7 @@ def download():
     
     return addToBotsResponse.json()
 
-@app.route('/get_metadata/<buid>', methods=["POST"])
+@app.route('/get_metadata/<buid>', methods=["GET"])
 def get_metadata(buid):
     result = bot_collection.find_one({"buid" : buid}, {"_id" : 0, "og_filename" : 1, "url": 1})
     return loads(dumps(result))

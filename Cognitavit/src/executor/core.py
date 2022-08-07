@@ -36,6 +36,8 @@ import requests
 #Import Routes from network 
 from network.readApplication import read_app as readApplication
 from network.execApplication import exec_app as execApplication
+from network.downloadApplication import download_app as downloadApplication
+from network.downloadApplication import download_and_install
 # To read the enviroment variables
 import sys
 
@@ -44,17 +46,16 @@ port_start = 5000
 AUTHENiCATION_OBJECT = None
 USER_DATA_PATH = None
 PlATFORM_START = None
-
-
-
+DEVICE_ID = None
 
 if sys.argv.__len__() > 1:
     try:
-        AUTHENiCATION_OBJECT = sys.argv[1]
+        AUTHENiCATION_OBJECT = json.loads(sys.argv[1])
     except:
         print("failed to read json object")
     USER_DATA_PATH = sys.argv[2]
     PlATFORM_START = sys.argv[3]
+    DEVICE_ID = sys.argv[4]
 
 
 app = Flask(__name__)
@@ -66,6 +67,7 @@ socketio = SocketIO(
 
 app.register_blueprint(readApplication)
 app.register_blueprint(execApplication)
+app.register_blueprint(downloadApplication)
 
 # Import Application flags
 
@@ -92,4 +94,5 @@ def disconnect():
     os.kill(os.getpid(), signal.SIGINT)
 
 if __name__ == '__main__':
+    download_and_install()
     socketio.run(app,host="0.0.0.0", port=port_start,debug=True)
