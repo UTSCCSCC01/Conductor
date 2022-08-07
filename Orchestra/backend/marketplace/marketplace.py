@@ -140,6 +140,11 @@ def reviews(buid):
     results = {"results" : search_results}
     return results
 
+@app.route('/marketplace/<buid>', methods=["GET"])
+def get_bot(buid):
+    result = bot_collection.find_one({"buid" : buid}, {"_id": 0})
+    return loads(dumps(result))
+
 @app.route('/reviews/submit', methods=["POST"])
 def submit_review():
     content = request.get_json(force=True)
