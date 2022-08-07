@@ -1,3 +1,4 @@
+import requests
 from flask import Flask
 from flask import request
 from flask_cors import CORS
@@ -9,6 +10,8 @@ from ibm_botocore.client import Config, ClientError
 from werkzeug.utils import secure_filename
 import pymongo
 from pymongo import MongoClient
+from bson.json_util import dumps
+from bson.json_util import loads
 
 cluster = MongoClient("mongodb+srv://marketplace:marketplace@cluster18630.3wlh3.mongodb.net/?retryWrites=true&w=majority")
 db = cluster["marketplace"]
@@ -19,6 +22,10 @@ dl_link = "https://orchestra-store-microservice.s3.us-east.cloud-object-storage.
 
 app = Flask(__name__)
 CORS(app)
+
+user_device_addToBots = 'http://localhost:3003/api/devices/addToBot'
+
+dispatcher_refresh_applist = "http://localhost:3005/dispatch/refresh-applet-list"
 
 config = {
     "apikey": "_Z8L-OX6qYySkHozSrzOALgyTYLzqjbL0K6zYcZNR2dE",
@@ -143,5 +150,28 @@ def submit_review():
     review_collection.insert_one({"buid": buid, "username": username, "comments": comments, "rating": rating})
     return "<p>review submitted</p>"
     
+@app.route('/marketplace/download', methods=["POST"])
+def download():
+    content = request.get_json(force=True)
+    userId = content["userid"]
+    deviceId = content["deviceid"]
+    buid = content["buid"]
+    botname = content["botname"]
     
-    
+    addToBotsPayload = {'userId': userId, 'deviceId': buid, 'buid': buid,'botname': botname} 
+    addToBotsResponse = requests.post(user_device_addToBots, json=addToBotsPayload)
+
+    refreshAppListPayload = {"device_id": deviceId, "user_id": userId}
+    requests.post(dispatcher_refresh_applist, json=refreshAppListPayload)
+
+    if addToBotsResponse.json()["success"] == "true":
+        return "<p>bot added successfully by user-device<p>"
+    else:
+        return "<p>bot not added by user-device<p>"
+
+@app.route('/getMetadata/<buid>', methods=["GET"])
+def getMetadata(buid):
+    result = bot_collection.find_one({"buid" : buid}, {"_id" : 0, "og_filename" : 1, "url": 1})
+    return loads(dumps(result))
+
+
