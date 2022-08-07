@@ -1,3 +1,4 @@
+import requests
 from flask import Flask
 from flask import request
 from flask_cors import CORS
@@ -7,8 +8,9 @@ import ibm_boto3
 import sys
 from ibm_botocore.client import Config, ClientError
 from werkzeug.utils import secure_filename
-import pymongo
 from pymongo import MongoClient
+from bson.json_util import dumps
+from bson.json_util import loads
 
 cluster = MongoClient("mongodb+srv://marketplace:marketplace@cluster18630.3wlh3.mongodb.net/?retryWrites=true&w=majority")
 db = cluster["marketplace"]
@@ -19,6 +21,10 @@ dl_link = "https://orchestra-store-microservice.s3.us-east.cloud-object-storage.
 
 app = Flask(__name__)
 CORS(app)
+
+user_device_addToBots = 'http://127.0.0.1:3003/api/devices/addToBots'
+
+dispatcher_refresh_applist = "http://127.0.0.1:3005/dispatch/refresh-applet-list"
 
 config = {
     "apikey": "_Z8L-OX6qYySkHozSrzOALgyTYLzqjbL0K6zYcZNR2dE",
@@ -133,6 +139,11 @@ def reviews(buid):
     results = {"results" : search_results}
     return results
 
+@app.route('/marketplace/<buid>', methods=["GET"])
+def get_bot(buid):
+    result = bot_collection.find_one({"buid" : buid}, {"_id": 0})
+    return loads(dumps(result))
+
 @app.route('/reviews/submit', methods=["POST"])
 def submit_review():
     content = request.get_json(force=True)
@@ -143,5 +154,31 @@ def submit_review():
     review_collection.insert_one({"buid": buid, "username": username, "comments": comments, "rating": rating})
     return "<p>review submitted</p>"
     
+@app.route('/marketplace/download', methods=["POST"])
+def download():
+    content = request.get_json(force=True)
+    print(content, file=sys.stderr)
+    if(content is None):
+        return "<p>Failed</p>"
+    userId = content["userid"]
+    deviceId = content["deviceid"]
+    buid = content["buid"]
+    botname = content["botname"]
     
+    addToBotsPayload = {'userId': userId, 'deviceId': deviceId, 'buid': buid, 'botname': botname} 
+    print("Pre-post", file=sys.stderr)
+    addToBotsResponse = requests.post(user_device_addToBots, json=addToBotsPayload)
+    print(addToBotsResponse.json(), file=sys.stderr)
+
+    refreshAppListPayload = {"device_id": deviceId, "user_id": userId}
+    requests.post(dispatcher_refresh_applist, json=refreshAppListPayload)
     
+    return addToBotsResponse.json()
+
+@app.route('/get_metadata/<buid>', methods=["POST"])
+def get_metadata(buid):
+    result = bot_collection.find_one({"buid" : buid}, {"_id" : 0, "og_filename" : 1, "url": 1})
+    return loads(dumps(result))
+
+if __name__ == '__main__':
+    app.run(port=5008)

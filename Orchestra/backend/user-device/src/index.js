@@ -65,22 +65,20 @@ app.options('/api/devices/addDevice', function (req, res) {
 
 // Adds buid to bots list
 app.post('/api/devices/addToBots', (req, res) => {
-    const req_userId = (req.body.userId).trim();
-    const req_deviceId = (req.body.deviceId).trim();
-    const req_buid = (req.body.buid).trim();
-    const req_botName = (req.body.botname).trim();
+    const req_userId = (req.body.userId);
+    const req_deviceId = (req.body.deviceId);
+    const req_buid = (req.body.buid);
+    const req_botName = (req.body.botname);
 
-    if(req_botName == "" || req_buid == "" || req_userId == "" || 
-      req_deviceId == "" || typeof req_userId != "string" || 
+    //console.log(req_userId, req_deviceId, req_buid, req_botName);
+
+    if(typeof req_userId != "string" || 
       typeof req_deviceId != "string" || 
       typeof req_buid != "string" || typeof req_botName != "string"  ){
-        return res.status(400).send({success: false, status: "invalid response", errorCode: error});
-    }
+        return res.status(400).send({success: false, status: "invalid type or empty"});
+    }   
 
-    //Debug
-    //console.log("user, deviceID, BUID", req_userId, req_deviceId, req_buid);
-
-    const payload = {name: req_botName, buid: req_deviceId}
+    const payload = {name: req_botName, buid: req_buid}
 
     let toAdd = null;
     try{
