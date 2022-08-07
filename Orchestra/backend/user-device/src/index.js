@@ -159,18 +159,15 @@ app.post('/api/devices/addDevice', (req, res) => {
 //Migrate to post? 
 //Technically we building a resource. 
 app.get('/api/devices/getAllDevices', (req, res) => {
-
-    /*
-        Add error checking, ie is userID not blank/defined.
-    */
-
-    Device.find({ userId: req.query.userId })
-        .populate("name")
-        .sort({ created: -1, name: 1 })
-        .exec((error, devicesData) => {
-            if (error) return res.status(400).send(error);
-            return res.status(200).json({ success: true, devicesData });
-        });
+    const req_userId = (req.body.userId).trim();
+    let query = {userId: req_userId};
+    let selection = {_id: 0, deviceId: 1, name: 1}
+    Device.find(query)
+    .select(selection)
+    .exec((error, deviceData) => {
+        if (error) return res.status(400).send(error);
+        return res.status(200).json({ success: true, deviceData });
+    });
 });
 
 // Gets one device from the DB
