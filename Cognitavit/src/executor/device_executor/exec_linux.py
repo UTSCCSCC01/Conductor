@@ -37,7 +37,7 @@ class LinuxExecutor(Executor):
 
 
 
-    def locate_binary(self, name:str, exec_app_list:dict[str]):
+    def locate_binary(self, name:str, exec_app_list):
         '''Returns -1 if binary name cannot be located in app_list. Otherwise return tuple of
         appname, and binary location.
         Works by doing a char match. name is defined from exec_app_list at earlier point in time.
@@ -72,8 +72,3 @@ class LinuxExecutor(Executor):
         '''Wrapper for native_exec, user does not pass in exec_app_list, but instead the fxn 
         will generate using one of its built in functions'''
         pass
-
-
-    def bot_exec(self, params) -> None:
-        '''Executes a bot application from the orchestra webstore'''
-        return {}

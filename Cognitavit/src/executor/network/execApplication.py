@@ -44,6 +44,30 @@ def execute_application():
 
 
     return {"status": True}
+
+@exec_app.route('/executeBot', methods=['GET', 'POST'])
+def execute_bot():
+    '''
+    Executes an application with params
+
+    request_format:
+    {
+        buid: ...
+        arguments: ...
+    }
+
+    returns output if any
+    '''
+    
+    content = request.get_json(force=True)
+    buid = content["buid"]
+    arguments = content["arguments"]
+
+    execute_factory = FactoryExecutor()
+    platform_exec = execute_factory.create(sys_platform)
+    result = platform_exec.bot_exec(buid, arguments)
+
+    return result
     
 
 @exec_app.route('/send-event', methods=['GET', 'POST'])

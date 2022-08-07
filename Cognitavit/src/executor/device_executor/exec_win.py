@@ -81,7 +81,7 @@ class WinExecutor(Executor):
         return application_list
 
 
-    def read_native_app_list(self) -> dict[dict,dict]:
+    def read_native_app_list(self):
         ''' Returns a tuple of app_lists that are installed on this machine. The first entry in the 
         tuple is a list of all applications registered with the startmenu. 
         As a fallback, we can refer to the shell:AppFolder, which includes window store applications. 
@@ -98,7 +98,7 @@ class WinExecutor(Executor):
         return {}
 
 
-    def locate_binary(self,name:str, exec_app_list:dict[str]):
+    def locate_binary(self,name:str, exec_app_list):
         '''Returns -1 if binary name cannot be located in app_list. Otherwise return tuple of
         appname, and binary location. 
         Works by doing a char match. name is defined from exec_app_list at earlier point in time. 
@@ -159,11 +159,3 @@ class WinExecutor(Executor):
             return False
         
         return True
-
-
-       
-
-    def bot_exec(self, params:str) -> None:
-        '''Potentially unneeded.'''
-        '''Executes a bot application from the orchestra webstore'''
-        return {}
