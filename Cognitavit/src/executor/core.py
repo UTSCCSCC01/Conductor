@@ -32,14 +32,14 @@ from engineio.async_drivers import threading
 
 
 import requests
-
+import sys
 #Import Routes from network 
 from network.readApplication import read_app as readApplication
 from network.execApplication import exec_app as execApplication
 from network.downloadApplication import download_app as downloadApplication
 from network.downloadApplication import download_and_install
 # To read the enviroment variables
-import sys
+
 
 port_start = 5000
 
@@ -50,7 +50,7 @@ DEVICE_ID = None
 
 if sys.argv.__len__() > 1:
     try:
-        AUTHENiCATION_OBJECT = json.loads(sys.argv[1])
+        AUTHENiCATION_OBJECT = sys.argv[1]
     except:
         print("failed to read json object")
     USER_DATA_PATH = sys.argv[2]

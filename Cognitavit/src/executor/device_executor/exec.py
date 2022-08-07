@@ -3,10 +3,10 @@ import subprocess
 import os, sys
 import json
 
-AUTHENiCATION_OBJECT = json.loads(sys.argv[1])
+AUTHENiCATION_OBJECT = sys.argv[1]
 USER_DATA_PATH = sys.argv[2]
 DEVICE_ID = sys.argv[4]
-userId = AUTHENiCATION_OBJECT["localid"]
+userId = AUTHENiCATION_OBJECT
 env_userpath = USER_DATA_PATH
 CONFIG_NAME = "installed.json"
 config_file = env_userpath + "/" + CONFIG_NAME
