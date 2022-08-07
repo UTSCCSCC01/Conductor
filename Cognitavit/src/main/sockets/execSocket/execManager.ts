@@ -50,6 +50,7 @@ class execManager{
     private static authKeys: AuthenticationToken | undefined;
     public static appData?: string;
     public static platform: string | undefined;
+    public static machineID: string;
 
     //Trigger Process Information
     public static pid: number | undefined;
@@ -76,11 +77,12 @@ class execManager{
         It also sets the required information for which the python executable
         needs such as saved data etc.
     */
-    private static setEnviromentVariables(authKey: any, appdata_folder: string, platform: string, port:number){
+    private static setEnviromentVariables(authKey: any, appdata_folder: string, platform: string, port:number, machineID:string){
         execManager.authKeys = authKey;
         execManager.appData = appdata_folder + "\\" + authKey.localId;
         execManager.platform = platform;
         execManager.port = port;
+        execManager.machineID = machineID
     }
 
 
@@ -118,7 +120,7 @@ class execManager{
         It starts the trigger process, and connects to it via socket.io ipc.
         Failure event managements needs to be done: TODO:
     */
-    public start(auth_token:any /*AuthenticationToken*/, appdata_folder: string, platform: string, executable:string){
+    public start(auth_token:any /*AuthenticationToken*/, appdata_folder: string, platform: string, executable:string, machineID:string){
         if(auth_token == undefined|| appdata_folder == undefined || executable == undefined){
             console.log("Set the authentication keys/data_path before starting");
             return;
@@ -126,8 +128,8 @@ class execManager{
         // Clear state before starting.
         this.resetConfigs();
         // Set authentication keys
-        execManager.setEnviromentVariables(auth_token, appdata_folder, platform, 5000);
-        const child = execFile(executable, [JSON.stringify(auth_token),String(execManager.appData), platform]);
+        execManager.setEnviromentVariables(auth_token.localId, appdata_folder, platform, 5000, machineID);
+        const child = execFile(executable, [auth_token.localId ,String(execManager.appData), platform, machineID]);
         if(!child.pid){
             ; // nop operator
 
@@ -174,6 +176,7 @@ class execManager{
         execManager.authKeys = undefined;
         execManager.appData = undefined;
         execManager.platform = undefined;
+        execManager.machineID = "";
 
         console.log("Trigger Socket has kill signal")
     }

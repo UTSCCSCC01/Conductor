@@ -220,7 +220,7 @@
      let appData_path = app.getPath('userData');
 
     /** Code goes above */
-     execSocket.start(auth_tokens, appData_path, platform , executable_path);
+     execSocket.start(auth_tokens.localId, appData_path, platform , executable_path, machine_payload);
      console.log("Trigger socket has been started.");
 
      return true;
