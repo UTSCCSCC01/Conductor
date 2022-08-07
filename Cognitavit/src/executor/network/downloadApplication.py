@@ -1,5 +1,6 @@
 from flask import Blueprint, request
 import sys, os
+from os import path
 import requests
 import json
 
@@ -15,8 +16,8 @@ CONFIG_NAME = "installed.json"
 
 user_device_getbots = "http://127.0.0.1:3003/api/devices/getInstalledBots"
 marketplace_getmetadata = "http://127.0.0.1:5008/get_metadata/"
-config_file = env_userpath + "/" + CONFIG_NAME
-downloads_folder = env_userpath + "/downloaded"
+config_file = path.join(env_userpath, CONFIG_NAME)
+downloads_folder = path.join(env_userpath, "downloaded")
 
 @download_app.route('/get_local_bots', methods=['GET'])
 def get_local():
