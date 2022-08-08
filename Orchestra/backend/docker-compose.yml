@@ -50,14 +50,6 @@ services:
     ports:
       - "27017:27017"
 
-  marketplace:
-    container_name: marketplace-service
-    build: './marketplace'
-    ports:
-      - "5008:5009"
-    volumes:
-      - .:/marketplace/app
-
   nginx:
     image: nginx:latest
     container_name: nginx
