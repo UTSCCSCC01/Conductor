@@ -2,6 +2,7 @@
 //Import models, and server configs.
 const { MONGO_DB_URI, PORT } = require("./config/config");
 const { Device } = require('../model/Device');
+const { BotInfo } = require('../model/Device');
 
 const express = require('express');
 const cors = require('cors');
@@ -54,22 +55,66 @@ app.options('/api/devices/addDevice', function (req, res) {
     res.end();
   });
 
+  app.options('/api/devices/addToBots', function (req, res) {
+    res.setHeader("Access-Control-Allow-Origin", "*");
+    res.setHeader('Access-Control-Allow-Methods', '*');
+    res.setHeader("Access-Control-Allow-Headers", "*");
+    res.end();
+  });
+
+
+// Adds buid to bots list
+app.post('/api/devices/addToBots', (req, res) => {
+    const req_userId = (req.body.userId);
+    const req_deviceId = (req.body.deviceId);
+    const req_buid = (req.body.buid);
+    const req_botName = (req.body.botname);
+
+    //console.log(req_userId, req_deviceId, req_buid, req_botName);
+
+    if(typeof req_userId != "string" || 
+      typeof req_deviceId != "string" || 
+      typeof req_buid != "string" || typeof req_botName != "string"  ){
+        return res.status(400).send({success: false, status: "invalid type or empty"});
+    }   
+
+    const payload = {name: req_botName, buid: req_buid}
+
+    let toAdd = null;
+    try{
+        toAdd = new BotInfo(payload);
+    }catch(err){
+        return res.status(400).send({success: false, status: "payload corrupted"});
+    }
+
+    let query = {userId: req_userId, deviceId: req_deviceId}
+    let values = {$push: { bots: toAdd}}
+
+    Device.updateOne(query, values, (error,result) => {
+        if(error){
+            return res.status(500).send({success: false, status: "Server Error: Failed to update mongodb", error: error});
+        }
+        return res.status(200).send({success: true, status: "Bot list has been updated."});
+    })
+});
   
 
 // Adds a new device to the DB
 app.post('/api/devices/addDevice', (req, res) => {
     //Check if string type
     const check_query = [req.body.deviceId, req.body.description, req.body.platform, req.body.name, req.body.userId]
+    console.log(check_query)
     for (const element of check_query){
         if((typeof element != "string")){
-            return res.status(400).send({success: false, status: "invalid response"});
+            return res.status(400).send({success: false, status: "invalid type" + element});
         }
     }
     //Check if not empty string.
     const check_not_empty = [req.body.deviceId, req.body.userId, req.body.platform, req.body.name];
     for (const element of check_not_empty){
+
         if((element === "")){
-            return res.status(400).send({success: false, status: "invalid response"});
+            return res.status(200).send({success: true, status: "empty element" + element});
         }
     }
     //Perform checks on query.
@@ -82,12 +127,12 @@ app.post('/api/devices/addDevice', (req, res) => {
         custom_app: [],
         created: Date.now(),
         status: true,
-        //User provided payload.
-        deviceId: (req.body.deviceId).trim(),
+        // User provided payload.
+        deviceId: req_deviceId,
+        name: req.body.name.trim(),
         description: req.body.description.trim(),
         platform: req.body.platform.trim(),
-        name: req_userId,
-        userId: req_userId,          
+        userId: req_userId,
     }
     //Verify if the generate payload matches Device
     let device = null;
@@ -97,36 +142,37 @@ app.post('/api/devices/addDevice', (req, res) => {
         return res.status(400).send({success: false, status: "payload corrupted"});
     }
 
-    /*Insert if the document exists, otherwise do nothing by updating nothing, and return null.*/
-    Device.updateOne({userId: req_userId, deviceId: req_deviceId}, {$setOnInsert: device}, {upsert:true}, function (err, deviceData){
-        if (err){
+    query = {userId: req_userId}
+    values = {$setOnInsert: device}
+    options = {upsert: true}
+
+
+    Device.updateOne(query, values, options, (error, deviceData) => {
+        if(error){
             return res.status(409).send(error);
         }
-        return res.status(200).json({ success: true,  deviceData});
-    });
+        return res.status(200).send({success: true, deviceData});
+    })
 });
 
 
 //Migrate to post? 
 //Technically we building a resource. 
 app.get('/api/devices/getAllDevices', (req, res) => {
-
-    /*
-        Add error checking, ie is userID not blank/defined.
-    */
-
-    Device.find({ userId: req.query.userId })
-        .populate("name")
-        .sort({ created: -1, name: 1 })
-        .exec((error, devicesData) => {
-            if (error) return res.status(400).send(error);
-            return res.status(200).json({ success: true, devicesData });
-        });
+    const req_userId = (req.body.userId).trim();
+    let query = {userId: req_userId};
+    let selection = {_id: 0, deviceId: 1, name: 1}
+    Device.find(query)
+    .select(selection)
+    .exec((error, deviceData) => {
+        if (error) return res.status(400).send(error);
+        return res.status(200).json({ success: true, deviceData });
+    });
 });
 
 // Gets one device from the DB
 // Rename to getDevice in future. 
-app.post('/api/devices/getOneDevice', (req, res) => {
+app.get('/api/devices/getOneDevice', (req, res) => {
     //Behavior: returns null if a collection is not found, o/w returns the first one.
     //Do error checking of userID or deviceId is null
 
@@ -167,6 +213,18 @@ app.delete('/api/devices/deleteOneDevice', (req, res) => {
     });
 });
 
+// Returns list of bots installed on each of this user's devices
+app.get('/api/devices/getInstalledBots', (req, res) => {
+    const req_userId = (req.body.userId).trim();
+    let query = {userId: req_userId};
+    let selection = {_id: 0, deviceId: 1, bots: 1}
+    Device.find(query)
+    .select(selection)
+    .exec((error, botsData) => {
+        if (error) return res.status(400).send(error);
+        return res.status(200).json({ success: true, botsData });
+    });
+});
 
 // Updates a list of bots/applications 
 app.post("/api/device/syncApps", (req,res) => {

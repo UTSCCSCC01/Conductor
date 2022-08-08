@@ -1,49 +1,52 @@
 import React from 'react';
+import { useLocation } from 'react-router-dom';
 import './NavBar.css';
 import logo from './assets/logo.png'
 
-import { BulbFilled, CalendarFilled, HddFilled, PieChartFilled, RobotFilled, SettingFilled, ShopFilled } from '@ant-design/icons';
+import { BulbFilled, CalendarFilled, HddFilled, LogoutOutlined, PieChartFilled, RobotFilled, SettingFilled, ShopFilled } from '@ant-design/icons';
 
 function NavBarTwo() {
+    const location = useLocation();
+
     return (
         <div className="navbar">
             <a href='/dashboard/home' className="navbar-logo">
                 <img src={logo} />
             </a>
-            <a href='/dashboard/home' className={window.location.pathname === '/home' ? "selected" : undefined}>
+            <a href='/dashboard/home' className={location.pathname === '/dashboard/home' ? "selected" : undefined}>
                 <PieChartFilled />
                 <p>Home</p>
             </a>
-            <a href='/dashboard/calendar' className={window.location.pathname === '/calendar' ? "selected" : undefined}>
+            <a href='/dashboard/calendar' className={location.pathname === '/dashboard/calendar' ? "selected" : undefined}>
                 <CalendarFilled />
                 <p>Calendar</p>
             </a>
-            <a href='/dashboard/mybots' className={window.location.pathname === '/mybots' ? "selected" : undefined}>
+            <a href='/dashboard/mybots' className={location.pathname === '/dashboard/mybots' ? "selected" : undefined}>
                 <BulbFilled />
                 <p>My Bots</p>
             </a>
-            <a href='/dashboard/devices' className={window.location.pathname === '/devices' ? "selected" : undefined}>
+            <a href='/dashboard/devices' className={location.pathname === '/dashboard/devices' ? "selected" : undefined}>
                 <HddFilled />
                 <p>Device Status</p>
             </a>
-            <a href='/dashboard/marketplace' className={window.location.pathname === '/marketplace' ? "selected" : undefined}>
+            <a href='/dashboard/marketplace' className={location.pathname === '/dashboard/marketplace' ? "selected" : undefined}>
                 <ShopFilled />
                 <p>Marketplace</p>
             </a>
-            <a href='/dashboard/upload' className={window.location.pathname === '/upload' ? "selected" : undefined}>
+            <a href='/dashboard/upload' className={location.pathname === '/upload' ? "selected" : undefined}>
                 <ShopFilled />
                 <p>Upload</p>
             </a>
-            <a href='/dashboard/builder' className={window.location.pathname === '/builder' ? "selected" : undefined}>
+            <a href='/dashboard/builder' className={location.pathname === '/dashboard/builder' ? "selected" : undefined}>
                 <RobotFilled />
                 <p>Bot Builder</p>
             </a>
-            <a href='/dashboard/settings' className={window.location.pathname === '/settings' ? "selected" : undefined}>
+            <a href='/dashboard/settings' className={location.pathname === '/dashboard/settings' ? "selected" : undefined}>
                 <SettingFilled />
                 <p>Settings</p>
             </a>
             <a href='/logout'>
-                <SettingFilled />
+                <LogoutOutlined />
                 <p>Logout</p>
             </a>
         </div>

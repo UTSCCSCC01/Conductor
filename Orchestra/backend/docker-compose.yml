@@ -18,7 +18,7 @@ services:
       - "3003:3007"
     environment:
       - MONGO_DB_URI=mongodb+srv://P1REcH4R8OGficA0:XEEx2aGFa72zfoQL@cluster0.wnx0m.mongodb.net/?retryWrites=true&w=majority
-
+  
   predicateserves:
     container_name: predicatemicroservice
     build:
@@ -36,12 +36,27 @@ services:
       build: './dispatch-service'
       ports:
         - "3005:3000"
-        
+  
+  eventbuilderlink:
+    build: './event-builder'
+    ports:
+      - "3006:3008"
+    environment:
+      - MONGO_DB_URI=mongodb+srv://P1REcH4R8OGficA0:XEEx2aGFa72zfoQL@cluster0.wnx0m.mongodb.net/?retryWrites=true&w=majority
+  
   mongo:
     container_name: mongo
     image: mongo
     ports:
       - "27017:27017"
+
+  marketplace:
+    container_name: marketplace-service
+    build: './marketplace'
+    ports:
+      - "5008:5009"
+    volumes:
+      - .:/marketplace/app
 
   nginx:
     image: nginx:latest
@@ -55,4 +70,4 @@ services:
       - devicelink
       - dispatch-service
       - predicateserves
-
+      - eventbuilderlink

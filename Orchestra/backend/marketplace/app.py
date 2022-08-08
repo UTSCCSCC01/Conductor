@@ -20,6 +20,7 @@ review_collection = db["reviews"]
 dl_link = "https://orchestra-store-microservice.s3.us-east.cloud-object-storage.appdomain.cloud/"
 
 app = Flask(__name__)
+
 CORS(app)
 
 user_device_addToBots = 'http://127.0.0.1:3003/api/devices/addToBots'
@@ -197,4 +198,4 @@ def search_bots():
     return {"results" : results}
 
 if __name__ == '__main__':
-    app.run(port=5008)
+    app.run(host='0.0.0.0', port=5009)

@@ -62,3 +62,18 @@
 .icon-button.delete>.ant-btn:hover {
     background-color: #D85050;
 }
+
+/* Status Button */
+.status-button>.ant-btn {
+    border-color: #530BF4;
+    border-radius: 50px;
+    background-color: #530BF4;
+    font-weight: bold;
+    color: #fff;
+}
+
+.status-button>.ant-btn:hover {
+    border-color: #7F6CA1;
+    background-color: #fff;
+    color: #7F6CA1;
+}

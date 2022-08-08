@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
+import { sessionStorage_get } from '../../utils/store/store';
 import axios from 'axios';
 // Components
-import DeviceTable from './section/DeviceTable';
+import Table from '../Table/Table';
 import Header from '../Header/Header';
 import ModalButton from '../Button/ModalButton';
 import IconButton from '../Button/IconButton';
@@ -9,17 +10,17 @@ import IconButton from '../Button/IconButton';
 import './DevicePage.css';
 import { Button, Input, Modal, Select } from 'antd';
 import { DiAndroid, DiApple, DiLinux, DiWindows } from 'react-icons/di';
-import { LeftOutlined, StarFilled } from '@ant-design/icons';
+import { LeftOutlined } from '@ant-design/icons';
 
 const { Option } = Select;
 
-const userId = "user1";
+const userId = sessionStorage_get("auth") && JSON.stringify(sessionStorage_get("auth").localId);
 
 const platforms = [
-    <Option key={0}>Android</Option>,
-    <Option key={1}>iOS</Option>,
-    <Option key={2}>Linux</Option>,
-    <Option key={3}>Windows</Option>
+    <Option key={"android"}>Android</Option>,
+    <Option key={"darwin"}>iOS</Option>,
+    <Option key={"linux"}>Linux</Option>,
+    <Option key={"win32"}>Windows</Option>
 ];
 
 let deleteInfo = null;
@@ -36,10 +37,10 @@ function DeviceListPage() {
     const [DeviceName, setDeviceName] = useState("");
     const [DeviceNameError, setDeviceNameError] = useState(false);
     const [Description, setDescription] = useState("");
-    const [DevicePlatform, setDevicePlatform] = useState([false, false, false, false]);
+    const [DevicePlatform, setDevicePlatform] = useState("android");
 
     useEffect(() => {
-        axios.get(`http://www.localhost:3007/api/devices/getAllDevices`, { params: { userId: userId } })
+        axios.get(`http://www.localhost:8080/api/devices/getAllDevices`, { params: { userId: userId } })
             .then(response => {
                 if (response.data.success) {
                     console.log(response.data.devicesData);
@@ -67,15 +68,14 @@ function DeviceListPage() {
                 return <p>{bot}</p>;
             }
         }
-
+        
         // Devices
-        const device = (platform) => {
-            return <div>
-                {platform[0] && <DiAndroid className="device-platform" />}
-                {platform[1] && <DiApple className="device-platform" />}
-                {platform[2] && <DiLinux className="device-platform" />}
-                {platform[3] && <DiWindows className="device-platform" />}
-            </div>
+        const selectPlatform = (platform) => {
+            if (platform === "android") return <DiAndroid className="device-platform" />;
+            else if (platform === "darwin") return <DiApple className="device-platform" />;
+            else if (platform === "linux") return <DiLinux className="device-platform" />;
+            else if (platform === "win32") return <DiWindows className="device-platform" />;
+            else return <div>N/A</div>
         };
 
         const rows = DeviceData.map((row, index) => {
@@ -83,7 +83,7 @@ function DeviceListPage() {
                 <div key={index} className="table-body-row">
                     <div className="row large"><p>{row.name}</p></div>
                     <div className="row large">{bots(row.bot)}</div>
-                    <div className="row small"><div>{device(row.platform)}</div></div>
+                    <div className="row small">{selectPlatform(row.platform)}</div>
                     <div className="row small">
                         <p>{row.status ? "Active" : "Inactive"}</p>
                     </div>
@@ -111,7 +111,7 @@ function DeviceListPage() {
 
     // Function for Delete Device Button
     const deleteDevice = () => {
-        axios.delete('http://www.localhost:3007/api/devices/deleteOneDevice', { params: deleteInfo })
+        axios.delete('http://www.localhost:8080/api/devices/deleteOneDevice', { params: deleteInfo })
             .then(response => {
                 if (response.data.success) {
                     alert("Successfully Deleted!");
@@ -141,12 +141,7 @@ function DeviceListPage() {
     };
 
     const onDevicePlatform = (value) => {
-        let devicePlatform = [false, false, false, false];
-        if (value.includes('0')) devicePlatform[0] = true;
-        if (value.includes('1')) devicePlatform[1] = true;
-        if (value.includes('2')) devicePlatform[2] = true;
-        if (value.includes('3')) devicePlatform[3] = true;
-        setDevicePlatform(devicePlatform);
+        setDevicePlatform(value);
     };
 
     // Function for Add Device Submit Button
@@ -163,9 +158,9 @@ function DeviceListPage() {
             platform: DevicePlatform,
             name: DeviceName,
             status: true,
-            user: "user1",
+            user: userId,
         };
-        axios.post(`http://www.localhost:3007/api/devices/addDevice`, variables)
+        axios.post(`http://www.localhost:8080/api/devices/addDevice`, variables)
             .then(response => {
                 if (response.data.success) {
                     console.log(response.data.deviceData);
@@ -232,7 +227,6 @@ function DeviceListPage() {
                 />
                 <p>Platform</p>
                 <Select
-                    mode="multiple"
                     allowClear
                     showArrow
                     style={{ width: '100%' }}
@@ -249,10 +243,11 @@ function DeviceListPage() {
                     title="All Devices"
                     path='/dashboard/devices'
                 />
-                <DeviceTable 
+                <Table 
                     tableHeader={deviceRunningHeader} 
                     tableBody={deviceRunningBody()} 
                     isEmpty={DeviceData.length === 0} 
+                    emptyText="No Devices"
                 />
             </div>
             <ModalButton text="Add a Device" onButton={onAddModal} />
