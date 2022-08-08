@@ -22,7 +22,7 @@ function Predicates({ addedPredecates, onSave }) {
     const [SelectedPredicate, setSelectedPredicate] = useState(null);
 
     useEffect(() => {
-        axios.get(`http://www.localhost:3014/api/predicates/getViaUserId/${JSON.stringify(sessionStorage_get("auth").localId)}`)
+        axios.get(`http://www.localhost:8080/api/predicates/getViaUserId/${JSON.stringify(sessionStorage_get("auth").localId)}`)
             .then(response => {
                 if (response.data.success) {
                     let predicateData = response.data.predicatesData;
@@ -84,8 +84,10 @@ function Predicates({ addedPredecates, onSave }) {
             userId: JSON.stringify(sessionStorage_get("auth").localId),
             eventId: "",
         };
-        axios.post(`http://www.localhost:3014/api/predicates/addPredicate`, variables)
+        console.log(variables);
+        axios.post(`http://www.localhost:8080/api/predicates/addPredicate`, variables)
             .then(response => {
+                console.log(response.data);
                 if (response.data.success) {
                     console.log(response.data);
                     let predicates = Predicates;
@@ -117,7 +119,7 @@ function Predicates({ addedPredecates, onSave }) {
     const deletePredicate = () => {
         const predicateId = Predicates[SelectedPredicate]._id;
         console.log(Predicates);
-        axios.delete(`http://www.localhost:3014/api/predicates/deletePredicate/${predicateId}`)
+        axios.delete(`http://www.localhost:8080/api/predicates/deletePredicate/${predicateId}`)
             .then(response => {
                 if (response.data.success) {
                     alert("Successfully deleted!");
@@ -141,7 +143,7 @@ function Predicates({ addedPredecates, onSave }) {
         const variables = Predicates[SelectedPredicate];
         if (PredicateName !== "") variables.name = PredicateName;
         if (Description !== "") variables.descriptor = Description;
-        axios.post(`http://www.localhost:3014/api/predicates/updatePredicate`, variables)
+        axios.post(`http://www.localhost:8080/api/predicates/updatePredicate`, variables)
             .then(response => {
                 if (response.data.success) {
                     console.log(response.data);

@@ -18,6 +18,14 @@ import { BiCodeAlt } from 'react-icons/bi';
 
 const userId = sessionStorage_get("auth") && JSON.stringify(sessionStorage_get("auth").localId);
 
+const sampleComments = [
+    { username: "user1", comments: "comment 1", rating: "5", created: "2022-08-01" }, 
+    { username: "user1", comments: "comment 2", rating: "4", created: "2022-08-01" },
+    { username: "user2", comments: "22345364758679878675641243254365476553423", rating: "5", created: "2022-08-02" },
+    { username: "user1", comments: "asdsfgdhfjgkhljkhjghetrweqwrthjgryetwrqefrgfd", rating: "3", created: "2022-08-01" },
+    { username: "user3", comments: "comment 5", rating: "5", created: "2022-08-01" },
+];
+
 // Page that shows detail of the bot
 function BotDetailPage() {
     const navigate = useNavigate();
@@ -36,6 +44,8 @@ function BotDetailPage() {
     const [DisplayModal, setDisplayModal] = useState(false);
 
     useEffect(() => {
+        setReviews(sampleComments);
+
         if (bot) {
             axios.get(`http://www.localhost:5008/marketplace/${bot}`)
                 .then(response => {
@@ -108,8 +118,8 @@ function BotDetailPage() {
 
     const onDownload = () => {
         const variables = {
-            userId: userId,
-            deviceId: SelectedDevice,
+            userid: userId,
+            deviceid: SelectedDevice,
             buid: bot,
             botname: Name,
         };

@@ -26,10 +26,8 @@ services:
       dockerfile: Dockerfile
     ports:
       - "3004:3014"
-    external_links:
-      - mongo
-    depends_on:
-      - mongo
+    environment:
+      - MONGO_DB_URI=mongodb+srv://P1REcH4R8OGficA0:XEEx2aGFa72zfoQL@cluster0.wnx0m.mongodb.net/?retryWrites=true&w=majority
      
   dispatch-service:
       container_name: dispatch-service
@@ -49,14 +47,6 @@ services:
     image: mongo
     ports:
       - "27017:27017"
-
-  marketplace:
-    container_name: marketplace-service
-    build: './marketplace'
-    ports:
-      - "5008:5009"
-    volumes:
-      - .:/marketplace/app
 
   nginx:
     image: nginx:latest

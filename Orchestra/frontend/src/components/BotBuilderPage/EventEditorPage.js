@@ -71,7 +71,7 @@ function BotEditorPage() {
                 eventId: eventId
             };
             console.log(variables);
-            axios.post("http://www.localhost:3014/api/predicates/updatePredicate", variables)
+            axios.post("http://www.localhost:8080/api/predicates/updatePredicate", variables)
                 .then(response => {
                     if (response.data.success) {
                         console.log(response.data.doc);

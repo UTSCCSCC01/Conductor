@@ -38,6 +38,7 @@ function PlatformExecution({ selectedDevice, onSave }) {
     };
 
     const deviceName = (platform) => {
+        console.log(platform);
         if (platform === "android") return "Android";
         else if (platform === "darwin") return "MacOS";
         else if (platform === "linux") return "Linux";
@@ -56,6 +57,7 @@ function PlatformExecution({ selectedDevice, onSave }) {
     const platformBody = () => {
         const onSelect = (index) => {
             setSelectedDevice(DeviceList[index]);
+            console.log(DeviceList);
             onSave(DeviceList[index]);
         };
         

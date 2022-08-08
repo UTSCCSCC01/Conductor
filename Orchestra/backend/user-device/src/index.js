@@ -142,10 +142,9 @@ app.post('/api/devices/addDevice', (req, res) => {
         return res.status(400).send({success: false, status: "payload corrupted"});
     }
 
-    query = {userId: req_userId}
-    values = {$setOnInsert: device}
-    options = {upsert: true}
-
+    const query = {userId: req_userId}
+    const values = {$setOnInsert: device}
+    const options = {upsert: true}
 
     Device.updateOne(query, values, options, (error, deviceData) => {
         if(error){
@@ -163,11 +162,11 @@ app.get('/api/devices/getAllDevices', (req, res) => {
     let query = {userId: req_userId};
     let selection = {_id: 0, deviceId: 1, name: 1}
     Device.find(query)
-    .select(selection)
-    .exec((error, deviceData) => {
-        if (error) return res.status(400).send(error);
-        return res.status(200).json({ success: true, deviceData });
-    });
+        .select(selection)
+        .exec((error, deviceData) => {
+            if (error) return res.status(400).send(error);
+            return res.status(200).json({ success: true, deviceData });
+        });
 });
 
 // Gets one device from the DB

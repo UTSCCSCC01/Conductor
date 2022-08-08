@@ -42,7 +42,7 @@ function BotEvents() {
         if (BotsData[index].predicate && BotsData[index].predicate.length > 0) {
             await Promise.all(BotsData[index].predicate.map(predicateId => {
                 console.log(predicateId);
-                axios.delete(`http://www.localhost:3014/api/predicates/deletePredicate/${predicateId}`)
+                axios.delete(`http://www.localhost:8080/api/predicates/deletePredicate/${predicateId}`)
                     .then(response => {
                         if (response.data.success) {
                             console.log(response.data.doc);
