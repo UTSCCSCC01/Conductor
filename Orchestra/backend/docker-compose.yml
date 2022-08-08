@@ -26,10 +26,8 @@ services:
       dockerfile: Dockerfile
     ports:
       - "3004:3014"
-    external_links:
-      - mongo
-    depends_on:
-      - mongo
+    environment:
+      - MONGO_DB_URI=mongodb+srv://P1REcH4R8OGficA0:XEEx2aGFa72zfoQL@cluster0.wnx0m.mongodb.net/?retryWrites=true&w=majority
      
   dispatch-service:
       container_name: dispatch-service
@@ -40,7 +38,7 @@ services:
   eventbuilderlink:
     build: './event-builder'
     ports:
-      - "3006:3008"
+      - "3007:3008"
     environment:
       - MONGO_DB_URI=mongodb+srv://P1REcH4R8OGficA0:XEEx2aGFa72zfoQL@cluster0.wnx0m.mongodb.net/?retryWrites=true&w=majority
   

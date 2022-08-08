@@ -59,8 +59,27 @@ function BotEditorPage() {
         setExecutionDate(date);
     };
 
-    const onPredicate = (predecate) => {
-        setPredicate(predecate);
+    const onPredicate = (predicate) => {
+        setPredicate(predicate);
+    };
+
+    const updatePredicate = async (predicateList, eventId) => {
+        await Promise.all(predicateList.map(predicateId => {
+            const variables = {
+                predicateId: predicateId,
+                userId: userId,
+                eventId: eventId
+            };
+            console.log(variables);
+            axios.post("http://www.localhost:8080/api/predicates/updatePredicate", variables)
+                .then(response => {
+                    if (response.data.success) {
+                        console.log(response.data.doc);
+                    } else {
+                        console.log("Failed to delete predicate");
+                    }
+                });
+        }));
     };
     
     const onSubmit = () => {
@@ -72,8 +91,9 @@ function BotEditorPage() {
         }
         const deviceId = Platform ? Platform.deviceId : "";
         const appletType = ExecuteApplet && ExecuteApplet[0];
-        const applet = ExecuteApplet && ExecuteApplet[2] ? ExecuteApplet[2].buid : null;
-        const predicates = Predicate.find(p => { return p._id; });
+        const applet = ExecuteApplet && ExecuteApplet[2] ? ExecuteApplet[2] : null;
+        console.log(Predicate);
+        const predicates = Predicate.map(p => p._id);
         const variables = {
             eventConfig: EventConfig,
             deviceId: deviceId,
@@ -92,6 +112,10 @@ function BotEditorPage() {
             .then(response => {
                 if (response.data.success) {
                     console.log(response.data.eventBuilderData);
+                    if (response.data.eventBuilderData.predicate && response.data.eventBuilderData.predicate.length > 0) {
+                        console.log(response.data.eventBuilderData.predicate);
+                        updatePredicate(response.data.eventBuilderData.predicate, response.data.eventBuilderData._id);
+                    }
                     alert("Successfully saved!");
                     navigate('/dashboard/builder');
                 } else {

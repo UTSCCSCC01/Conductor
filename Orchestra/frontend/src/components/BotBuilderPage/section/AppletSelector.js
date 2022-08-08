@@ -13,37 +13,6 @@ import { RiCodeBoxFill } from 'react-icons/ri';
 
 const userId = sessionStorage_get("auth") && JSON.stringify(sessionStorage_get("auth").localId);
 
-const webBots = [
-    {
-        buid: "1",
-        name: "Executor Bot",
-        description: "Opens a user specified executable located on the host machine.",
-        platform: "win32",
-        version: "4.5",
-        device: []
-    }, {
-        buid: "2",
-        name: "Phone Bot",
-        description: "Dials a specific number at a specific time.",
-        platform: "android",
-        version: "0.14",
-        device: []
-    }, {
-        buid: "3",
-        name: "Executor Bot",
-        description: "Opens a user specified executable located on the host machine.",
-        platform: "linux",
-        version: "0.01",
-        device: []
-    }, {
-        buid: "4",
-        name: "Computer Bot",
-        description: "Example",
-        platform: "linux",
-        version: "0.13",
-        device: []
-    }
-];
 
 const selectorHeader = [
     { icon: <FaRobot />, appletName: "Orchestra Web Bot" }, 
@@ -63,11 +32,23 @@ function AppletSelector({ addedApplet, appletIndex, deviceId, onAppletSelector, 
     useEffect(() => {
         if (GivenApplets !== [] && SearchText !== "") {
             setFilteredApplets(GivenApplets.filter(applet => { 
-                return applet.name.toLowerCase().includes(SearchText.toLowerCase());
+                return applet.toLowerCase().includes(SearchText.toLowerCase());
             }));
             return;
         }
         setAddedApplet(addedApplet);
+
+        const fetchData = async (bots) => {
+            let botName = [];
+            await Promise.all(bots.predicate.map(botId => {
+                axios.get(`http://www.localhost:3006/marketplace/${botId}`)
+                    .then(response => {
+                        botName.push(response.data.name);
+                    });
+            }));
+            return botName;
+        };
+
         // Load applets
         axios.post("http://www.localhost:8080/api/devices/getOneDevice", {
             userId: JSON.stringify(sessionStorage_get("auth").localId),
@@ -76,10 +57,13 @@ function AppletSelector({ addedApplet, appletIndex, deviceId, onAppletSelector, 
             .then(response => {
                 if (response.data.success && response.data.result) {
                     if (appletIndex === 0) {
-                        setGivenApplets(response.data.result.bots);
-                        setFilteredApplets(response.data.result.bots);
-                        setGivenApplets(webBots);
-                        setFilteredApplets(webBots);
+                        const bots = response.data.result.bots;
+                        let botName = [];
+                        if (bots && bots.length > 0) {
+                            botName = fetchData(bots);
+                        }
+                        setGivenApplets(botName);
+                        setFilteredApplets(botName);
                     } else if (appletIndex === 1) {
                         setGivenApplets(response.data.result.native_app);
                         setFilteredApplets(response.data.result.native_app);
@@ -114,7 +98,7 @@ function AppletSelector({ addedApplet, appletIndex, deviceId, onAppletSelector, 
                 <div key={index} className="selector-block selector-applet">
                     <div className="selector-info">
                         <RiCodeBoxFill />
-                        <p>{row.name}</p>
+                        <p>{row}</p>
                     </div>
                     {SelectedApplet 
                         ? SelectedApplet[1] === index 
@@ -132,8 +116,8 @@ function AppletSelector({ addedApplet, appletIndex, deviceId, onAppletSelector, 
     const executionArg = <div className="selector-block exec-arg">
         <div className="arg-header">
             <RiCodeBoxFill />
-            <h2>{(SelectedApplet !== null && FilteredApplets[SelectedApplet[1]].name) 
-                || (AddedApplet && AddedApplet[2].name)}</h2>
+            <h2>{(SelectedApplet !== null && FilteredApplets[SelectedApplet[1]]) 
+                || (AddedApplet && AddedApplet[2])}</h2>
         </div>
         <div className="arg-text">
             <p>Execution Arguments (Optional)</p>
