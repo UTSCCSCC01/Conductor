@@ -1,0 +1,8 @@
+Flask==2.0.3
+Flask_Cors==3.0.10
+ibm_cos_sdk==2.12.0
+ibm_cos_sdk_core==2.12.0
+pymongo==4.1.1
+requests==2.27.1
+Werkzeug==2.0.3
+dnspython==2.0.0

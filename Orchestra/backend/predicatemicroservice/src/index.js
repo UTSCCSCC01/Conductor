@@ -188,6 +188,26 @@ app.get('/api/predicates/getViaUserId/:userId', (req, res) => {
 // 	});
 // });
 
+// 1. create_predicate (x2)
+// 2. get_predicate_by_userid
+// 3. curl -v -X DELETE http://localhost:8080/api/predicates/deletePredicateViaEvent -H "Content-Type: application/json" -d '{"predicate": [...]}'
+app.delete('/api/predicates/deletePredicateViaEvent', (req, res) => {
+	const predicates = req.body.predicate; // = array of predicates
+	const predicatesIds = [];
+	predicates.forEach((p) => {
+		predicatesIds.push(new ObjectId(p._id));
+	});
+	console.log(predicatesIds); // TODO: rm
+	Predicate.remove({_id:{'$in': predicatesIds}}, function (err, doc) {
+		if (err) return res.status(500).json({success: false, err});
+		if (doc.acknowledged) {
+			return res.status(200).json({success: true, doc});
+		} else {
+			return res.status(404).json({success: false, doc});
+		}
+	});
+});
+
 
 
 app.listen(PORT, () => console.log("predicatemicroservice's MongoDB server running..."));
