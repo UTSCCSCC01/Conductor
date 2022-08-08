@@ -8,7 +8,7 @@ import ibm_boto3
 import sys
 from ibm_botocore.client import Config, ClientError
 from werkzeug.utils import secure_filename
-from pymongo import MongoClient
+from pymongo import MongoClient, TEXT
 from bson.json_util import dumps
 from bson.json_util import loads
 
@@ -45,6 +45,8 @@ cos = ibm_boto3.resource("s3",
 )
 
 BUCKET_NAME = "orchestra-store-microservice"
+
+bot_collection.create_index([('name', TEXT)], default_language='english')
 
 def upload_file(bucket_name, item_name, file_path):
     try:
@@ -179,6 +181,20 @@ def download():
 def get_metadata(buid):
     result = bot_collection.find_one({"buid" : buid}, {"_id" : 0, "og_filename" : 1, "url": 1})
     return loads(dumps(result))
+
+@app.route('/get_bots', methods=["POST"])
+def get_bot_page():
+    content = request.get_json(force=True)
+    page = content["page"]
+    results = list(bot_collection.find({}, {"_id":0}).skip(3*int(page)).limit(3))
+    return {"results" : results}
+
+@app.route('/search_bots', methods=["POST"])
+def search_bots():
+    content = request.get_json(force=True)
+    searchterm = content["searchterm"]
+    results = list(bot_collection.find({"$text": {"$search":searchterm}}, {"_id":0}))
+    return {"results" : results}
 
 if __name__ == '__main__':
     app.run(port=5008)
