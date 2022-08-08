@@ -1,11 +1,16 @@
 
 //Import models, and server configs.
-const { MONGO_DB_URI, PORT } = require("./config/config");
+const { MONGO_DB_URI, PORT, RUN_EVENT_ENDPOINT } = require("./config/config");
 const { EventBuilder } = require('../model/EventBuilder');
+const { v4: uuidv4 } = require('uuid');
+
+const {send_event} = require('./utils/sendEvent')
 
 const express = require('express');
 const cors = require('cors');
 const mongoose = require('mongoose');
+
+const axios = require('axios')
 
 // Set Configs/Mongodb Connection
 const app = express();
@@ -52,7 +57,7 @@ app.options('/api/eventbuilder/addEvent', function (req, res) {
 });
 
 // Adds a new device to the DB
-app.post('/api/eventbuilder/addEvent', (req, res) => {
+app.post('/api/eventbuilder/addEvent', async (req, res) => {
     // Check if nonempty variable
     if (!req.body.eventConfig || req.body.eventConfig === undefined || req.body.eventConfig.length === 0) {
         return res.status(400).send({ success: false, status: "invalid response" });
@@ -73,6 +78,7 @@ app.post('/api/eventbuilder/addEvent', (req, res) => {
     // Perform checks on query.
     const reqUserId = req.body.userId.trim();
     const reqDeviceId = req.body.deviceId.trim();
+    const eventId = uuidv4();
 
     // Generate the payload
     const payload = {
@@ -87,6 +93,7 @@ app.post('/api/eventbuilder/addEvent', (req, res) => {
         predicate: req.body.predicate,
         userId: reqUserId,
         created: req.body.created,
+        eventId:eventId
     }
 
     console.log(payload);
@@ -100,11 +107,19 @@ app.post('/api/eventbuilder/addEvent', (req, res) => {
                 console.log(error);
                 return res.status(409).send(error);
             }
-            return res.status(200).json({ success: true, eventBuilderData });
         });
     } catch (err) {
         return res.status(400).send({ success: false, status: "payload corrupted" });
     }    
+
+      // Send the result to the event-manager
+      let result = await send_event(payload);
+      if(result){
+        return res.status(200).json({ success: true, eventBuilderData });
+      }
+
+      return res.status(400).send({ success: false, status: "Cannot send event to the event builder" });
+      
 });
 
 app.get('/api/eventbuilder/getUserEvents', (req, res) => {
@@ -134,6 +149,53 @@ app.get('/api/eventbuilder/getAll', (req, res) => {
             return res.status(200).json({ success: true, eventBuilderData });
         });
 });
+
+
+
+app.post('/api/eventbuilder/runEvent', async (req, res) => {
+    
+    //Get eventid
+    //Get eventid from  database
+    //Send to server
+    //Get Response
+    //Send back to caller
+
+    let event_id = req.body.eventId;
+    let event_item = undefined;
+    try{
+        event_item = await EventBuilder.findOne({ eventId: event_id });
+    }catch{
+        res.status(400).send({ success: false, status: "Cannot send event from event-builder-database" })
+        return;
+    }
+
+
+    let payload = {
+        device_id: event_item["deviceId"],
+        user_id: event_item["userId"],
+        event: event_item
+    }
+
+
+    //We have event object, send it to the dispatcher.
+    let dispatcher_result = undefined;
+    console.log(payload);
+
+    try{
+        dispatcher_result = await axios.post(RUN_EVENT_ENDPOINT, payload);
+        res.status(200).send({ success: true, status: "Sent event to client"});
+        return;
+    }catch(e){
+        console.log(e);
+        console.log(dispatcher_result);
+        res.status(400).send({ success: false, status: "Cannot send event to client" });
+        return;
+    }
+
+
+      
+});
+
 
 // Server Port
 app.listen(port, () => {

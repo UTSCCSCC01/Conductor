@@ -1,7 +1,7 @@
 
 //Default endpoint. Use only for developement/debuggging specific microservice
 let MONGO_DB_URI = "mongodb+srv://P1REcH4R8OGficA0:XEEx2aGFa72zfoQL@cluster0.wnx0m.mongodb.net/?retryWrites=true&w=majority"
-let PORT = 3000
+let PORT = 3090
 
 
 

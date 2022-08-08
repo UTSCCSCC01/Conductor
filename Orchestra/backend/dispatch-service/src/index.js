@@ -118,6 +118,7 @@ app.post('/dispatch/device-connected', async (req, res) => {
 
     let device_id = req.body["device_id"];
     let user_id = req.body["user_id"];
+    console.log(user_id, device_id);
     let status = await is_device_online(user_id, device_id)
     console.log("Device status:", status);
     if (status == true) {
@@ -203,6 +204,8 @@ app.post('/dispatch/send-event', async (req, res) => {
     let device_id = req.body["device_id"];
     let user_id = req.body["user_id"];
     let event = req.body["event"];
+
+    console.log(device_id, user_id, event);
 
     let payload = event;
     let bus_response = await payload_bus_stream(device_id, user_id, payload, "send-event")

@@ -112,7 +112,7 @@ class orchestraSocket{
 
         orchestraSocket.socket.on("send-event", (payload:any) => {
             // UPDATE TO send-event
-            trigger_executor.sendRequest("executeApp", payload);
+            trigger_executor.sendRequest("send-event", payload);
         })
     // --------------------------------------------------------------------------//
 

@@ -19,6 +19,7 @@ const eventSchema = mongoose.Schema({
     predicate: { type: [String], required: true },      // Predicates added to the event
     userId: { type: String, required: true },           // User who built the event
     created: { type: Date, required: true },   
+    eventId: { type: String, required: true },  
 });
 
 const EventBuilder = mongoose.model('EventBuilder', eventSchema);
