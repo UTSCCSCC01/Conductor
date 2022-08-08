@@ -75,7 +75,7 @@ async function signalWatcher(){
         if(next.operationType == 'delete'){
             console.log("--------TIME TO EXECUTE HAS ARRIVED-------");
             console.log(next);
-            //handleExecutionDateOccur(next.documentKey._id);
+            handleExecutionDateOccur(next.documentKey._id);
         }
     })
 }
@@ -84,6 +84,58 @@ signalWatcher();
 
 //Function on what to do when the execution date has arrived
 async function handleExecutionDateOccur(event_id){
+    console.log("Running handleExecutionDispatcher")
+    let TimeSatisfied = true;
+    let TimeTooLate = true;
+    let Terminated = false;
+    
+    //Get the mongodb document
+    let event_result;
+    try{
+        event_result = await EventOrchestrator.findOne({EventId: event_id});
+    }catch{
+        ; //nop operator
+        console.log("FAILURE TO FETCH EVENT OBJECT");
+        return;
+    }
+
+    if(event_result == undefined){
+        console.log("EVENT OBJECT IS UNDEFINED! Potentially deleted or server error");
+        return;
+    }
+
+    //Time has completed and Predicate Satisified
+    if(event_result["PredicateState"]){
+        handleEventExecution(event_id, event_result);
+        console.log("PREDICATE SATISFIED AND TIME SATISFIED!!! Running event!..");
+        TimeTooLate = false;
+    }else if(!event_result["HangtillPredicateSatisfied"] || !event_result["RunAfterEventPassed"]){
+        Terminated = true;
+        console.log("Event terminated HangTillPredicateSatisfied = false")
+    }else{
+        ;
+        //Do no operations
+        //Event 
+        TimeTooLate = true;
+    }
+
+    //Update the states
+    const query = {EventId: event_id}
+    const updateExecutionDateFlag = {
+        TimeSatisfied: TimeSatisfied, //Regardless of what happens time has passed.
+        TimeTooLate: TimeTooLate, //Predicate was not satisfied 
+        Terminated: Terminated //True if RunAfterEventPass Flag = false
+ 
+    }
+    console.log("Updating states");
+    //update state
+    try{
+        await EventOrchestrator.updateOne(query,updateExecutionDateFlag);
+    }catch{
+        console.log("Critical Error has occured! Unable to increment PredicateSatisfyCount.");
+        console.log("EventID: ", event_id, " is now in an undefined state. -1 predicate");
+        console.log("This incident has been reported to status microservice");
+    }
 
 
 }
@@ -286,7 +338,6 @@ app.post("/event/satisifypredicate", async (req,res) => {
         predicate_satisfied = true;
         handlePredicateSatisfaction(event_id, event_result); //async task for server. 
         //------------Execute Code----------// where predicate satisfied
-        
     }
 
     console.log(event_result["TotalPredicateSatisfied"],  event_result["NumberOfPredicates"], event_result["TotalPredicateSatisfied"] ==  event_result["NumberOfPredicates"])
@@ -327,37 +378,28 @@ async function handlePredicateSatisfaction(event_id, event){
     //  we dont check the current time and mark as failure to avoid race conditions
     if(event["TimeSatisfied"] || ((event["TimeTooLate"]) && event["RunAfterEventPassed"])){
         console.log("Going to send event to the dispatcher");
-        handleEventExecution(eventid,event);
+        handleEventExecution(event_id,event);
         return;
     }
-
+    console.log("Event not ready: ", event["TimeSatisfied"],(event["TimeTooLate"]) && event["RunAfterEventPassed"]);
     //Time not satisfied, exit and wait till time signal comes in.
 }
 
 /*--------------------------------------- PREDICATE SIGNAL STATE REGION----------------------------------------/*
 
 /*--------------------------------------------------DISPATCHER STATE REGION---------------------------------------------- */
-async function handleEventExecution(eventid,event){
-    //Send Post Request to the dispatcher microservice, and wait for a response
 
-    //In either case set DispatcherAcknowledged if dispatcher request tried to process it.
-
-    //If 200: Set UserSemiAcknowledged=True and terminate event
-
-    //If otherwise keep false.
-    
-    //If post request = 200
-}
-
-//Returns true is sent to client, false if not online or failed.
+//Returns true is sent to client, false if not online or faileds.
 async function sendEventExecution(eventid){
     return 1;
 }
 
-async function handleDispatcherResponse(eventid,event){
+async function handleEventExecution(eventid,event){
+    console.log("Sending event to the client")
+
     let reached_client = undefined;
     let dispatcher_acknowledged = true; //Maybe we dont need this
-    let terminate = true;
+    let terminate = false;
     let RunUponSignIn = false;
     let UserSemiAcknowledged = false;
 
@@ -365,14 +407,18 @@ async function handleDispatcherResponse(eventid,event){
      * Once we ready to send a event it terminates
      * User is responsible for executing event based on RunUponSignIn flag
      * 
-     * Event wont be in this state if it mismatched any of its execution preconditions
+     * Event wont be in this function if it mismatched any of its execution preconditions
      * unless otherwise specified by their status flags.
      *  
+     * An event can only be sent to dispatcher once. After that it either terminates
+     * or user runs it upon signin.
+     * 
     */
 
-    try{
+    try{ // to send a request. 
         reached_client = await sendEventExecution(eventid);
         dispatcher_acknowledged = true;
+        terminate= true;
     }catch{
         if(event["ClientFailureRetrySignal"]){
             RunUponSignIn = true;
@@ -383,8 +429,51 @@ async function handleDispatcherResponse(eventid,event){
         UserSemiAcknowledged = true;
     }
 
+    //Update Database to include new states
+    console.log("New States", reached_client, dispatcher_acknowledged, terminate, RunUponSignIn, UserSemiAcknowledged);
 
+    /**
+     *     let reached_client = undefined;
+            let dispatcher_acknowledged = true; //Maybe we dont need this
+            let terminate = false;
+            let RunUponSignIn = false;
+            let UserSemiAcknowledged = false;
+     */
+    const query = {EventId: eventid}
+        const updateExecutionDateFlag = {
+            DispatcherAcknowledged:dispatcher_acknowledged,
+            Terminated:terminate,
+            RunUponSignIn:RunUponSignIn, 
+            UserSemiAcknowledged: UserSemiAcknowledged 
+        }
+        try{
+            await EventOrchestrator.updateOne(query,updateExecutionDateFlag);
+        }catch{
+            console.log("Critical Error has occured! Unable to increment PredicateSatisfyCount.");
+            console.log("EventID: ", eventid, " is now in an undefined state. -1 predicate");
+            console.log("This incident has been reported to status microservice");
+        }
+        
 }
+
+app.post("/runZombieEvents", (req,res) => {
+    /**
+     * One way transaction: After this we set all events to Terminated
+     * Returns a list of events where RunUponSignIn = true, which will execute on client
+     * 
+     * sets all zombieevents to be terminated
+     * 
+     */
+
+    //Update all event termination
+    //This request is accessiable via event-builder microservice.
+    let event_termination = true;
+    let userid = "userid"
+    let machineid = "machineid"
+
+});
+
+
 /*--------------------------------------------------DISPATCHER STATE REGION---------------------------------------------- */
 
 
@@ -399,17 +488,7 @@ async function handleDispatcherResponse(eventid,event){
 
 /*------------------------------------------------ EVENT TERMINATION STATE REGION--------------------------------------- */
 /*------------------------------------------------ EVENT TERMINATION STATE REGION--------------------------------------- */
-//Send to STATUS MICROSERVICE
-async function setEventLifeCycleComplete(event, status, messag, send_to_user){
-    const query = {EventId: eventid}
-    const updateExecutionDateFlag = {
-        $set: {
-            EventStatus: status,
-            ExecutionMessage: message,
-            SendToUser: send_to_user, 
-        },
-    }
-}
+
 
 
 /**
