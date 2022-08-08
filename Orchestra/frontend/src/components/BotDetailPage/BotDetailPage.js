@@ -111,11 +111,10 @@ function BotDetailPage() {
             userId: userId,
             deviceId: SelectedDevice,
             buid: bot,
-            url: SourcecodeUrl,
-            og_filename: Filename
+            botname: Name,
         };
         console.log(variables);
-        axios.post('http://127.0.0.1:5000/api/marketplace/download', variables)
+        axios.post('http://127.0.0.1:5000/marketplace/download', variables)
             .then(response => {
                 console.log(response.data);
                 setSelectedDevice("");

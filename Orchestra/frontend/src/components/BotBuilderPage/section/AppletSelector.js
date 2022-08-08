@@ -13,37 +13,6 @@ import { RiCodeBoxFill } from 'react-icons/ri';
 
 const userId = sessionStorage_get("auth") && JSON.stringify(sessionStorage_get("auth").localId);
 
-const webBots = [
-    {
-        buid: "1",
-        name: "Executor Bot",
-        description: "Opens a user specified executable located on the host machine.",
-        platform: "win32",
-        version: "4.5",
-        device: []
-    }, {
-        buid: "2",
-        name: "Phone Bot",
-        description: "Dials a specific number at a specific time.",
-        platform: "android",
-        version: "0.14",
-        device: []
-    }, {
-        buid: "3",
-        name: "Executor Bot",
-        description: "Opens a user specified executable located on the host machine.",
-        platform: "linux",
-        version: "0.01",
-        device: []
-    }, {
-        buid: "4",
-        name: "Computer Bot",
-        description: "Example",
-        platform: "linux",
-        version: "0.13",
-        device: []
-    }
-];
 
 const selectorHeader = [
     { icon: <FaRobot />, appletName: "Orchestra Web Bot" }, 
