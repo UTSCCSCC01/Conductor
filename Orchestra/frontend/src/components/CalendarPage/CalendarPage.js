@@ -22,7 +22,10 @@ const userId = sessionStorage_get("auth") && JSON.stringify(sessionStorage_get("
 function CalendarPage() {
     const [Value, setValue] = useState(moment());
     const [SelectedValue, setSelectedValue] = useState(moment());
+    const [AllEvents, setAllEvents] = useState([]);
     const [EventData, setEventData] = useState([]);
+    const [JobData, setJobData] = useState([]);
+    const [ActiveEvent, setActiveEvent] = useState([]);
 
     useEffect(() => {
         if (!userId) {
@@ -32,12 +35,12 @@ function CalendarPage() {
             .then(response => {
                 if (response.data.success) {
                     let eventBuilderData = response.data.eventBuilderData;
+                    getActiveJobs(eventBuilderData);
                     if (eventBuilderData.length > 0) {
                         eventBuilderData = eventBuilderData.filter(event => {
                             var date = new Date(event.executionDate);
                             return SelectedValue.format("YYYY-MM-DD") === date.toISOString().substring(0, 10);
                         });
-                        console.log(eventBuilderData);
                     }
                     setEventData(eventBuilderData);
                 } else {
@@ -45,6 +48,26 @@ function CalendarPage() {
                 }
             });
     }, [userId, SelectedValue]);
+
+    const getActiveJobs = async (allEvents) => {
+        await Promise.all(allEvents.map(event => {
+            axios.post("http://www.localhost:8080/api/devices/getOneDevice", { userId: userId, deviceId: event.deviceId })
+                .then(response => {
+                    if (response.data.success) {
+                        if (response.data.result.status) {
+                            let activeEvents = ActiveEvent;
+                            let deviceEvent = event;
+                            deviceEvent.deviceStatus = response.data.result.status;
+                            deviceEvent.deviceBots = response.data.result.bots;
+                            activeEvents.push(deviceEvent);
+                            setActiveEvent(activeEvents);
+                        }
+                    } else {
+                        console.log("Failed to load device data");
+                    }
+                });
+        }));
+    };
 
     const onSelect = (newValue) => {
         setValue(newValue);
@@ -63,7 +86,7 @@ function CalendarPage() {
                     <Calendar fullscreen={false} value={Value} onSelect={onSelect} onPanelChange={onPanelChange} />
                     <CalendarEvent selectedDate={SelectedValue.format('MMMM DD, YYYY')} bodyData={EventData} />
                 </div>
-                <ActiveJobs selectedDate={SelectedValue.format('MMMM DD, YYYY')} bodyData={jobData} />
+                <ActiveJobs selectedDate={SelectedValue.format('MMMM DD, YYYY')} bodyData={ActiveEvent} />
             </div>
         </div>
     );

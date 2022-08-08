@@ -20,16 +20,20 @@ function ActiveJobs({ bodyData }) {
 
     const jobList = bodyData 
         ? bodyData.map((job, index) => {
+            const convertDate = (executionDate) => {
+                var date = new Date(executionDate);
+                return date.toISOString().substring(11, 19);
+            };
             return (
                 <div key={index} className="job-event">
                     <div className="job-description">
                         <div className="job-title">
-                            <h4>{job.name ? job.name : "Undefined"}</h4>
-                            <p>{job.date ? job.date : "No time"}</p>
+                            <h4>{job.eventName ? job.eventName : "Undefined"}</h4>
+                            <p>{job.executionDate ? convertDate(job.executionDate) : "No time"}</p>
                         </div>
                         <div className="job-status">
-                            <p>Status: {job.status ? job.status : "Inactive"}</p>
-                            <p>Connected Bots: {job.bots ? job.bots.length : "0"}</p>
+                            <p>Status: {job.deviceStatus ? "Active" : "Inactive"}</p>
+                            <p>Connected Bots: {job.deviceBots ? job.deviceBots.length : "0"}</p>
                         </div>
                     </div>
                     <BlueButton text="View" onButton={() => onView(job.name)} />
