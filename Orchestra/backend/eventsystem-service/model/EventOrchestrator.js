@@ -6,7 +6,7 @@ const eventExecutionSchema = mongoose.Schema({
     EventId: { type: String, required: true}, //EventID stored in the event-builder microservice
     NumberOfPredicates: {type: Number, required: true}, //predicate microserivce length. 
     timeToExecute: { type: Date },
-    RunAfterEventPassed: {type: Boolean, required: true},
+    RunAfterEventPassed: {type: Boolean, required: true}, //Run if event has passed.
     HangtillPredicateSatisfied: {type: Boolean, required: true},
     ClientFailureRetrySignal: {type: Boolean, required: true},
 
@@ -14,7 +14,7 @@ const eventExecutionSchema = mongoose.Schema({
     TotalPredicateSatisfied: {type: Number, default: 0}, //Increment, signal sent by predicate microservice: Initally 0
     PredicateState: {type: Boolean, default: false}, //Finite State switch: switches to true iff NumberOfPredicates == TotalPredicateSatisfied.
     TimeSatisfied: {type: Boolean, default: false}, // Finite State switch: switches to true iff mongodb stream sends trigger of eventid
-    TimeTooLate: {type: Boolean, default: false}, //
+    TimeTooLate: {type: Boolean, default: false}, //True if time passed at the time the was predicate false.
 
     RunUponSignIn: {type: Boolean, default: false}, 
 
