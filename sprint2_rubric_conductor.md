@@ -169,7 +169,7 @@ Tracking on Jira Total Mark: 18 / 24
   - Started stories that are incomplete will be counted
   - Mark Breakdown: [x = Percentage of story points completed * 20]
 
-  Your Mark: 4 / 20 Feedback: Only one user story completed
+  Your Mark: 20 / 20 
 
 ---
 ## System Design (PDF or MD file or another suitable format) (max 10 marks) 
@@ -249,4 +249,4 @@ Tracking on Jira Total Mark: 18 / 24
 
 ## Total Mark
 
-67 / 93
+83 / 93
