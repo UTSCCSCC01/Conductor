@@ -30,7 +30,7 @@ function Marketplace() {
     const rows = botarray.map((row, index) => {
         return (
             <div key={index} className="table-body-row">
-                <div className="row large"><a href={"http://localhost:3000/marketplace/" + row.name}><p>{row.name}</p></a></div>
+                <div className="row large"><a href={"http://localhost:3000/marketplace/" + row.buid}><p>{row.name}</p></a></div>
                 <div className="row small"></div>
             </div>
         );
