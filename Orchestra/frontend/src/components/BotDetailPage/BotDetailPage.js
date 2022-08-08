@@ -37,7 +37,7 @@ function BotDetailPage() {
 
     useEffect(() => {
         if (bot) {
-            axios.get(`http://127.0.0.1:5000/marketplace/${bot}`)
+            axios.get(`http://www.localhost:5008/marketplace/${bot}`)
                 .then(response => {
                     setName(response.data.name);
                     setDescription(response.data.description);
@@ -46,7 +46,7 @@ function BotDetailPage() {
                     setSourcecodeUrl(response.data.url);
                     setFilename(response.data.og_filename);
                 });
-            axios.get(`http://127.0.0.1:5000/reviews/${bot}`)
+            axios.get(`http://www.localhost:5008/reviews/${bot}`)
                 .then(response => {
                     console.log(response.data.results);
                     setReviews(response.data.results);
@@ -64,7 +64,7 @@ function BotDetailPage() {
         axios.get('http://www.localhost:8080/api/devices/getAllDevices', { params: { userId: userId } })
             .then(response => {
                 if (response.data.success) {
-                    setDeviceList(response.data.devicesData);
+                    setDeviceList(response.data.deviceData);
                     setDisplayModal(true);
                 } else {
                     console.log("Failed to load devices");
@@ -114,7 +114,7 @@ function BotDetailPage() {
             botname: Name,
         };
         console.log(variables);
-        axios.post('http://127.0.0.1:5000/marketplace/download', variables)
+        axios.post('http://www.localhost:5008/marketplace/download', variables)
             .then(response => {
                 console.log(response.data);
                 setSelectedDevice("");

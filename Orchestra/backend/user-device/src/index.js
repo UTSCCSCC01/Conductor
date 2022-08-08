@@ -159,7 +159,7 @@ app.post('/api/devices/addDevice', (req, res) => {
 //Migrate to post? 
 //Technically we building a resource. 
 app.get('/api/devices/getAllDevices', (req, res) => {
-    const req_userId = (req.body.userId).trim();
+    const req_userId = (req.query.userId).trim();
     let query = {userId: req_userId};
     let selection = {_id: 0, deviceId: 1, name: 1}
     Device.find(query)

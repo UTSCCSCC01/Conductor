@@ -21,7 +21,7 @@ function PlatformExecution({ selectedDevice, onSave }) {
         axios.get('http://www.localhost:8080/api/devices/getAllDevices', { params: { userId: userId } })
             .then(response => {
                 if (response.data.success) {
-                    setDeviceList(response.data.devicesData);
+                    setDeviceList(response.data.deviceData);
                 } else {
                     console.log("Failed to load devices");
                 }

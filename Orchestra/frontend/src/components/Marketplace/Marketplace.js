@@ -30,7 +30,7 @@ function Marketplace() {
     const rows = botarray.map((row, index) => {
         return (
             <div key={index} className="table-body-row">
-                <div className="row large"><a href={"http://localhost:3000/marketplace/" + row.buid}><p>{row.name}</p></a></div>
+                <div className="row large"><a href={"http://localhost:3000/dashboard/marketplace/" + row.buid}><p>{row.name}</p></a></div>
                 <div className="row small"></div>
             </div>
         );
@@ -42,15 +42,6 @@ function Marketplace() {
                 <div>Name</div>
                 <div>Description</div>
             </div >
-        );
-    };
-
-    const body = () => {
-        return (
-            <div className="body">
-                <div>Name1</div>
-                <div>Description</div>
-            </div>
         );
     };
 
@@ -67,8 +58,7 @@ function Marketplace() {
                 placeholder="Search bots" onChange={event => {setSearchTerm(event.target.value)}}
             />
             <div className="table">
-                {header}
-                {body}
+                {header()}
                 <div className="table-body">{rows}</div>
             </div>
             <BlueButton text="prev" onButton={onPrev}/>

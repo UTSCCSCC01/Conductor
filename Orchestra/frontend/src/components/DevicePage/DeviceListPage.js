@@ -43,8 +43,8 @@ function DeviceListPage() {
         axios.get(`http://www.localhost:8080/api/devices/getAllDevices`, { params: { userId: userId } })
             .then(response => {
                 if (response.data.success) {
-                    console.log(response.data.devicesData);
-                    setDeviceData(response.data.devicesData);
+                    console.log(response.data.deviceData);
+                    setDeviceData(response.data.deviceData);
                 }
             });
     }, []);
