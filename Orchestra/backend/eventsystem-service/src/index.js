@@ -1,6 +1,6 @@
 
 //Import models, and server configs.
-const { MONGO_DB_URI, PORT } = require("./config/config");
+const { MONGO_DB_URI, PORT, SEND_TO_EVENT_BUILDER } = require("./config/config");
 
 const express = require('express');
 const cors = require('cors');
@@ -139,13 +139,7 @@ async function handleExecutionDateOccur(event_id){
 
 
 }
-//Tells event-builder to send event to dispatcher which sends results to client electron
-// which sends to Trigger over ipc to execute the task.
-async function send_dispatcher(event_id){
-}
 
-async function handle(){
-}
 /*----------------------------------------TIME TO EXECUTE SIGNAL STATE REGION END----------------------------------- */
 
 
@@ -391,7 +385,14 @@ async function handlePredicateSatisfaction(event_id, event){
 
 //Returns true is sent to client, false if not online or faileds.
 async function sendEventExecution(eventid){
-    return 1;
+   try{
+        dispatcher_result = await axios.post(SEND_TO_EVENT_BUILDER, payload);
+        return true;
+    }catch(e){
+        console.log(e);
+        console.log(dispatcher_result);
+        return false;
+    }
 }
 
 async function handleEventExecution(eventid,event){

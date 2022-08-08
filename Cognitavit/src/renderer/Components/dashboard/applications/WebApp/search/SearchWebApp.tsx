@@ -15,7 +15,9 @@ import Modal from '@mui/material/Modal';
 import TextField from '@mui/material/TextField';
 
 const SearchWebApp = (prop: any) => {
-    let Apps = prop.appletList;
+    
+    const [Apps, setApps] = useState([]);
+
     const [input, setInput] = useState('');
     const [applicationList, setApplicationList] = useState(Apps);
 
@@ -37,10 +39,17 @@ const SearchWebApp = (prop: any) => {
             setInput(input_word);
             return;
         }
-        const filtered_apps = Apps.filter((apps: string) =>
-            apps.toLowerCase().includes(input_word.toLowerCase())
+
+        const filtered_apps = Apps.filter((apps: any) =>
+            apps["name"].toLowerCase().includes(input_word.toLowerCase())
         );
-        setApplicationList(filtered_apps.sort());
+        
+        console.log("------------------")
+        console.log(filtered_apps);
+        console.log(applicationList);
+        console.log("------------------")
+
+        setApplicationList(filtered_apps);
         setInput(input_word);
     };
 
@@ -49,21 +58,29 @@ const SearchWebApp = (prop: any) => {
         //FUTURE: 
         //Look at the prop.type value to determine if its custom_bin, or applets.
 
-        let value = window.exec_calls.proc_bus(["getApplist", {}])
+        let value = window.exec_calls.proc_bus(["get_local_bots", {}])
+    
         toast.promise(value,{
             pending: "Reading Application List",
             error: "Unable to read from Application list, IPC BUS has not responded.",
             success: "Application List has been obtained.."
         })
 
+        console.log(value)
+        //Array
+
+
         value.then((result:any) => {
-            if(result != undefined && result["application_list"] != undefined){
-                if(result["application_list"].length > 0){
-                    setApplicationList(result["application_list"].sort())
+            console.log(result);
+            if(result != undefined && result["installed"] != undefined){
+                if(result["installed"].length > 0){
+                    //Array of jsons
+                    setApps(result["installed"])
+                    setApplicationList(result["installed"])
                 }
             }
-            console.log("INSIDE THE NATIVE_APP", result["application_list"]);
         })
+
 
         if(prop.type == 'native'){
             setExectuableType("Native App")
@@ -114,8 +131,8 @@ const SearchWebApp = (prop: any) => {
          */
 
         // Send a message over our ipc bus manager
-        let value = window.exec_calls.proc_bus(["executeApp", {
-            application_name: application_name,
+        let value = window.exec_calls.proc_bus(["executeBot", {
+            buid: application_name,
             arguments: application_arguments
         }])
         toast.promise(value,{
@@ -187,21 +204,29 @@ const SearchWebApp = (prop: any) => {
                 placeholder= {executableType + " List"} 
             />
 
+            {
+                applicationList.map((appname:any)=>{
+                    console.log("HERE")
+                    console.log(appname["buid"]);
+                })
+            }
+
             <div className="application-list">
                 {applicationList && applicationList.length > 0 ? (
-                    applicationList.map((appname: string) => (
-                        <li key={'key.' + appname} className="app-item">
+                    applicationList.map((appname: any) => (
+        
+                        <li key={appname["buid"]} className="app-item">
                             <img
                                 className="binary_logo"
                                 src={binary_file}
                                 width="50px"
                                 alt="Orchestra Logo"
                             />
-                            <h2 className="application_name">{appname}</h2>
+                            <h2 className="application_name">{appname["name"]}</h2>
                             <button
                                 className="execute"
                                 onClick={() => {
-                                    setSelectedApplication(appname)
+                                    setSelectedApplication(appname["buid"])
                                     handleOpen();
                                 }}
                             >

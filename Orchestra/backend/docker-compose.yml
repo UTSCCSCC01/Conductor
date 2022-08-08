@@ -38,12 +38,21 @@ services:
         - "3005:3000"
   
   eventbuilderlink:
+    container_name: eventbuilderlink
     build: './event-builder'
     ports:
       - "3006:3008"
     environment:
       - MONGO_DB_URI=mongodb+srv://P1REcH4R8OGficA0:XEEx2aGFa72zfoQL@cluster0.wnx0m.mongodb.net/?retryWrites=true&w=majority
   
+  eventcoordinator:
+    container_name: eventcoordinator
+    build: './eventsystem-service'
+    ports:
+      - "3008:3008"
+    environment:
+      - MONGO_DB_URI=mongodb+srv://P1REcH4R8OGficA0:XEEx2aGFa72zfoQL@cluster0.wnx0m.mongodb.net/?retryWrites=true&w=majority
+
   mongo:
     container_name: mongo
     image: mongo
@@ -71,3 +80,5 @@ services:
       - dispatch-service
       - predicateserves
       - eventbuilderlink
+      - eventcoordinator
+

@@ -19,12 +19,13 @@ marketplace_getmetadata = "http://127.0.0.1:5008/get_metadata/"
 config_file = path.join(env_userpath, CONFIG_NAME)
 downloads_folder = path.join(env_userpath, "downloaded")
 
-@download_app.route('/get_local_bots', methods=['GET'])
+@download_app.route('/get_local_bots', methods=['GET', 'POST'])
 def get_local():
     if (os.path.exists(config_file) == True):
             with open(config_file) as f:
                 data = json.load(f)
             return {"installed": data["installed"]}
+            
 
     return {"installed":[]}
 

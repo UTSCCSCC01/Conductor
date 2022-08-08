@@ -3,6 +3,7 @@
 let MONGO_DB_URI = "mongodb+srv://P1REcH4R8OGficA0:XEEx2aGFa72zfoQL@cluster0.wnx0m.mongodb.net/?retryWrites=true&w=majority"
 let PORT = 3090
 
+let SEND_TO_EVENT_BUILDER = "http://eventbuilderlink:3008/api/eventbuilder/runEvent"
 
 
 if(process.env.MONGO_DB_URI != undefined){
@@ -13,5 +14,6 @@ if(process.env.MONGO_DB_URI != undefined){
 
 module.exports = {
     MONGO_DB_URI,
-    PORT
+    PORT,
+    SEND_TO_EVENT_BUILDER
 };

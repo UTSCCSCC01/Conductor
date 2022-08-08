@@ -41,6 +41,7 @@ import { data } from 'autoprefixer';
 import { io, Socket } from 'socket.io-client';
 
 
+import { get_device_id, get_device_hostname, get_platform } from './../../utils/deviceinfo/deviceInfo'
 class execManager{
 
     private static instance: execManager;
@@ -118,7 +119,7 @@ class execManager{
         It starts the trigger process, and connects to it via socket.io ipc.
         Failure event managements needs to be done: TODO:
     */
-    public start(auth_token:any /*AuthenticationToken*/, appdata_folder: string, platform: string, executable:string){
+    public start(auth_token:any /*AuthenticationToken*/, appdata_folder: string, platform: string, executable:string, device_id: string){
         if(auth_token == undefined|| appdata_folder == undefined || executable == undefined){
             console.log("Set the authentication keys/data_path before starting");
             return;
@@ -126,8 +127,11 @@ class execManager{
         // Clear state before starting.
         this.resetConfigs();
         // Set authentication keys
+
+    
+
         execManager.setEnviromentVariables(auth_token, appdata_folder, platform, 5000);
-        const child = execFile(executable, [JSON.stringify(auth_token),String(execManager.appData), platform]);
+        const child = execFile(executable, [auth_token["localId"],String(execManager.appData), platform, device_id]);
         if(!child.pid){
             ; // nop operator
 
