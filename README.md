@@ -1,4 +1,4 @@
-# finalprojects22-conductor
+# Conductor
 
 **Orchestra** is a scheduler app that can be used as an event management system that instructs robots to perform coordinated actions.
 
