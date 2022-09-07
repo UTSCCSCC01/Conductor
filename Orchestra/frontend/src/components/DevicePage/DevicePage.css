@@ -1,9 +1,10 @@
 /* DEVICE STATUS PAGE */
 .device-container {
+    margin-left: 50px;
+    margin-right: 50px;
     display: flex;
     flex-direction: column;
     align-items: center;
-    width: 100%;
     height: 100%;
 }
 
@@ -64,102 +65,17 @@
     border-color: #FF4D4F;
 }
 
-/* Device Table */
-.device-table {
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    padding: 0px 20px;
-}
-
-.device-table.empty {
-    flex-direction: row;
-    justify-content: center;
-    align-items: center;
-    height: 100%;
-    font-size: 17px;
-    color: #111;
-}
-
-.device-table.empty>svg {
-    margin-right: 5px;
-}
-
-.device-table>.table-header {
-    display: flex;
-    flex-direction: row;
-    border-bottom: 2px solid #DADADA;
-}
-
-.device-table .row {
-    display: flex;
-    justify-content: flex-start;
-    align-items: center;
-    /* background-color: #ccc; */
-}
-
-.device-table .row:not(:last-child) {
-    margin-right: 10px;
-}
-
-.device-table .row.large {
-    width: 30%;
-}
-
-.device-table .row.medium {
-    width: 25%;
-}
-
-.device-table .row.small {
-    width: 15%;
-}
-
-.device-table .row.small.icon {
-    justify-content: flex-end;
-}
-
-.device-table .row.small>.icon-button:not(:last-child) {
-    margin-right: 5px;
-}
-
-.device-table .row.small-icon {
-    width: 10%;
-}
-
-.device-table .row {
-    margin: 5px 0px;
-}
-
-.device-table .row>p {
-    margin: 0;
-}
-
-.device-table>.table-body {
-    display: flex;
-    flex-direction: column;
-}
-
-.device-table>.table-body>.table-body-row {
-    display: flex;
-    flex-direction: row;
-}
-
-.device-table>.table-body>.table-body-row:not(:last-child) {
-    border-bottom: 1px solid #DADADA;
-}
-
-.device-table>.table-body>.table-body-row .device-platform {
-    font-size: 1.5em;
-}
-
 /* DEVICE LIST PAGE */
 .device-list {
     display: flex;
     flex-direction: column;
     align-items: center;
     padding: 10px;
-    width: 100%;
     min-width: 850px;
+
+    margin-left: 50px;
+    margin-right: 50px;
+    
     height: 100%;
     background-color: #fff;
     box-shadow: 0px 0px 10px #ccc;

@@ -1,0 +1,17 @@
+{
+  "name": "predicatemicroservice",
+  "version": "1.0.0",
+  "description": "Orchestra predicate microservice",
+  "main": "index.js",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.18.1",
+    "mongodb": "^4.8.1",
+    "mongoose": "^6.5.0"
+  },
+  "scripts": {
+    "start": "node src/index.js"
+  },
+  "author": "",
+  "license": "ISC"
+}

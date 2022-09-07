@@ -1,18 +1,63 @@
 version: '3'
 services:
   auth:
+    container_name: auth
     build: './auth-service'
     ports:
       - "3002:3000"
     environment:
       - FIREBASE_API_KEY=AIzaSyB48jisOlggl4LFKoYSIcm2DhlfjWuRStY
       - FIREBASE_AUTH_ENDPOINT=https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=
+      - FIREBASE_REG_ENDPOINT=https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=
+      - MONGO_DB_URI=mongodb+srv://P1REcH4R8OGficA0:XEEx2aGFa72zfoQL@cluster0.wnx0m.mongodb.net/?retryWrites=true&w=majority
+
+  devicelink:
+    container_name: devicelink
+    build: './user-device'
+    ports:
+      - "3003:3007"
+    environment:
+      - MONGO_DB_URI=mongodb+srv://P1REcH4R8OGficA0:XEEx2aGFa72zfoQL@cluster0.wnx0m.mongodb.net/?retryWrites=true&w=majority
+  
+  predicateserves:
+    container_name: predicatemicroservice
+    build:
+      context: ./predicatemicroservice
+      dockerfile: Dockerfile
+    ports:
+      - "3004:3014"
+    environment:
+      - MONGO_DB_URI=mongodb+srv://P1REcH4R8OGficA0:XEEx2aGFa72zfoQL@cluster0.wnx0m.mongodb.net/?retryWrites=true&w=majority
+     
+  dispatch-service:
+      container_name: dispatch-service
+      build: './dispatch-service'
+      ports:
+        - "3005:3000"
+  
+  eventbuilderlink:
+    build: './event-builder'
+    ports:
+      - "3007:3008"
+    environment:
+      - MONGO_DB_URI=mongodb+srv://P1REcH4R8OGficA0:XEEx2aGFa72zfoQL@cluster0.wnx0m.mongodb.net/?retryWrites=true&w=majority
+  
+  mongo:
+    container_name: mongo
+    image: mongo
+    ports:
+      - "27017:27017"
 
   nginx:
     image: nginx:latest
+    container_name: nginx
     ports:
       - "8080:8080"
     volumes:
       - ./default.conf:/etc/nginx/conf.d/default.conf
     depends_on:
       - auth
+      - devicelink
+      - dispatch-service
+      - predicateserves
+      - eventbuilderlink

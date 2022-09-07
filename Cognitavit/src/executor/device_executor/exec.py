@@ -1,4 +1,17 @@
 from abc import ABC, abstractclassmethod
+import subprocess
+import os, sys
+from os import path
+import json
+
+AUTHENiCATION_OBJECT = sys.argv[1]
+USER_DATA_PATH = sys.argv[2]
+DEVICE_ID = sys.argv[4]
+userId = AUTHENiCATION_OBJECT
+env_userpath = USER_DATA_PATH
+CONFIG_NAME = "installed.json"
+config_file = path.join(env_userpath, CONFIG_NAME)
+
 
 class Executor(ABC):
     
@@ -20,7 +33,24 @@ class Executor(ABC):
         '''Executes a native application with optional launch params'''
 
     @abstractclassmethod
-    def bot_exec(self, params:str) ->None:
-        '''Executes a bot application from the orchestra webstore'''
+    def execute(self, name:str, params:str) ->None:
+        '''Wrapper for native_exec'''
+
+    
+    def bot_exec(self, buid:str, args:str):
+        if (os.path.exists(config_file) == True):
+            with open(config_file) as f:
+                data = json.load(f)
+            
+            for bot in data["installed"]:
+                if bot["buid"] == buid:
+                    path = bot["path"]
+                    args = args.split() + [path] 
+                    #return {"to_run": args}
+                    output = subprocess.Popen(args, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, universal_newlines=True)
+                    outdata = output.stdout.read()
+                    print(outdata, file=sys.stderr)
+                    return {"result": outdata}
+
 
     

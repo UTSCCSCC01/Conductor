@@ -1,0 +1,21 @@
+{
+    "name": "event-builder",
+    "version": "1.0.0",
+    "description": "Orchestra device microservice",
+    "main": "index.js",
+    "scripts": {
+        "start": "node src/index.js",
+        "live": "nodemon src/index.js",
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "author": "",
+    "license": "ISC",
+    "dependencies": {
+        "axios": "^0.27.2",
+        "cors": "^2.8.5",
+        "express": "^4.18.1",
+        "i": "^0.3.7",
+        "mongodb": "^4.7.0",
+        "mongoose": "^6.4.2"
+    }
+}

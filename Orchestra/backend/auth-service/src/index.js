@@ -2,10 +2,24 @@ const express = require('express')
 const axios = require('axios')
 const cors = require('cors')
 
-const { FIREBASE_AUTH_ENDPOINT } = require("./config/config");
+const { FIREBASE_AUTH_ENDPOINT, FIREBASE_REG_ENDPOINT, MONGO_DB_URI, FIREBASE_VERIFY_ENDPOINT} = require("./config/config");
+const { UserProfile } = require('../model/UserProfile');
+const mongoose = require('mongoose');
 
 const app = express()
 const port = 3000
+
+const mongoURI = MONGO_DB_URI;
+console.log("Mongodb URI")
+console.log(mongoURI)
+//Connect to mongodb.
+const connect = mongoose.connect(mongoURI, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  },)
+    .then(() => console.log("Connect to the MONGODB server."))
+    .catch(err => console.log(err));
+
 
 app.use(cors())
 app.use(express.json())
@@ -70,9 +84,173 @@ app.post('/auth',(req, res) => {
 /* Implement verification of JSON Web Tokens.
 Idea: Use the firebase-admin-sdk. Take a post request from the client with the tokenid. tokenid is a simple json web token
 Note: Perhaps we reduce dependency on this microservice, and have all microservices use firebase-sdk on its own.
+
+Rejected: can only use firebase-sdk if the tokens themselves are generated using firebase-sdk. These tokens are generated
+via identitiyplatform.
 */
 app.post('/verify-token', (req,res) => {
-  res.send("To be implemented? " + process.env.FIREBASE_AUTH_ENDPOINT + " current: " + FIREBASE_AUTH_ENDPOINT )
+   let idToken;
+   try{
+       idToken = req.body["idToken"]
+   }catch{
+      console.log("Invalid body", req.body);
+      res.status(400).json({
+         auth: false,
+         localId: null,
+         message: "Valid token id"
+      })
+      return;
+   }
+   console.log("idToken:", idToken);
+   /*Future: You need to compare the date from epoche to see if its valuid.*/
+   const auth_req = axios.post(FIREBASE_VERIFY_ENDPOINT, {idToken: idToken}).then(response => {
+      
+      if ("data" in response) {
+         try{
+            const id_fire = response["data"]["users"][0]["localId"];
+            console.log("Success!", id_fire);
+            res.status(200).json({
+               auth: true,
+               localId: id_fire,
+               message: "Valid token id"
+            })
+         }catch{
+            res.status(200).json({
+               auth: false,
+               localId: null,
+               message: "malformed response from firebase api."
+            });
+         }
+      }
+   }).catch(error => {
+    if (error.response) {
+      // The request was made and the server responded with a status code
+      // that falls out of the range of 2xx
+      console.log(error.response)
+      res.status(400).json({
+         auth: false,
+         localId: null,
+         message: "Invalid token"
+      });
+    } else if (error.request) {
+      // The request was made but no response was received
+      // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
+      // http.ClientRequest in node.js
+      res.status(400).json({
+         auth: false,
+         localId: null,
+         message: "No response fore identitytoolkit"
+      });
+    } else {
+      // Something happened in setting up the request that triggered an Error
+      res.status(400).json({
+         auth: false,
+         localId: null,
+         message: "Internal server error. Issue with setting up the request."
+      });
+    }
+   })
+})
+
+/* Register user account. First adds user to the firebase auth database using firebases rest api. We 
+   then add the user information in the userprofile database. 
+
+   Expected payload
+      email: { type: String, required: true},   
+      userId: { type: String, required: true},           
+      firstname: { type: String, required: true}, 
+      lastname: { type: String, required: true},  
+      phonenumber: { type: String, required: true},  
+*/
+
+app.post('/register-useraccount', async (req,res) => {
+
+   // Perform and check to see if the json object has the follow properties.
+   // If the property exists, perform a check to see if its not empty. 
+   const checks = ['email', 'firstname', 'lastname', 'phonenumber','password']
+   for(const property of checks){
+      if(!(req.body.hasOwnProperty(property))){
+         res.status(400).json({status: "failure", message: "Incomplete/Malformed payload"});
+         return;
+      }
+      if(req.body[property].trim() === ''){
+         res.status(400).json({status: "failure", message: "No empty fields are permitted."});
+         return;
+      }
+   }
+
+   // Generate a firebase payload and send a add account request to firebase rest api. 
+   // If on event of failure, give the failure payload directly to the user. 
+   // On success, continue on with the process of creating the account. (add to mongodb)
+   let firebase_req_payload = {
+      email: req.body.email,
+      password: req.body.password,
+      returnSecureToken: true
+   }
+
+
+   var firebase_payload;
+   const register_req = axios.post(FIREBASE_REG_ENDPOINT, firebase_req_payload).then(response => {
+      if ("data" in response) {
+         firebase_payload = response["data"];
+      }
+   })
+   .catch(error => {
+      if (error.response) {
+         // The request was made and the server responded with a status code
+         // that falls out of the range of 2xx
+         console.log(error.response.data);
+         res.status(400).json(error.response.data);
+         return;
+      } else if (error.request) {
+         // The request was made but no response was received
+         // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
+         // http.ClientRequest in node.js
+         console.log('Error', error.request);
+         res.status(503).send(error.request);
+         return;
+      } else {
+         // Something happened in setting up the request that triggered an Error
+         console.log('Error', error.message);
+         res.status(400).send(error.message);
+         return;
+      }
+   })
+   
+   // Pause execution, and wait for our payload to arrive. This occurs once our promise is resolved. 
+   await register_req; 
+   if(firebase_payload === undefined){
+      return;
+   }
+   
+   // Generate another payload, which will be used to create a new entry in our mongodb. 
+   // This entry represents the user profile information. Attempt to inject data into database.
+   // Upon failure, we need to roll back, and delete the account. [Todo:]
+
+   const payload = {
+      userId: firebase_payload["localId"],
+      email: req.body.email,
+      firstname: req.body.firstname,
+      lastname: req.body.lastname,
+      phonenumber: req.body.phonenumber,
+    }
+    //Verify if the generate payload matches Device
+    let account_profile = null;
+    try{
+      account_profile = new UserProfile(payload);
+    }catch(err){
+        return res.status(400).send({success: false, message: "Data doesn't match data schema"});
+    }
+    
+    //Attempt to add our newly created user profile to the database, and return the auth tokens.
+    account_profile.save().then(resp => {
+      console.log(resp);
+      res.status(200).send(firebase_payload);
+    }).catch(err => {
+      console.log(err);
+      res.status(400).send(err)
+    })
+
 })
 
 app.listen(port, () => {

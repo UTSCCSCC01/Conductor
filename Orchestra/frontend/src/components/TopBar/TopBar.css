@@ -1,12 +1,10 @@
 .topbar {
-    position: absolute;
+    grid-area: header;
     display: flex;
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
-    margin-left: 230px;
     padding: 50px;
-    width: calc(100vw - 230px);
     min-width: 700px;
     height: 100px;
 }
